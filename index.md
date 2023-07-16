@@ -13,6 +13,5 @@ This site is currently mainly the home of the [FUNARCH Workshop
 Series](/events/) co-located with the [International Conference on
 Functional Programming](https://www.icfpconference.org/).
 
-[FUNARCH 2023](events/funarch-2023/) will happen on September 8 in Seattle,
-the [Call for Papers](events/funarch-2023/cfp/) is open, deadline is June 1!
+[FUNARCH 2023](events/funarch-2023/) will happen on September 8 in Seattle.
 
