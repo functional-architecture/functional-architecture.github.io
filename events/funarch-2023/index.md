@@ -29,6 +29,32 @@ News is available on [Mastodon](https://discuss.systems/@funarch) and
 
 ## Program
 
+### Functional Programming in the Large - Status and Perspective 
+#### Mike Sperber
+##### (Opening Talk)
+
+Functional programming has been in use for large-scale industrial
+projects for decades now.  Yet most of the community's vast body of
+knowledge on how to structure and implement such project seems to be
+folklore, with the occasional reference to ICFP or JFP papers.  This
+is hardly a realistic offering for community outsiders.
+
+Furthermore, the software architecture community has developed a large
+body of useful knowledge, literature and pedagogy, largely unknown in
+functional programming circles.  In particular, the hugely effective
+set of techniques and insights associated with Domain-Driven Design
+has seen very little cross-pollination with functional design
+techniques, despite their shared goals.
+
+If we want to bring the advantages of functional programming to
+realistic, industrial projects not conducted by insiders, we will need
+to learn to communicate with the software archtecture community.
+
+This talk will report on our experience interacting with the software
+architecture community, identify a few particularly fruitful areas of
+potential cross-pollination, and try to take a long view on what
+functional software architecture might look in the future.
+
 ### A Software Architecture Based on Coarse-Grained Self-Adjusting Computations
 #### Stefan Wehr
 
