@@ -52,11 +52,11 @@ allowing one to compose independent subcomponents to create bigger
 systems, and representable, allowing the implementation of a system to
 be kept in sync with its graphical representation. In addition to the
 design itself we introduce the Crem library, which provides a concrete
-state machine implemen- tation that is both compositional and
+state machine implementation that is both compositional and
 representable. Crem uses Haskell’s advanced type-level features to
 allow users to specify allowed and forbidden state transitions, and to
-en- code complex state machine—and therefore domain-specific—
-properties. Moreover, since Crem’s state machines are repre- sentable,
+encode complex state machine—and therefore domain-specific
+properties. Moreover, since Crem’s state machines are representable,
 Crem can automatically generate graphical repre- sentations of systems
 from their domain
 
@@ -66,7 +66,7 @@ from their domain
 Some object-oriented GUI toolkits tangle state management with
 rendering. Functional shells and observable toolkits like GUI Easy
 simplify and promote the creation of reusable views by analogy to
-functional programming. We have suc- cessfully used GUI Easy on small
+functional programming. We have successfully used GUI Easy on small
 and large GUI projects. We report on our experience constructing and
 using GUI Easy and derive from that experience several architectural
 patterns and principles for building functional programs out of
@@ -77,10 +77,10 @@ imperative systems
 
 The large-scale structure of executing a computation can often be
 thought of as being separated into distinct phases. But the most
-natural form in which to specify that computa- tion may well have a
+natural form in which to specify that computation may well have a
 different and conflicting structure. For example, the computation
 might consist of gathering data from some locations, processing it,
-then distributing the re- sults back to the same locations; it may be
+then distributing the results back to the same locations; it may be
 executed in three phases—gather, process, distribute—but mostly
 conveniently specified orthogonally—by location. We have recently
 shown that this multi-phase structure can be expressed as a novel
@@ -92,19 +92,19 @@ choreography and multi-tier architecture.
 ### Stretching the Glasgow Haskell Compiler
 #### Jeffrey M. Young, Sylvain Henry, John Ericson
 
-Over the last decade Haskell has been productized; transi- tioning
+Over the last decade Haskell has been productized; transitioning
 from a research language to an industrial strength language ready for
-large-scale systems. However, the liter- ature on architecting such
+large-scale systems. However, the literature on architecting such
 systems with a pure functional language is scarce. In this paper we
 contribute to that discourse, by using a large-scale system: the
 Glasgow Haskell Compiler (GHC) itself, as a guide to more main-
 tainable, flexible and effective pure functional software
 architectures. We describe, from experience working on GHC, how GHC as
-a system, violates the desirable prop- erties that make pure
+a system, violates the desirable properties that make pure
 functional programming attractive: immutability, modularity, and
 composability. With these violations identified, we provide actionable
 guidance for other functional system architectures; drawing heavily on
-domain-driven design. We write this paper from an en- gineering
+domain-driven design. We write this paper from an engineering
 perspective, with the hope that our collection and recapitulation may
 provide insight into future best practices for other pure functional
 software architects.
@@ -119,7 +119,7 @@ knowledge that ought to be represented as functional design patterns:
 architectural concepts that are relatively self-contained, but whose
 entirety cannot be represented as a language-level abstraction. I
 present four concrete examples embodying this idea: the Witness, the
-State Machine, the Parallel Lists, and the Registry. Each pat- tern is
+State Machine, the Parallel Lists, and the Registry. Each pattern is
 implemented in Rust to demonstrate how careful use of a sophisticated
 type system can better model each domain construct and thereby catch
 user mistakes at compile-time.
@@ -131,13 +131,13 @@ Compilers are often structured as chains of transformations, from
 source code to object code, through multiple intermediate repre-
 sentations. The existence of different representations of the same
 program presents challenges both for code maintenance and in terms of
-architecture. The types used to capture programs at multi- ple stages
+architecture. The types used to capture programs at multiple stages
 may be similar but not interchangeable, leading to code
 duplication. Methods to alleviate such duplication often lead to
 violations of software engineering principles of abstraction and
-encapsulation. This pearl discusses a design pattern where an alge-
-braic data type (ADT) is extended with an argument type function that
-is applied to every component of the ADT. The resulting para- metric
+encapsulation. This pearl discusses a design pattern where an
+algebraic data type (ADT) is extended with an argument type function that
+is applied to every component of the ADT. The resulting parametric
 type can be instantiated with multiple type functions, each providing
 a different feature. We demonstrate the versatility of this pattern by
 capturing notions of traceability and error recovery, and demonstrate
