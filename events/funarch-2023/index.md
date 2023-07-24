@@ -27,6 +27,10 @@ in Seattle on 8th September 2023.
 News is available on [Mastodon](https://discuss.systems/@funarch) and
 [Twitter](https://twitter.com/ACMFUNARCH).
 
+## Code of Conduct
+
+FUNARCH adheres to the [SIGPLAN/ICFP Code of Conduct](https://icfp23.sigplan.org/attending/code-of-conduct).
+
 ## Program
 
 ### Functional Programming in the Large - Status and Perspective 
