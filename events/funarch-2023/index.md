@@ -21,11 +21,15 @@ The goals for the workshop are:
 - To connect the functional programming community to the software
   architecture community to cross-pollinate between the two.
     
-FUNARCH 2023 will be co-colocated with [ICFP 2023](https://icfp23.sigplan.org/)
+FUNARCH 2023 was be co-colocated with [ICFP 2023](https://icfp23.sigplan.org/)
 in Seattle on 8th September 2023.
 
 News is available on [Mastodon](https://discuss.systems/@funarch) and
 [Twitter](https://twitter.com/ACMFUNARCH).
+
+## Proceedings
+
+... are available from the [ACM Digital Library](https://dl.acm.org/doi/proceedings/10.1145/3609025).
 
 ## Code of Conduct
 
