@@ -37,6 +37,8 @@ FUNARCH adheres to the [SIGPLAN/ICFP Code of Conduct](https://icfp23.sigplan.org
 
 ## Program
 
+The videos are also available as a [YouTube playlist](https://www.youtube.com/playlist?list=PLyrlk8Xaylp7YIgF5E44NLqf34HmRzM-F).
+
 ### Functional Programming in the Large - Status and Perspective 
 #### Mike Sperber
 ##### (Opening Talk)
@@ -63,7 +65,9 @@ architecture community, identify a few particularly fruitful areas of
 potential cross-pollination, and try to take a long view on what
 functional software architecture might look in the future.
 
-### A Software Architecture Based on Coarse-Grained Self-Adjusting Computations
+<iframe width="560" height="315" src="https://www.youtube.com/embed/e9Go-iyIkhY?si=CPVtItbRCLPJmhbZ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+### [A Software Architecture Based on Coarse-Grained Self-Adjusting Computations](https://dl.acm.org/doi/10.1145/3609025.3609481?cid=81100173259)
 #### Stefan Wehr
 
 Ensuring that software applications present their users the most
@@ -76,7 +80,9 @@ Haskell. It discusses advantages and disadvantages based on longtime
 experience. The article also presents a demo of the system and
 explains the API of the framework
 
-### Crème de la Crem: Composable Representable Executable Machines
+<iframe width="560" height="315" src="https://www.youtube.com/embed/3qUFx-luepQ?si=Lx2kiWPIsK03v5ae" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+### [Crème de la Crem: Composable Representable Executable Machines](https://dl.acm.org/doi/10.1145/3609025.3609480?cid=99660990271)
 #### Marco Perone, Georgios Karachalias
 
 In this paper we describe how to build software architectures as a
@@ -94,7 +100,9 @@ properties. Moreover, since Crem’s state machines are representable,
 Crem can automatically generate graphical repre- sentations of systems
 from their domain
 
-### Functional Shell and Reusable Components for Easy GUIs
+<iframe width="560" height="315" src="https://www.youtube.com/embed/mh751JTgBdA?si=ZPTwHOjnlpNnzQ2g" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+### [Functional Shell and Reusable Components for Easy GUIs](https://defn.io/papers/fungui-funarch23.pdf)
 #### Ben Knoble, Bogdan Popa
 
 Some object-oriented GUI toolkits tangle state management with
@@ -106,7 +114,9 @@ using GUI Easy and derive from that experience several architectural
 patterns and principles for building functional programs out of
 imperative systems
 
-### Phases in Software Architecture
+<iframe width="560" height="315" src="https://www.youtube.com/embed/xNPTwlQPmno?si=Ra_jmuTOHqGhevjV" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+### [Phases in Software Architecture](https://www.cs.ox.ac.uk/publications/publication15860-abstract.html)
 #### Jeremy Gibbons, Oisín Kidney, Tom Schrijvers, Nicolas Wu
 
 The large-scale structure of executing a computation can often be
@@ -122,6 +132,8 @@ applicative functor (also known as an idiom, or lax monoidal
 functor). Here we summarize the idea from the perspective of software
 architecture. At the end, we speculate about applications to
 choreography and multi-tier architecture.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/zh2pM6dOjyM?si=bzfGm4WZ2gxuoJXU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 ### Stretching the Glasgow Haskell Compiler
 #### Jeffrey M. Young, Sylvain Henry, John Ericson
@@ -143,8 +155,9 @@ perspective, with the hope that our collection and recapitulation may
 provide insight into future best practices for other pure functional
 software architects.
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/vkC1AixG5EQ?si=1ugQcjRulJBunHfF" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
-### Typed Design Patterns for the Functional Era
+### [Typed Design Patterns for the Functional Era](https://dl.acm.org/doi/10.1145/3609025.3609477)
 #### Will Crichton
 
 This paper explores how design patterns could be revisited in the era
@@ -158,7 +171,9 @@ implemented in Rust to demonstrate how careful use of a sophisticated
 type system can better model each domain construct and thereby catch
 user mistakes at compile-time.
 
-### Types that Change: The Extensible Type Design Pattern
+<iframe width="560" height="315" src="https://www.youtube.com/embed/mB2ZhK8tB8Y?si=MtYDeAcURhlNu-3B" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+### [Types that Change: The Extensible Type Design Pattern](https://ivanperez.io/#typesthatchange)
 #### Ivan Perez
 
 Compilers are often structured as chains of transformations, from
@@ -178,3 +193,5 @@ capturing notions of traceability and error recovery, and demonstrate
 that it can also be used to selectively modify existing types, as well
 as to extend them. Our proposal has been validated by applying it to a
 real-world use case with very good results.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/JTZUgLy-r18?si=xAHck1NNx8onhMix" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
