@@ -135,7 +135,7 @@ choreography and multi-tier architecture.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/zh2pM6dOjyM?si=bzfGm4WZ2gxuoJXU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
-### Stretching the Glasgow Haskell Compiler
+### [Stretching the Glasgow Haskell Compiler](https://dl.acm.org/doi/10.1145/3609025.3609476?cid=99660990042)
 #### Jeffrey M. Young, Sylvain Henry, John Ericson
 
 Over the last decade Haskell has been productized; transitioning
