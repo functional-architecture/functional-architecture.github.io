@@ -21,6 +21,12 @@ body {
   background-attachment: fixed;
   {% endif %}
   overflow-wrap: break-word;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+body > main {
+  flex: 1;
 }
 p {
   line-height: 1.5;
@@ -181,8 +187,6 @@ img {
 }
 
 .navbar-custom .navbar-nav .nav-link {
-  padding-top: 0;
-  padding-bottom: 0;
   line-height: 1.25rem;
   padding-top: 0.9375rem;
   padding-bottom: 0.9375rem;
@@ -739,39 +743,6 @@ nav.top-nav-short-permanent ~ header > .intro-header.big-img {
   }
 }
 
-.header-section.has-img .no-img {
-  margin-top: 0;
-  background-color: #FCFCFC;
-  margin: 0 0 2.5rem;
-  padding: 1.25rem 0;
-  box-shadow: 0 0 0.3125rem #AAA;
-}
-/* Many phones are 320 or 360px, so make sure images are a proper aspect ratio in those cases */
-.header-section.has-img .intro-header.no-img {
-  display: none;
-}
-@media (max-width: 365px) {
-  .header-section.has-img .intro-header.no-img {
-    display: block;
-  }
-  .intro-header.big-img {
-    width: 100%;
-    height: 13.75rem;
-  }
-  .intro-header.big-img .page-heading,
-  .intro-header.big-img .post-heading {
-    display: none;
-  }
-  .header-section.has-img .big-img {
-    margin-bottom: 0;
-  }
-}
-@media (max-width: 325px) {
-  .intro-header.big-img {
-    height: 12.5rem;
-  }
-}
-
 #header-gh-btns {
   margin-bottom: 0.9375rem;
 }
@@ -813,6 +784,7 @@ nav.top-nav-short-permanent ~ header > .intro-header.big-img {
   background-color: #FFF;
   border-radius: 0;
   color: {{ site.text-col | default: "#404040" }};
+  padding: 0.75rem 1rem;
 }
 @media (min-width: 768px) {
   .pagination .page-item .page-link {
@@ -1020,6 +992,7 @@ pre {
 
 /* Search bar */
 #beautifuljekyll-search-overlay {
+  font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   display: none;
   z-index: 999999;
   position: fixed;
@@ -1031,6 +1004,7 @@ pre {
   text-align: center;
   padding: 1rem;
 }
+
 #nav-search-exit {
   position: absolute;
   top: 1.5rem;
@@ -1059,6 +1033,7 @@ pre {
   border: none;
   padding: 0 3rem;
 }
+
 @media (max-width: 1199px) {
   #nav-search-input {
     width: 75%;

@@ -46,6 +46,9 @@ layout: page
         {% endif %}
       </a>
 
+      {% if post.author %}
+        <span>By <strong>{{ post.author | strip_html }}</strong></span>
+      {% endif %}
       <p class="post-meta">
         {% assign date_format = site.date_format | default: "%B %-d, %Y" %}
         Posted on {{ post.date | date: date_format }}
@@ -101,12 +104,18 @@ layout: page
 <ul class="pagination main-pager">
   {% if paginator.previous_page %}
   <li class="page-item previous">
-    <a class="page-link" href="{{ paginator.previous_page_path | absolute_url }}">&larr; Newer Posts</a>
+    <a class="page-link" href="{{ paginator.previous_page_path | absolute_url }}">
+      <i class="fas fa-arrow-left" alt="Newer Posts"></i>
+      <span class="d-none d-sm-inline-block">Newer Posts</span>
+    </a>
   </li>
   {% endif %}
   {% if paginator.next_page %}
   <li class="page-item next">
-    <a class="page-link" href="{{ paginator.next_page_path | absolute_url }}">Older Posts &rarr;</a>
+    <a class="page-link" href="{{ paginator.next_page_path | absolute_url }}">
+      <span class="d-none d-sm-inline-block">Older Posts</span>
+      <i class="fas fa-arrow-right" alt="Older Posts"></i>
+    </a>
   </li>
   {% endif %}
 </ul>
