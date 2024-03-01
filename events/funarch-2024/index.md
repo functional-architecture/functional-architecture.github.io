@@ -22,7 +22,7 @@ The goals for the workshop are:
   architecture community to cross-pollinate between the two.
     
 FUNARCH 2024 will be co-colocated with [ICFP 2024](https://icfp24.sigplan.org/)
-in Milan in September 2024.
+in Milan on September 6th 2024.
 
 News is available on [Mastodon](https://discuss.systems/@funarch),
 [Bluesky](https://bsky.app/profile/funarch.bsky.social), and

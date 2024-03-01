@@ -13,5 +13,6 @@ This site is currently mainly the home of the [FUNARCH Workshop
 Series](/events/) co-located with the [International Conference on
 Functional Programming](https://www.icfpconference.org/).
 
-[FUNARCH 2024](events/funarch-2024/) will happen in September Milan.
+[FUNARCH 2024](events/funarch-2024/) will happen on September 6th in
+Milan, Italy.
 
