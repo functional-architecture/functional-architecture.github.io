@@ -4,7 +4,7 @@ title: Functional Software Architecture
 subtitle: Functional Programming in the Large
 ---
 
-Functional Software Architecture" refers to methods of construction
+"Functional Software Architecture" refers to methods of construction
 and structure of large and long-lived software projects that are
 implemented in functional languages and released to real users,
 typically in industry.
