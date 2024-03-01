@@ -13,5 +13,5 @@ This site is currently mainly the home of the [FUNARCH Workshop
 Series](/events/) co-located with the [International Conference on
 Functional Programming](https://www.icfpconference.org/).
 
-[FUNARCH 2023](events/funarch-2023/) will happen on September 8 in Seattle.
+[FUNARCH 2024](events/funarch-2024/) will happen in September Milan.
 

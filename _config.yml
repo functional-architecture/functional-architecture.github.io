@@ -20,8 +20,9 @@ title: Functional Architecture
 ###############################################
 
 navbar-links:
-  FUNARCH 2023: "events/funarch-2023/"
+  FUNARCH 2024: "events/funarch-2024/"
   Events:
+    - FUNARCH 2024: "events/funarch-2024/"
     - FUNARCH 2023: "events/funarch-2023/"
 #  Author's home: "https://deanattali.com"
 
