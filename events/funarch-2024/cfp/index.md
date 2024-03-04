@@ -14,7 +14,7 @@ Co-located with [ICFP 2024](https://icfp24.sigplan.org)
 
 ## Timeline
 
-| **Paper submission**    | 3st June 2024  |
+| **Paper submission**    | 3rd June 2024  |
 | **Author notification** | 30th June 2024 |
 | **Camera ready copy**   | 18th July 2024 |
 | **Workshop**            | 6th Sept 2024  |
