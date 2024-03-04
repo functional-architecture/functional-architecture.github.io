@@ -151,7 +151,7 @@ related to published work.
 - [Kiko Fernandez-Reyes](https://www.plresearcher.com/) (Ericsson)
 - [Ryan Scott](https://ryanglscott.github.io/about/) (Galois)
 - [Satnam Singh](https://raintown.org/satnam/) (Groq)
-- [Facundo Dominguez](https://github.com/facundominguez)
+- [Facundo Dominguez](https://github.com/facundominguez) (Tweag)
 - [Ilya Sergey](https://ilyasergey.net/) (University of Singapore)
 - [Martin Elsman](http://elsman.com/) (University of Copenhagen)
 - [Benjamin Pierce](https://www.cis.upenn.edu/~bcpierce/)
