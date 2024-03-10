@@ -37,9 +37,6 @@ The goals for the workshop are:
 - To connect the functional programming community to the software
   architecture community to cross-pollinate between the two.
 
-The workshop follows on from the Functional Software Architecture
-open space that was held at ICFP 2022 in Slovenia.
-
 ## Scope
 
 The workshop seeks submissions in a range of categories:
