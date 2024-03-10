@@ -160,6 +160,7 @@ related to published work.
   (University of Utah)
 - [Nada Amin](https://namin.seas.harvard.edu/)
   (Harvard University)
+- [Richard Eisenberg}(https://richarde.dev/) (Jane Street)
 
 ## Workshop Venue
 
