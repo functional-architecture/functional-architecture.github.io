@@ -91,8 +91,9 @@ Open category submissions that are not intended for publication
 are not required to follow the formatting guidelines, and can 
 submit in PDF, word or plain text format as preferred.  Not knowing
 what kinds of submissions we will receive, we cannot be specific as to
-how they will be evaluated.  However, we are definitely looking for
-material that could spark an interesting discussion.
+how they will be evaluated.  However, submissions that seem likely to
+stimulate discussion around practices in functional architecture
+are encouraged.
 
 If you are unsure whether your contribution is suitable, or if
 you need any kind of help with your submission, please email
