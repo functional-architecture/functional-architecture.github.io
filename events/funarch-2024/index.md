@@ -24,6 +24,8 @@ The goals for the workshop are:
 FUNARCH 2024 will be co-colocated with [ICFP 2024](https://icfp24.sigplan.org/)
 in Milan on September 6th 2024.
 
+The [Call for Papers](cfp/) is open - submission deadline 3rd June 2024.
+
 News is available on [Mastodon](https://discuss.systems/@funarch),
 [Bluesky](https://bsky.app/profile/funarch.bsky.social), and
 [Twitter](https://twitter.com/ACMFUNARCH).
