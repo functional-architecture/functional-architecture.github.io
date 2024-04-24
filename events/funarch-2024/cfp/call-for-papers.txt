@@ -7,7 +7,7 @@ Subject: 2nd Call for Papers: ACM Workshop on Functional Software Architecture [
 		    Second ACM SIGPLAN Workshop on
 	  Functional Software Architecture - FP in the Large
 
-		    6th September 2025, Milan, Italy
+		    6th September 2024, Milan, Italy
 		      Co-located with ICFP 2024
 
        https://functional-architecture.org/events/funarch-2024/
