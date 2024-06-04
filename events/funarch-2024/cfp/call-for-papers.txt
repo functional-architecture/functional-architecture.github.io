@@ -1,4 +1,4 @@
-Subject: Final CfP: ACM Workshop on Functional Software Architecture [Deadline June 3]
+Subject: Deadline extension: ACM Workshop on Functional Software Architecture [NOW JUNE 12]
 
 ======================================================================
 
@@ -16,7 +16,7 @@ Subject: Final CfP: ACM Workshop on Functional Software Architecture [Deadline J
 
 TIMELINE:
 
-Paper submission    3rd June 2024  
+Paper submission    12th June 2024  (EXTENDED FROM JUNE 3rd)
 Author notification 30th June 2024 
 Camera ready copy   18th July 2024 
 Workshop            6th Sept 2024  
