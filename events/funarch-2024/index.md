@@ -30,7 +30,7 @@ News is available on [Mastodon](https://discuss.systems/@funarch),
 
 ## Code of Conduct
 
-FUNARCH adheres to the [SIGPLAN/ICFP Code of Conduct](https://icfp23.sigplan.org/attending/code-of-conduct).
+FUNARCH adheres to the [SIGPLAN/ICFP Code of Conduct](https://icfp24.sigplan.org/attending/code-of-conduct).
 
 ## Program
 
