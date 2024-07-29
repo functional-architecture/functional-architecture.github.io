@@ -1,0 +1,95 @@
+======================================================================
+
+	    *** FUNARCH 2024 -- CALL FOR PARTICIPATION ***
+
+		  The First ACM SIGPLAN Workshop on
+	 Functional Software Architecture - FP in the Large
+
+	       6th September 2024, Milan, Italy
+		      Co-located with ICFP 2024
+
+     https://www.functional-architecture.org/events/funarch-2024/
+
+======================================================================
+
+BACKGROUND:
+
+The ACM SIGPLAN Workshop on Functional Software Architecture - FP
+in the Large aims to disseminate and enable the use of functional
+programming in the large and long-lived software projects.
+
+We specifically want:
+
+- To assemble a community interested in software architecture
+  techniques and technologies specific to functional programming;
+
+- To identify, categorize, and document topics relevant to
+  the field of functional software architecture;
+
+- To connect the functional programming community to the software
+  architecture community to cross-pollinate between the two.
+
+We'd love for you to be part of this effort.  Whatever your
+background, you're welcome at FUNARCH - to listen to talks, report
+on your experience, and interact with others that share our goals.
+
+See you at FUNARCH!
+
+REGISTRATION:
+
+You can register for the workshop via the registration page for
+the ICFP conference, but there's no need to also register for
+the conference.  Reduced fees are available until 5th August.
+http://icfp24.sigplan.org/attending/registration
+
+KEYNOTE:
+
+Architecting Functional Programs
+Marco Sampellegrini
+
+ACCEPTED SUBMISSIONS:
+
+F3: A Compiler For Feature Engineering
+Weixi Ma, Arnaud Venet, Junhua Gu, Subbu Subramanian, Siyu Wang, Rocky Liu (Meta)
+Daniel Friedman, Yafei Yang (Indiana University)
+
+Design and implementation of a verified interpreter for additive manufacturing programs
+Matthew Sottile, Mohit Tekriwal (Lawrence Livermore National Laboratory)
+
+Applying Continuous Formal Methods to Cardano
+James Chapman, Arnaud Bailly, Polina Vinogradova (IOHK)
+
+Continuations: what have they ever done for us?
+Marc Kaufmann (Austriae Central European University), Bogdan Popa
+
+Bidirectional Data Transformations
+Marcus Crestani, Markus Schlegel, Marco Schneider (Active Group)
+
+PROGRAM CHAIRS:
+
+Mike Sperber (Active Group, Germany)
+Perdita Stevens (University of Edinburgh, UK)
+
+PROGRAM COMMITTEE:
+
+Annette Bieniusa (University of Kaiserslautern)
+Jeffrey Young (IOG)
+Will Crichton (Brown University)
+Isabella Stilkerich (Schaeffler Technologies AG)
+Kiko Fernandez-Reyes (Ericsson)
+Ryan Scott (Galois)
+Satnam Singh (Groq)
+Facundo Dominguez (Tweag)
+Ilya Sergey (University of Singapore)
+Martin Elsman (University of Copenhagen)
+Benjamin Pierce (University of Pennsylvania)
+Matthew Flatt (University of Utah)
+Nada Amin (Harvard University)
+Richard Eisenberg (Jane Street)
+
+WORKSHOP VENUE:
+
+The workshop will be co-located with the ICFP 2024 conference at
+the Milano Convention Centre, Milan, Italy.
+
+======================================================================
