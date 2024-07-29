@@ -144,3 +144,30 @@ and straightforward and foster understanding of the relationship
 between data structures by explicitly describing their connections in
 a composable manner.
 
+## Program Chairs
+
+- [Mike Sperber](https://www.deinprogramm.de/sperber/) (Active Group, Germany)
+- [Perdita Stevens](https://www.inf.ed.ac.uk/people/staff/Perdita_Stevens.html)
+  (University of Edinburgh, UK)
+
+## Program Committee
+
+- [Annette Bieniusa](https://softech.informatik.uni-kl.de/team/annettebieniusa)
+  (University of Kaiserslautern)
+- Jeffrey Young (IOG)
+- [Will Crichton](https://willcrichton.net/)
+  (Brown University)
+- Isabella Stilkerich (Schaeffler Technologies AG)
+- [Kiko Fernandez-Reyes](https://www.plresearcher.com/) (Ericsson)
+- [Ryan Scott](https://ryanglscott.github.io/about/) (Galois)
+- [Satnam Singh](https://raintown.org/satnam/) (Groq)
+- [Facundo Dominguez](https://github.com/facundominguez) (Tweag)
+- [Ilya Sergey](https://ilyasergey.net/) (University of Singapore)
+- [Martin Elsman](http://elsman.com/) (University of Copenhagen)
+- [Benjamin Pierce](https://www.cis.upenn.edu/~bcpierce/)
+  (University of Pennsylvania)
+- [Matthew Flatt](https://users.cs.utah.edu/~mflatt/)
+  (University of Utah)
+- [Nada Amin](https://namin.seas.harvard.edu/)
+  (Harvard University)
+- [Richard Eisenberg](https://richarde.dev/) (Jane Street)
