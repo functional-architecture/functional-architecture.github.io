@@ -15,3 +15,4 @@ Functional Programming](https://www.icfpconference.org/).
 
 [FUNARCH 2024](events/funarch-2024/) will happen on September 6th in
 Milan, Italy.
+
