@@ -401,51 +401,62 @@
         <div style="display: flex; flex-direction: column; gap: 1em; max-width: 50em;">
           <h2>Frequently Asked Questions</h2>
 
+          <div class="vspace"></div>
+
           <div style="display: flex; flex-direction: column; gap: 1em;">
             <div>
-              <h3>Is there a class of domains where Functional Software
+              <h5>Is there a class of domains where Functional Software
                 Architecture works exceptionally well? Is there a class of
-                domains where Functional Software Architecture fails?</h3>
+                domains where Functional Software Architecture fails?</h5>
               <p>
                 No
               </p>
             </div>
 
             <div>
-              <h3>External systems usually don't follow FSA principles. How do you interface with them?</h3>
+              <h5>External systems usually don't follow FSA principles. How do you interface with them?</h5>
               <p>
                 Spec out their behaviour, making time (or state transitions) explicit. Ask for guarantees that the external service provides.
               </p>
             </div>
 
             <div>
-              <h3>I want to [do X]. What techniques or libraries should I use?</h3>
-              <h4>I want to build a web frontend</h4>
-              Elm architecture, Model-View-Update, reacl
+              <h5>I want to [do X]. What techniques or libraries should I use?</h5>
 
-              <h4>I want to build a web backend</h4>
-              Handlers as functions from request to response (Clojure ring, OCaml Dream ...)
+              <ul>
+                <li>
+                  <b>I want to build a web frontend</b>
+                  Elm architecture, Model-View-Update, reacl
+                </li>
 
-              <h4>I need to access a RDBMS</h4>
-              ...
+                <li>
+                  <b>I want to build a web backend</b>
+                  Handlers as functions from request to response (Clojure ring, OCaml Dream ...)
+                </li>
+
+                <li>
+                  <b>I need to access a RDBMS</b>
+                  ...
+                </li>
+              </ul>
             </div>
 
             <div>
-              <h3>I need to serialize objects to send them back and forth over a channel</h3>
+              <h5>I need to serialize objects to send them back and forth over a channel</h5>
               <p>
                 No
               </p>
             </div>
 
             <div>
-              <h3>I heard that functional programming suffers a performance penalty compared to imperative programming. Is that right?</h3>
+              <h5>I heard that functional programming suffers a performance penalty compared to imperative programming. Is that right?</h5>
               <p>
                 It depends. See Performance.
               </p>
             </div>
 
             <div>
-              <h3>Is Domain-Driven Design at odds with functional modelling?</h3>
+              <h5>Is Domain-Driven Design at odds with functional modelling?</h5>
               <p>
                 It depends.
               </p>
