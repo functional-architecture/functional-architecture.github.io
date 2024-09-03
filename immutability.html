@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/css/style.css" type="text/css" />
+    <style>:root {--highlight-color: gray;}</style>
+    <title>Immutability – Functional Software Architecture</title>
+  </head>
+
+  <body>
+    <header style="padding: 0em 2em 2em 2em;">
+      <div style="display: flex; justify-content: center;">
+        <div style="flex: 1;
+                    padding: 2em 0;
+                    max-width: 120em;
+                    border-bottom: 1px solid #ccc;">
+          <b>FUNARCH 2024 Workshop</b><br>
+          <a href="https://functional-architecture.org/events/funarch-2024/">FUNARCH
+            2024</a> will be co-colocated
+          with <a href="https://icfp24.sigplan.org/">ICFP 2024</a> in
+          Milan on September 6th 2024!<br>
+          <br>
+          <a href="#">More events</a>
+        </div>
+      </div>
+    </header>
+
+    <div style="display: flex; justify-content: center;">
+      <div style="max-width: 120em;
+                  padding: 4em 2em;
+                  display: flex;
+                  flex-direction: column;
+                  gap: 8em;">
+        <div style="display: flex; flex-direction: column; gap: 2em;">
+          
+          <div style="max-width: 43em;">
+            <a href="/">↩ Functional Software Architecture Overview</a>
+            <h1>Immutability</h1>
+            <div role="doc-subtitle">
+              Principle
+            </div>
+
+            <div class="vspace"></div>
+
+            <div style="font-weight: bold;">
+              <p>
+                Object-oriented and procedural programming treat all
+                data as a combination of two things: a place (in
+                memory) and a value that occupies this place. In
+                functional programming we omit the first concept and
+                talk about immutable values directly. This makes
+                programming way simpler because it frees the
+                programmer from thinking in terms of resource and
+                state management and allows them to think in terms of
+                their domain.
+
+                These advantages carry over from functional
+                programming to functional software architecture. We
+                avoid mutable state no matter the size of the
+                structure.
+              </p>
+            </div>
+
+            <p>
+              Blabla und so weiter.
+            </p>
+          </div>
+
+          <div style="max-width: 43em;">
+
+            <h2 id="implementations">Implementations</h2>
+
+            <p>
+              Functional programming languages come with a wide array of
+              immutable data types. The archetypical immutable data type
+              is the linked list built of <code>cons</code> pairs.
+            </p>
+
+            <pre>
+              <code>
+                ;; The list 1, 2, 3
+                (define alist
+                  (cons 1 (cons 2 (cons 3 nil))))
+              </code>
+            </pre>
+
+            <p>
+              If you want to change the head of <code>alist</code>
+              from <code>1</code> to <code>99</code> and keep the rest
+              as is, you can produce a new list by
+              calling <code>cons</code> with <code>99</code> and the
+              rest of the old list.
+            </p>
+
+            <pre>
+              <code>
+                ;; The list 99, 2, 3
+                (define newlist
+                  (cons 99 (rest alist)))
+              </code>
+            </pre>
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
