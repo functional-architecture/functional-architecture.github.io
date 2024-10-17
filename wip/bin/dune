@@ -1,0 +1,5 @@
+(executable
+ (name main)
+ (public_name funarch)
+ (libraries funarch tyxml sexplib)
+ (preprocess (pps lwt_ppx)))
