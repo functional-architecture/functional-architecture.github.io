@@ -169,12 +169,36 @@ let pr_principle_short_block principle =
 let pr_principles_blocks ps =
   blocks ~id:"principles" (List.map pr_principle_short_block ps)
 
+let page_of_pattern (pattern : Funarch.Patterns.pattern) =
+  let open Funarch.Patterns in
+  {
+    Funarch.Page.filename = pattern.filename;
+    Funarch.Page.content =
+      html
+        main_head
+        (body
+           [(centered_with_footer
+              ~max_width: "50em"
+               (div
+                  [div ~a:[a_role ["doc-subtitle"]]
+                     [txt "Pattern"];
+                   (h1 [txt pattern.title]);
+                   pattern.long
+                   ]))])
+  }
+
+let pattern_link pattern =
+  Funarch.Page.link (page_of_pattern pattern)
 
 let pr_pattern_short_block pattern =
   let open Funarch.Patterns in
   block [
     h3 [txt pattern.title];
-    pattern.short]
+    pattern.short;
+    a ~a:[a_href (pattern_link pattern)] [
+      txt "→ ";
+      txt "More";
+    ]]
 
 let pr_patterns_blocks ps =
   blocks ~id:"patterns" (List.map pr_pattern_short_block ps)
@@ -262,10 +286,14 @@ let main_page =
 let principles_pages =
   List.map page_of_principle Funarch.Principles.principles
 
+let patterns_pages =
+  List.map page_of_pattern Funarch.Patterns.patterns
+
 let all_pages =
   List.concat
     [[main_page];
-     principles_pages]
+     principles_pages;
+     patterns_pages]
 
 let out_dir = "out"
 
