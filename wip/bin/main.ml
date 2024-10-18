@@ -144,9 +144,15 @@ let page_of_principle (pr : Funarch.Principles.principle) =
            [(centered_with_footer
               ~max_width: "50em"
                (div
-                  [div ~a:[a_role ["doc-subtitle"]]
-                     [txt "Principle"];
-                   (h1 [txt pr.title]);
+                  [(h1 [txt pr.title]);
+                   div ~a:[a_role ["doc-subtitle"]]
+                     [txt "A";
+                      txt " ";
+                      a ~a:[a_href "/"] [txt "Functional Software Architecture"];
+                      txt " ";
+                      txt "Principle"
+                     ];
+                   vspace;
                    match pr.long with
                    | Some desc -> desc
                    | None -> txt "TODO"]))])
