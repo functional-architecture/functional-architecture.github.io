@@ -13,11 +13,11 @@ Programmieren: wenn man _nicht_ gegen explizite Schnittstellen
 programmiert, wenn man _nicht_ modularisiert, wenn man _kein_
 Visitor-Pattern verwendet. Kopplung, so scheint es, ist das Resultat
 von Unterlassung.  Die Kopplung wieder zu senken erfordert dann
-erhöhten Arbeitsaufwand: Maßnahmen des Refactorings. Beim iSAQB gibt
-es einen ganzen Katalog sog. "Taktiken", die man anwenden kann, um die
-Wartbarkeit zu erhöhen, sprich: die Kopplung zu senken. Dort stehen
-Maßnahmen wie "Einhaltung des Open/Closed-Prinzips" oder der Einsatz
-von Entwurfsmustern.
+erhöhten Arbeitsaufwand: Maßnahmen des Refactorings. Beim
+[iSAQB](https://isaqb.org/) gibt es einen ganzen Katalog
+sog. "Taktiken", die man anwenden kann, um die Wartbarkeit zu erhöhen,
+sprich: die Kopplung zu senken. Dort stehen Maßnahmen wie "Einhaltung
+des Open/Closed-Prinzips" oder der Einsatz von Entwurfsmustern.
 
 Wenn der sprichwörtliche Karren bereits im Dreck liegt, dann ist der
 Einsatz von Taktiken sicherlich sinnvoll. Man muss den Karren
