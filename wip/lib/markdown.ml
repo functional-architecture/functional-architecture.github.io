@@ -56,6 +56,4 @@ let html_from_markdown (mds : Omd.doc) =
 let from_markdown_file file =
   let open Omd in
   let md = of_channel file in
-  let sexp = to_sexp md in
-  print_endline sexp;
   (html_from_markdown md)
