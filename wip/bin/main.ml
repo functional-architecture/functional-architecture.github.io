@@ -186,11 +186,17 @@ let page_of_pattern (pattern : Funarch.Patterns.pattern) =
            [(centered_with_footer
               ~max_width: "50em"
                (div
-                  [div ~a:[a_role ["doc-subtitle"]]
-                     [txt "Pattern"];
-                   (h1 [txt pattern.title]);
+                  [(h1 [txt pattern.title]);
+                   div ~a:[a_role ["doc-subtitle"]]
+                     [txt "A";
+                      txt " ";
+                      a ~a:[a_href "/"] [txt "Functional Software Architecture"];
+                      txt " ";
+                      txt "Pattern"
+                     ];
+                   vspace;
                    pattern.long
-                   ]))])
+                  ]))])
   }
 
 let pattern_link pattern =
