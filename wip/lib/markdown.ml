@@ -10,7 +10,7 @@ let rec html_from_markdown_inline (md : Omd.attributes Omd.inline)
   | Strong (_attr, child) -> strong [(html_from_markdown_inline_with_a child)]
   | Code (_attr, str) -> code [(txt str)]
   | Hard_break _attr -> br ()
-  | Soft_break _attr -> txt "\n"
+  | Soft_break _attr -> txt ""
   | Image (_attr, _link) -> txt "TODO"
   | Html (_attr, _raw) -> txt "TODO"
 
@@ -22,7 +22,7 @@ and html_from_markdown_inline_with_a (md : Omd.attributes Omd.inline) =
   | Strong (_attr, child) -> strong [(html_from_markdown_inline_with_a child)]
   | Code (_attr, str) -> code [(txt str)]
   | Hard_break _attr -> br ()
-  | Soft_break _attr -> space ()
+  | Soft_break _attr -> txt ""
   | Link (_attr, link) -> Tyxml.Html.a ~a:[a_href link.destination] [(html_from_markdown_inline link.label)]
   | Image (_attr, _link) -> txt "TODO"
   | Html (_attr, _raw) -> txt "TODO"
