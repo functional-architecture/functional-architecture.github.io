@@ -41,7 +41,15 @@ let blocks ~id:_id contents = div ~a:[a_style "display: flex; gap: 3em; flex-wra
 
 let block contents = div ~a:[a_style "width: 20em;"] contents
 
-let hdr =
+let menu children =
+  ul ~a:[a_style "list-style-type: none; padding: 0; margin: 0; display: flex; gap: 2em;"] children
+
+let menu_item ?(is_active = false) child =
+  li ~a:[a_style (if is_active then "font-weight: bold;" else "")] [
+    child
+  ]
+
+let hdr ?(show_title=false) (highlight : [< `Overview | `Events | `Publications]) =
   header ~a:[a_style "padding: 0em 2em 2em 2em;"]
     [
       div_styled "display: flex; justify-content: center;" [
@@ -49,12 +57,26 @@ let hdr =
                     padding: 2em 0;
                     max-width: 120em;
                     border-bottom: 1px solid #ccc;" [
-          b [txt "This page is a Work in Progress"];
-          br ();
-          txt "If you are interested in contributing to this overview \
-               on functional software architecture, please head to";
-          a ~a:[a_href "https://github.com/functional-architecture/functional-architecture.github.io"] [
-            txt "this website’s GitHub repository."
+          div_styled "display: flex; gap: 2em; justify-content: space-between;" [
+            menu [
+              menu_item
+                ~is_active:(highlight = `Overview)
+                (a ~a:[a_href "/"] [txt "Overview"]);
+
+              menu_item
+                ~is_active:(highlight = `Events)
+                (a ~a:[a_href "/events"] [txt "Events"]);
+
+              menu_item
+                ~is_active:(highlight = `Publications)
+                (a ~a:[a_href "/publications"] [txt "Publications"]);
+
+              menu_item
+                (a ~a:[a_href "https://github.com/functional-architecture/functional-architecture.github.io"] [txt "GitHub"]);
+            ];
+            if show_title
+              then strong [txt "Functional Software Architecture"]
+              else txt "";
           ]]]]
 
 let ftr ?(max_width="120em") () =
@@ -256,7 +278,7 @@ let the_faqs =
 
 
 let main_body = (body [
-    hdr;
+    hdr `Overview;
     centered_with_footer
     (
       div_styled "display: flex;
