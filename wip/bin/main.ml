@@ -153,7 +153,7 @@ let centered_with_footer ?(max_width="120em") content =
         ]
     ];
     vspace;
-    ftr ~max_width:max_width ()]
+    ftr ()]
 
 let page_of_principle (pr : Funarch.Principles.principle) =
   let open Funarch.Principles in
@@ -163,8 +163,9 @@ let page_of_principle (pr : Funarch.Principles.principle) =
       html
         main_head
         (body
-           [(centered_with_footer
-              ~max_width: "50em"
+           [hdr ~show_title:true `Overview;
+            (centered_with_footer
+               ~max_width: "50em"
                (div
                   [(h1 [txt pr.title]);
                    div ~a:[a_role ["doc-subtitle"]]
@@ -205,8 +206,9 @@ let page_of_pattern (pattern : Funarch.Patterns.pattern) =
       html
         main_head
         (body
-           [(centered_with_footer
-              ~max_width: "50em"
+           [hdr ~show_title:true `Overview;
+            (centered_with_footer
+               ~max_width: "50em"
                (div
                   [(h1 [txt pattern.title]);
                    div ~a:[a_role ["doc-subtitle"]]
