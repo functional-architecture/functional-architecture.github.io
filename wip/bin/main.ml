@@ -61,7 +61,7 @@ let hdr ?(show_title=false) (highlight : [< `Overview | `Events | `Publications]
             menu [
               menu_item
                 ~is_active:(highlight = `Overview)
-                (a ~a:[a_href "/"] [txt "Overview"]);
+                (a ~a:[a_href "./index.html"] [txt "Overview"]);
 
               menu_item
                 ~is_active:(highlight = `Events)
@@ -69,7 +69,7 @@ let hdr ?(show_title=false) (highlight : [< `Overview | `Events | `Publications]
 
               menu_item
                 ~is_active:(highlight = `Publications)
-                (a ~a:[a_href "/publications"] [txt "Publications"]);
+                (a ~a:[a_href "./publications.html"] [txt "Publications"]);
 
               menu_item
                 (a ~a:[a_href "https://github.com/functional-architecture/functional-architecture.github.io"] [txt "GitHub"]);
@@ -129,7 +129,6 @@ let toc =
         li [a ~a:[a_href "#values"] [txt "Values"]];
         li [a ~a:[a_href "#principles"] [txt "Principles"]];
         li [a ~a:[a_href "#patterns"] [txt "Patterns, Tools, and Techniques"]];
-        li [a ~a:[a_href "#publications"] [txt "Publications"]];
         li [a ~a:[a_href "#faq"] [txt "FAQ"]];
       ]]]
 
@@ -337,7 +336,7 @@ let events_overview_page = {
              (div
                 [(h1 [txt "Events"]);
                  div ~a:[a_role ["doc-subtitle"]]
-                   [a ~a:[a_href "/"] [txt "Functional Software Architecture"]];
+                   [a ~a:[a_href "./index.html"] [txt "Functional Software Architecture"]];
                  vspace;
                  (* TODO: proper routing *)
                  a ~a:[a_href "./events-funarch-2023-index.html"] [txt "FUNARCH 2023"];
@@ -388,12 +387,33 @@ let events_pages =
     funarch_2024_page;
   ]
 
+let publications_page = {
+  Funarch.Page.filename = "publications.html";
+  Funarch.Page.content =
+    html
+      main_head
+      (body
+         [hdr ~show_title:true `Publications;
+          (centered_with_footer
+             ~max_width: "50em"
+             (div
+                [(h1 [txt "Publications"]);
+                 div ~a:[a_role ["doc-subtitle"]] [txt "Functional Software Architecture"];
+                 vspace;
+                 txt "TODO";
+                ]))])
+}
+
+let publications_pages =
+  [publications_page]
+
 let all_pages =
   List.concat
     [[main_page];
      principles_pages;
      patterns_pages;
-     events_pages;]
+     events_pages;
+     publications_pages;]
 
 let out_dir = "out"
 
