@@ -1,37 +1,22 @@
 open Tyxml.Html
 
-let link_preload_font s =
-  link
-    ~rel:[`Preload]
-    ~href:s
-    ~a:[a_mime_type "font/woff2";
-        a_crossorigin `Anonymous]
-    ()
-
 let main_head =
-  (head (title (txt "Functional Software Architecture")) [
-      (meta ~a:[a_http_equiv "content-type"; a_content "text/html; charset=utf-8"] ());
-      (meta ~a:[a_name "viewport"; a_content "width=device-width, initial-scale=1.0"] ());
-      (link ~rel:[`Icon] ~href:"favicon.svg" ~a:[a_mime_type "image/svg"] ());
-      (link_preload_font "assets/fonts/ibm-plex-serif-v19-latin-100.woff2");
-      (link_preload_font "assets/fonts/ibm-plex-serif-v19-latin-100italic.woff2");
-      (link_preload_font "assets/fonts/ibm-plex-serif-v19-latin-200.woff2");
-      (link_preload_font "assets/fonts/ibm-plex-serif-v19-latin-200italic.woff2");
-      (link_preload_font "assets/fonts/ibm-plex-serif-v19-latin-300.woff2");
-      (link_preload_font "assets/fonts/ibm-plex-serif-v19-latin-300italic.woff2");
-      (link_preload_font "assets/fonts/ibm-plex-serif-v19-latin-regular.woff2");
-      (link_preload_font "assets/fonts/ibm-plex-serif-v19-latin-italic.woff2");
-      (link_preload_font "assets/fonts/ibm-plex-serif-v19-latin-400.woff2");
-      (link_preload_font "assets/fonts/ibm-plex-serif-v19-latin-400italic.woff2");
-      (link_preload_font "assets/fonts/ibm-plex-serif-v19-latin-500.woff2");
-      (link_preload_font "assets/fonts/ibm-plex-serif-v19-latin-500italic.woff2");
-      (link_preload_font "assets/fonts/ibm-plex-serif-v19-latin-600.woff2");
-      (link_preload_font "assets/fonts/ibm-plex-serif-v19-latin-600italic.woff2");
-      (link_preload_font "assets/fonts/ibm-plex-serif-v19-latin-700.woff2");
-      (link_preload_font "assets/fonts/ibm-plex-serif-v19-latin-700italic.woff2");
-      (style [txt ":root {--highlight-color: gray;}"]);
-      (style [txt Funarch.Style.css]);
-    ])
+  (head
+     (title (txt "Functional Software Architecture"))
+
+     (List.concat
+        [
+          [
+            (meta ~a:[a_http_equiv "content-type"; a_content "text/html; charset=utf-8"] ());
+            (meta ~a:[a_name "viewport"; a_content "width=device-width, initial-scale=1.0"] ());
+            (link ~rel:[`Icon] ~href:"favicon.svg" ~a:[a_mime_type "image/svg"] ());
+          ];
+          (List.map Funarch.Font.link_preload_font Funarch.Style.fonts);
+          [
+            (style [txt ":root {--highlight-color: gray;}"]);
+            (style [txt Funarch.Style.css]);
+          ]
+        ]))
 
 let div_styled sty contents = div ~a:[a_style sty] contents
 
@@ -421,4 +406,6 @@ let () =
   Printf.printf "Functional Software Architecture\n";
   if not (Sys.file_exists out_dir)
       then Sys.mkdir out_dir 0o777;
-  List.iter (Funarch.Page.render_page out_dir) all_pages
+  Sys.chdir out_dir;
+  List.iter Funarch.Page.render_page all_pages;
+  List.iter Funarch.Font.store_font Funarch.Style.fonts

@@ -2,18 +2,30 @@ type font = {
   font_family : string;
   font_style : string;
   font_weight : string;
-  src : string;
+  data : string;
 }
 
-let fonts_directory = "../../assets/fonts"
+let read_file file =
+  In_channel.with_open_bin file In_channel.input_all
 
-let plex_serif style weight filename =
+let make_font family style weight file_path =
   {
-    font_family = "IBM Plex serif";
+    font_family = family;
     font_style = style;
     font_weight = weight;
-    src = "url('" ^ fonts_directory ^ "/" ^ filename ^ "') format('woff2')"
+    data = read_file file_path;
   }
+
+let font_output_file_name font =
+  font.font_family ^ "_" ^ font.font_style ^ "_" ^ font.font_weight ^ "_" ^ string_of_int (Hashtbl.hash font.data) ^ ".woff2"
+
+let font_store font =
+  Out_channel.with_open_bin (font_output_file_name font) Out_channel.output_string
+
+let fonts_directory = "../assets/fonts"
+
+let plex_serif style weight filename =
+  Font.make_font "Plex" style weight (fonts_directory ^ "/" ^ filename)
 
 let fonts = [
   plex_serif "normal" "100" "ibm-plex-serif-v19-latin-100.woff2";
@@ -32,18 +44,9 @@ let fonts = [
   plex_serif "italic" "700" "ibm-plex-serif-v19-latin-700italic.woff2";
 ]
 
-let pr_font font =
-  "@font-face {\n" ^
-  "  font-display: swap;\n" ^
-  "  font-family: '" ^ font.font_family ^ "';\n" ^
-  "  font-style: " ^ font.font_style ^ ";\n" ^
-  "  font-weight: " ^ font.font_weight ^ ";\n" ^
-  "  src: " ^ font.src ^ ";\n" ^
-  "}\n"
-
 let font_decl =
   String.concat "\n"
-  @@ List.map pr_font fonts
+  @@ List.map Font.declare_font fonts
 
 let css =
   font_decl ^
@@ -53,7 +56,7 @@ html, body {
     padding: 0;
     font-size: 16px;
     line-height: 24px;
-    font-family: 'IBM Plex Serif', serif;
+    font-family: 'Plex', serif;
 }
 
 a {
