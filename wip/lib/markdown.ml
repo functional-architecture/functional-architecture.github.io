@@ -55,7 +55,7 @@ let rec html_from_markdown_block (md : Omd.attributes Omd.block)
   | Code_block (_attr, _label, code) -> pre [txt code]
   | Html_block (_attr, _raw) -> txt "TODO"
   | Definition_list (_attr, _definitions) -> txt "TODO"
-  | Table (_attr, _header, _body) -> table []
+  | Table (_attr, _header, _body) -> txt "TODO" (* table [] *)
 
 let html_from_markdown (mds : Omd.doc) =
   div (List.map html_from_markdown_block mds)
