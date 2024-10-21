@@ -39,6 +39,13 @@ let html_of_list_type = function
   | Omd.Ordered _ -> ol
   | Omd.Bullet _ -> ul
 
+let is_front_matter h_level h_children =
+  match h_children with
+  | Omd.Concat (_, Omd.Text (_, s) :: _) -> h_level = 2
+                                            && List.length (String.split_on_char ':' s)
+                                               = 2
+  | _ -> false
+
 let rec html_from_markdown_block (md : Omd.attributes Omd.block)
   : [>] elt =
 
@@ -51,6 +58,7 @@ let rec html_from_markdown_block (md : Omd.attributes Omd.block)
                                                            elemss)
   | Blockquote (_attr, children) -> blockquote (List.map html_from_markdown_block children)
   | Thematic_break _attr -> hr ()
+  | Heading (_attr, lvl, children) when is_front_matter lvl children -> txt ""
   | Heading (_attr, lvl, children) -> (h lvl) [(html_from_markdown_inline_with_a children)]
   | Code_block (_attr, _label, code) -> pre [txt code]
   | Html_block (_attr, raw) -> Unsafe.data raw
