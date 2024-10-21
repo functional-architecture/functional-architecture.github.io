@@ -46,15 +46,15 @@ let hdr ?(show_title=false) (highlight : [< `Overview | `Events | `Publications]
             menu [
               menu_item
                 ~is_active:(highlight = `Overview)
-                (a ~a:[a_href "./index.html"] [txt "Overview"]);
+                (a ~a:[a_href "/"] [txt "Overview"]);
 
               menu_item
                 ~is_active:(highlight = `Events)
-                (a ~a:[a_href "./events/index.html"] [txt "Events"]);
+                (a ~a:[a_href "/events"] [txt "Events"]);
 
               menu_item
                 ~is_active:(highlight = `Publications)
-                (a ~a:[a_href "./publications/index.html"] [txt "Publications"]);
+                (a ~a:[a_href "/publications"] [txt "Publications"]);
 
               menu_item
                 (a ~a:[a_href "https://github.com/functional-architecture/functional-architecture.github.io"] [txt "GitHub"]);
@@ -321,11 +321,11 @@ let events_overview_page = {
              (div
                 [(h1 [txt "Events"]);
                  div ~a:[a_role ["doc-subtitle"]]
-                   [a ~a:[a_href "./index.html"] [txt "Functional Software Architecture"]];
+                   [a ~a:[a_href ".."] [txt "Functional Software Architecture"]];
                  vspace;
                  (* TODO: proper routing *)
-                 a ~a:[a_href "./funarch-2023/index.html"] [txt "FUNARCH 2023"];
-                 a ~a:[a_href "./funarch-2024/index.html"] [txt "FUNARCH 2024"];
+                 a ~a:[a_href "./funarch-2023"] [txt "FUNARCH 2023"];
+                 a ~a:[a_href "./funarch-2024"] [txt "FUNARCH 2024"];
                 ]))])
 }
 
@@ -373,7 +373,7 @@ let events_pages =
   ]
 
 let publications_page = {
-  Funarch.Page.filename = "publications.html";
+  Funarch.Page.filename = "publications/index.html";
   Funarch.Page.content =
     html
       main_head

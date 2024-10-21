@@ -28,14 +28,14 @@ let declare_font font : string =
   "  font-family: '" ^ font.font_family ^ "';\n" ^
   "  font-style: " ^ font.font_style ^ ";\n" ^
   "  font-weight: " ^ font.font_weight ^ ";\n" ^
-  "  src: url('" ^ (font_output_file_name font) ^ "') format(woff2);\n" ^
+  "  src: url('/" ^ (font_output_file_name font) ^ "') format(woff2);\n" ^
   "}\n"
 
 let link_preload_font font =
   let open Tyxml.Html in
   link
     ~rel:[`Preload]
-    ~href:(font_output_file_name font)
+    ~href:("/" ^ (font_output_file_name font))
     ~a:[a_mime_type "font/woff2";
         a_crossorigin `Anonymous;
         Tyxml.Html.Unsafe.string_attrib "as" "font"]
