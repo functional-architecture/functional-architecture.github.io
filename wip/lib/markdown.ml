@@ -28,12 +28,12 @@ and html_from_markdown_inline_with_a (md : Omd.attributes Omd.inline) =
   | Html (_attr, _raw) -> txt "TODO"
 
 let h = function
-  | 1 -> h1
-  | 2 -> h2
-  | 3 -> h3
-  | 4 -> h4
-  | 5 -> h5
-  | _ -> h6
+  | 1 -> h1 ~a:[a_style "margin-top: 1em;"]
+  | 2 -> h2 ~a:[a_style "margin-top: 1em;"]
+  | 3 -> h3 ~a:[a_style "margin-top: 1em;"]
+  | 4 -> h4 ~a:[a_style "margin-top: 1em;"]
+  | 5 -> h5 ~a:[a_style "margin-top: 1em;"]
+  | _ -> h6 ~a:[a_style "margin-top: 1em;"]
 
 let html_of_list_type = function
   | Omd.Ordered _ -> ol
