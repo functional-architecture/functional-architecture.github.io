@@ -141,6 +141,18 @@ let decoupled_by_default_principle = {
                  (open_in "./principles/decoupled_by_default.md"));
 }
 
+let modularization_principle = {
+  title = "Modularization";
+  filename = "modularization.html";
+  short = "Modules hide difficult decisions behind simple \
+           interfaces. While modularization is not an exclusive \
+           feature of functional architectures, functional \
+           abstractions allow for simpler interfaces and therefore \
+           allow to hide more decisions, leading to more malleable \
+           designs overall.";
+  long = None;
+}
+
 let principles = [
   immutability_principle;
   purity_principle;
@@ -150,4 +162,5 @@ let principles = [
   abstraction_principle;
   architecture_as_code_principle;
   decoupled_by_default_principle;
+  modularization_principle;
 ]
