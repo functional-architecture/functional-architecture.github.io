@@ -35,13 +35,20 @@ let h = function
   | 5 -> h5
   | _ -> h6
 
+let html_of_list_type = function
+  | Omd.Ordered _ -> ol
+  | Omd.Bullet _ -> ul
+
 let rec html_from_markdown_block (md : Omd.attributes Omd.block)
   : [>] elt =
 
   let open Omd in
   match md with
   | Paragraph (_attr, children) -> p [(html_from_markdown_inline_with_a children)]
-  | List (_, _, _, _) -> txt "TODO"
+  | List (_attr, list_type, _list_spacing, elemss) -> (html_of_list_type list_type)
+                                                        (List.map
+                                                           (fun elems -> li (List.map html_from_markdown_block elems))
+                                                           elemss)
   | Blockquote (_attr, children) -> blockquote (List.map html_from_markdown_block children)
   | Thematic_break _attr -> hr ()
   | Heading (_attr, lvl, children) -> (h lvl) [(html_from_markdown_inline_with_a children)]
