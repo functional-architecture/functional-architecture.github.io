@@ -137,8 +137,7 @@ let decoupled_by_default_principle = {
   route = "dbd";
   short = "Make the communication channels between building blocks as \
            wide as neccessary and as narrow as possible.";
-  long = Some (Markdown.from_markdown_file
-                 (open_in "./principles/decoupled_by_default.md"));
+  long = Some (Markdown.from_markdown_file "./principles/decoupled_by_default.md");
 }
 
 let modularization_principle = {

@@ -331,8 +331,7 @@ and mk_funarch_2023_page () =
                  [(h1 [txt "FUNARCH 2023"]);
                   div ~a:[a_role ["doc-subtitle"]] [txt "Functional Software Architecture Workshop co-located with ICFP 2023"];
                   vspace;
-                  (Funarch.Markdown.from_markdown_file
-                     (open_in "../events/funarch-2023/index.md"))
+                  (Funarch.Markdown.from_markdown_file "../events/funarch-2023/index.md")
                  ]))]))
 
 and mk_funarch_2024_page () =
@@ -348,8 +347,7 @@ and mk_funarch_2024_page () =
                  [(h1 [txt "FUNARCH 2024"]);
                   div ~a:[a_role ["doc-subtitle"]] [txt "Functional Software Architecture Workshop co-located with ICFP 2024"];
                   vspace;
-                  (Funarch.Markdown.from_markdown_file
-                     (open_in "../events/funarch-2024/index.md"))
+                  (Funarch.Markdown.from_markdown_file "../events/funarch-2024/index.md")
                  ]))]))
 
 let events_pages =

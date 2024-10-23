@@ -68,7 +68,7 @@ let rec html_from_markdown_block (md : Omd.attributes Omd.block)
 let html_from_markdown (mds : Omd.doc) =
   div (List.map html_from_markdown_block mds)
 
-let from_markdown_file file =
+let from_markdown_file path =
   let open Omd in
-  let md = of_channel file in
+  let md = of_channel (open_in path) in
   (html_from_markdown md)
