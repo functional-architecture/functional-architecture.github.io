@@ -5,7 +5,7 @@ type page = {
   content : doc;
 }
 
-let link page = page.filename
+let link page = "/" ^ page.filename
 
 let string_of_html html =
   Format.asprintf "%a" (Tyxml.Html.pp ~indent:true ()) html

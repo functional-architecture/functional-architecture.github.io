@@ -309,7 +309,7 @@ let principles_pages =
 let patterns_pages =
   List.map page_of_pattern Funarch.Patterns.patterns
 
-let events_overview_page = {
+let rec mk_events_overview_page () = {
   Funarch.Page.filename = "events/index.html";
   Funarch.Page.content =
     html
@@ -323,13 +323,12 @@ let events_overview_page = {
                  div ~a:[a_role ["doc-subtitle"]]
                    [a ~a:[a_href ".."] [txt "Functional Software Architecture"]];
                  vspace;
-                 (* TODO: proper routing *)
-                 a ~a:[a_href "./funarch-2023"] [txt "FUNARCH 2023"];
-                 a ~a:[a_href "./funarch-2024"] [txt "FUNARCH 2024"];
+                 a ~a:[a_href (Funarch.Page.link (mk_funarch_2023_page ()))] [txt "FUNARCH 2023"];
+                 a ~a:[a_href (Funarch.Page.link (mk_funarch_2024_page ()))] [txt "FUNARCH 2024"];
                 ]))])
 }
 
-let funarch_2023_page = {
+and mk_funarch_2023_page () = {
   Funarch.Page.filename = "events/funarch-2023/index.html";
   Funarch.Page.content =
     html
@@ -347,7 +346,7 @@ let funarch_2023_page = {
                 ]))])
 }
 
-let funarch_2024_page = {
+and mk_funarch_2024_page () = {
   Funarch.Page.filename = "events/funarch-2024/index.html";
   Funarch.Page.content =
     html
@@ -367,9 +366,9 @@ let funarch_2024_page = {
 
 let events_pages =
   [
-    events_overview_page;
-    funarch_2023_page;
-    funarch_2024_page;
+    mk_events_overview_page ();
+    mk_funarch_2023_page ();
+    mk_funarch_2024_page ();
   ]
 
 let publications_page = {
