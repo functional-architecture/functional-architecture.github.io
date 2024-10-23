@@ -361,7 +361,7 @@ let events_pages =
 
 let publications_page =
   Funarch.Page.make_page
-    "publications/index.html"
+    "publications"
     (html
        main_head
        (body
