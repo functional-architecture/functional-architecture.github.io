@@ -1,11 +1,22 @@
 open Tyxml.Html
 
 type page = {
-  filename : string;
+  route : string;
   content : doc;
 }
 
-let link page = "/" ^ page.filename
+let make_page route content = {
+  route = route;
+  content = content;
+}
+
+let page_route page = page.route
+
+let page_content page = page.content
+
+let page_filename page = "./" ^ page.route ^ "/index.html"
+
+let page_link page = "/" ^ (page_route page)
 
 let string_of_html html =
   Format.asprintf "%a" (Tyxml.Html.pp ~indent:true ()) html
@@ -25,6 +36,7 @@ let write file s =
   Out_channel.with_open_bin file (fun ch -> Out_channel.output_string ch s)
 
 let render_page page =
-  Printf.printf "Rendering %s\n" page.filename;
+  let filename = page_filename page in
+  Printf.printf "Rendering %s\n" filename;
   let s = Printf.sprintf "%s\n" (string_of_html page.content) in
-  write page.filename s
+  write filename s

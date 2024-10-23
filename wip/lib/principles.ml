@@ -2,14 +2,14 @@ open Tyxml.Html
 
 type principle = {
     title : string;
-    filename : string;
+    route : string;
     short : string;
     long : Html_types.div_content elt option;
 }
 
 let immutability_principle = {
   title = "Immutability";
-  filename = "immutability.html";
+  route = "immutability.html";
   short = "Stop thinking in terms of state and resource management and \
            start thinking in terms of your domain.";
   long = Some (txt "Ja moin");
@@ -17,7 +17,7 @@ let immutability_principle = {
 
 let purity_principle = {
   title = "Pure Functions";
-  filename = "pure_functions.html";
+  route = "pure_functions.html";
   short = "A pure function transforms immutable values without \
            performing any side effects.";
   long = None;
@@ -25,7 +25,7 @@ let purity_principle = {
 
 let everything_as_a_value_principle = {
   title = "Everything as a Value";
-  filename = "eaav.html";
+  route = "eaav.html";
   short = "Reifying concepts as values allows these concepts to \
            be passed around, analyzed and composed. Functions as \
            values, property accessors as values, UI components as \
@@ -100,14 +100,14 @@ let everything_as_a_value_principle = {
 
 let composition_principle = {
   title = "Composition and Closure";
-  filename = "composition.html";
+  route = "composition.html";
   short = "We like to combine small software structures to form larger structures – without cognitive overhead.";
   long = None;
 }
 
 let algebra_principle = {
   title = "Algebraic models";
-  filename = "algebra.html";
+  route = "algebra.html";
   short = "Functional software architects try to find models that \
            build on algebraic structures that stood the test of time, \
            such as Monoids, Functors, and Monads.";
@@ -116,7 +116,7 @@ let algebra_principle = {
 
 let abstraction_principle = {
   title = "Airtight Abstractions";
-  filename = "abstraction.html";
+  route = "abstraction.html";
   short = "Abstraction is the sharpest weapon of reason. Functional \
            software architects welcome abstraction as a tool for \
            coping with complexity.";
@@ -125,7 +125,7 @@ let abstraction_principle = {
 
 let architecture_as_code_principle = {
   title = "Architecture as Code";
-  filename = "aac.html";
+  route = "aac.html";
   short = "In functional software architecture we use diagrams and \
            descriptions as supporting documentation, but the source of \
            truth is always to be found in the code.";
@@ -134,7 +134,7 @@ let architecture_as_code_principle = {
 
 let decoupled_by_default_principle = {
   title = "Decoupled by Default";
-  filename = "dbd.html";
+  route = "dbd.html";
   short = "Make the communication channels between building blocks as \
            wide as neccessary and as narrow as possible.";
   long = Some (Markdown.from_markdown_file
@@ -143,7 +143,7 @@ let decoupled_by_default_principle = {
 
 let modularization_principle = {
   title = "Modularization";
-  filename = "modularization.html";
+  route = "modularization.html";
   short = "Modules hide difficult decisions behind simple \
            interfaces. While modularization is not an exclusive \
            feature of functional architectures, functional \

@@ -141,32 +141,29 @@ let centered_with_footer ?(max_width="120em") content =
 
 let page_of_principle (pr : Funarch.Principles.principle) =
   let open Funarch.Principles in
-  {
-    Funarch.Page.filename = pr.filename;
-    Funarch.Page.content =
-      html
-        main_head
-        (body
-           [hdr ~show_title:true `Overview;
-            (centered_with_footer
-               ~max_width: "50em"
-               (div
-                  [(h1 [txt pr.title]);
-                   div ~a:[a_role ["doc-subtitle"]]
-                     [txt "A";
-                      txt " ";
-                      a ~a:[a_href "/"] [txt "Functional Software Architecture"];
-                      txt " ";
-                      txt "Principle"
-                     ];
-                   vspace;
-                   match pr.long with
-                   | Some desc -> desc
-                   | None -> txt "TODO"]))])
-  }
+  Funarch.Page.make_page pr.route
+    (html
+       main_head
+       (body
+          [hdr ~show_title:true `Overview;
+           (centered_with_footer
+              ~max_width: "50em"
+              (div
+                 [(h1 [txt pr.title]);
+                  div ~a:[a_role ["doc-subtitle"]]
+                    [txt "A";
+                     txt " ";
+                     a ~a:[a_href "/"] [txt "Functional Software Architecture"];
+                     txt " ";
+                     txt "Principle"
+                    ];
+                  vspace;
+                  match pr.long with
+                  | Some desc -> desc
+                  | None -> txt "TODO"]))]))
 
 let principle_link pr =
-  Funarch.Page.link (page_of_principle pr)
+  Funarch.Page.page_link (page_of_principle pr)
 
 let pr_principle_short_block principle =
   let open Funarch.Principles in
@@ -184,31 +181,29 @@ let pr_principles_blocks ps =
 
 let page_of_pattern (pattern : Funarch.Patterns.pattern) =
   let open Funarch.Patterns in
-  {
-    Funarch.Page.filename = pattern.filename;
-    Funarch.Page.content =
-      html
-        main_head
-        (body
-           [hdr ~show_title:true `Overview;
-            (centered_with_footer
-               ~max_width: "50em"
-               (div
-                  [(h1 [txt pattern.title]);
-                   div ~a:[a_role ["doc-subtitle"]]
-                     [txt "A";
-                      txt " ";
-                      a ~a:[a_href "/"] [txt "Functional Software Architecture"];
-                      txt " ";
-                      txt "Pattern"
-                     ];
-                   vspace;
-                   pattern.long
-                  ]))])
-  }
+  Funarch.Page.make_page
+    pattern.route
+    (html
+       main_head
+       (body
+          [hdr ~show_title:true `Overview;
+           (centered_with_footer
+              ~max_width: "50em"
+              (div
+                 [(h1 [txt pattern.title]);
+                  div ~a:[a_role ["doc-subtitle"]]
+                    [txt "A";
+                     txt " ";
+                     a ~a:[a_href "/"] [txt "Functional Software Architecture"];
+                     txt " ";
+                     txt "Pattern"
+                    ];
+                  vspace;
+                  pattern.long
+                 ]))]))
 
 let pattern_link pattern =
-  Funarch.Page.link (page_of_pattern pattern)
+  Funarch.Page.page_link (page_of_pattern pattern)
 
 let pr_pattern_short_block pattern =
   let open Funarch.Patterns in
@@ -297,11 +292,7 @@ let main_body = (body [
       ]
     )])
 
-let main_page =
-  {
-    Funarch.Page.filename = "index.html";
-    Funarch.Page.content = html main_head main_body;
-  }
+let main_page = Funarch.Page.make_page "/" (html main_head main_body)
 
 let principles_pages =
   List.map page_of_principle Funarch.Principles.principles
@@ -309,60 +300,57 @@ let principles_pages =
 let patterns_pages =
   List.map page_of_pattern Funarch.Patterns.patterns
 
-let rec mk_events_overview_page () = {
-  Funarch.Page.filename = "events/index.html";
-  Funarch.Page.content =
-    html
-      main_head
-      (body
-         [hdr ~show_title:true `Events;
-          (centered_with_footer
-             ~max_width: "50em"
-             (div
-                [(h1 [txt "Events"]);
-                 div ~a:[a_role ["doc-subtitle"]]
-                   [a ~a:[a_href ".."] [txt "Functional Software Architecture"]];
-                 vspace;
-                 a ~a:[a_href (Funarch.Page.link (mk_funarch_2023_page ()))] [txt "FUNARCH 2023"];
-                 a ~a:[a_href (Funarch.Page.link (mk_funarch_2024_page ()))] [txt "FUNARCH 2024"];
-                ]))])
-}
+let rec mk_events_overview_page () =
+  Funarch.Page.make_page
+    "events"
+    (html
+       main_head
+       (body
+          [hdr ~show_title:true `Events;
+           (centered_with_footer
+              ~max_width: "50em"
+              (div
+                 [(h1 [txt "Events"]);
+                  div ~a:[a_role ["doc-subtitle"]]
+                    [a ~a:[a_href ".."] [txt "Functional Software Architecture"]];
+                  vspace;
+                  a ~a:[a_href (Funarch.Page.page_link (mk_funarch_2023_page ()))] [txt "FUNARCH 2023"];
+                  a ~a:[a_href (Funarch.Page.page_link (mk_funarch_2024_page ()))] [txt "FUNARCH 2024"];
+                 ]))]))
 
-and mk_funarch_2023_page () = {
-  Funarch.Page.filename = "events/funarch-2023/index.html";
-  Funarch.Page.content =
-    html
-      main_head
-      (body
-         [hdr ~show_title:true `Events;
-          (centered_with_footer
-             ~max_width: "50em"
-             (div
-                [(h1 [txt "FUNARCH 2023"]);
-                 div ~a:[a_role ["doc-subtitle"]] [txt "Functional Software Architecture Workshop co-located with ICFP 2023"];
-                 vspace;
-                 (Funarch.Markdown.from_markdown_file
-                    (open_in "../events/funarch-2023/index.md"))
-                ]))])
-}
+and mk_funarch_2023_page () =
+  Funarch.Page.make_page
+    "events/funarch-2023"
+    (html
+       main_head
+       (body
+          [hdr ~show_title:true `Events;
+           (centered_with_footer
+              ~max_width: "50em"
+              (div
+                 [(h1 [txt "FUNARCH 2023"]);
+                  div ~a:[a_role ["doc-subtitle"]] [txt "Functional Software Architecture Workshop co-located with ICFP 2023"];
+                  vspace;
+                  (Funarch.Markdown.from_markdown_file
+                     (open_in "../events/funarch-2023/index.md"))
+                 ]))]))
 
-and mk_funarch_2024_page () = {
-  Funarch.Page.filename = "events/funarch-2024/index.html";
-  Funarch.Page.content =
-    html
-      main_head
-      (body
-         [hdr ~show_title:true `Events;
-          (centered_with_footer
-             ~max_width: "50em"
-             (div
-                [(h1 [txt "FUNARCH 2024"]);
-                 div ~a:[a_role ["doc-subtitle"]] [txt "Functional Software Architecture Workshop co-located with ICFP 2024"];
-                 vspace;
-                 (Funarch.Markdown.from_markdown_file
-                    (open_in "../events/funarch-2024/index.md"))
-                ]))])
-}
+and mk_funarch_2024_page () =
+  Funarch.Page.make_page
+    "events/funarch-2024"
+    (html
+       main_head
+       (body
+          [hdr ~show_title:true `Events;
+           (centered_with_footer
+              ~max_width: "50em"
+              (div
+                 [(h1 [txt "FUNARCH 2024"]);
+                  div ~a:[a_role ["doc-subtitle"]] [txt "Functional Software Architecture Workshop co-located with ICFP 2024"];
+                  vspace;
+                  (Funarch.Markdown.from_markdown_file
+                     (open_in "../events/funarch-2024/index.md"))
+                 ]))]))
 
 let events_pages =
   [
@@ -371,22 +359,21 @@ let events_pages =
     mk_funarch_2024_page ();
   ]
 
-let publications_page = {
-  Funarch.Page.filename = "publications/index.html";
-  Funarch.Page.content =
-    html
-      main_head
-      (body
-         [hdr ~show_title:true `Publications;
-          (centered_with_footer
-             ~max_width: "50em"
-             (div
-                [(h1 [txt "Publications"]);
-                 div ~a:[a_role ["doc-subtitle"]] [txt "Functional Software Architecture"];
-                 vspace;
-                 txt "TODO";
-                ]))])
-}
+let publications_page =
+  Funarch.Page.make_page
+    "publications/index.html"
+    (html
+       main_head
+       (body
+          [hdr ~show_title:true `Publications;
+           (centered_with_footer
+              ~max_width: "50em"
+              (div
+                 [(h1 [txt "Publications"]);
+                  div ~a:[a_role ["doc-subtitle"]] [txt "Functional Software Architecture"];
+                  vspace;
+                  txt "TODO";
+                 ]))]))
 
 let publications_pages =
   [publications_page]

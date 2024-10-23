@@ -2,35 +2,35 @@ open Tyxml.Html
 
 type pattern = {
   title : string;
-  filename : string;
+  route : string;
   short : Html_types.div_content elt;
   long : Html_types.div_content elt;
 }
 
 let functional_core_imperative_shell_pattern = {
   title = "Functional Core, Imperative Shell";
-  filename = "functional_core_imperative_shell.html";
+  route = "functional_core_imperative_shell.html";
   short = p [(txt "Abundantly fruit upon winged. Yielding the image won't divide so. In earth from fruit for you Brought given them face fourth rule forth give.")];
   long = div [p [(txt "TODO")]]
 }
 
 let zipper_pattern = {
   title = "Zipper";
-  filename = "zipper.html";
+  route = "zipper.html";
   short = p [txt "TODO"];
   long = div [p [(txt "TODO")]]
 }
 
 let continuations_pattern = {
   title = "Continuations";
-  filename = "continuations.html";
+  route = "continuations.html";
   short = p [txt "TODO"];
   long = div [p [(txt "TODO")]]
 }
 
 let functional_programming_languages_pattern = {
   title = "Use of functional programming languages";
-  filename = "functional_programming_languages.html";
+  route = "functional_programming_languages.html";
   short = p [txt "Functional software architecture is best done in proper \
                   functional programming languages."];
   long = div [p [(txt "TODO")]]
@@ -38,7 +38,7 @@ let functional_programming_languages_pattern = {
 
 let static_types_pattern = {
   title = "Expressive static type systems";
-  filename = "static_types.html";
+  route = "static_types.html";
   short = p [txt "Type systems allow you to enrich your code with \
                   descriptions of properties and requirements, which can be \
                   statically checked and enforced."];
@@ -47,28 +47,28 @@ let static_types_pattern = {
 
 let event_sourcing_pattern = {
   title = "Event Sourcing";
-  filename = "event_sourcing.html";
+  route = "event_sourcing.html";
   short = p [txt "TODO"];
   long = div [p [(txt "TODO")]]
 }
 
 let bidirectional_data_transformation_pattern = {
   title = "Bidirectional Data Transformations";
-  filename = "bidirectional_data_transformations.html";
+  route = "bidirectional_data_transformations.html";
   short = p [txt "TODO"];
   long = div [p [(txt "TODO")]]
 }
 
 let edsl_pattern = {
   title = "Embedded Domain-Specific Languages";
-  filename = "dsl.html";
+  route = "dsl.html";
   short = p [txt "TODO"];
   long = div [p [(txt "TODO")]]
 }
 
 let composable_effects_pattern = {
   title = "Composable Effects";
-  filename = "composable_effects.html";
+  route = "composable_effects.html";
   short = p [txt "Effect systems allow us to deal with effects by making them \
                   explicit. Effect systems also allow effectful code to be \
                   run in a pure environment, which makes our code better \
@@ -78,7 +78,7 @@ let composable_effects_pattern = {
 
 let composable_guis_pattern = {
   title = "Composable GUI libraries";
-  filename = "composable_guis.html";
+  route = "composable_guis.html";
   short = p [txt "Facebook’s React popularized the component model of user \
                   interface programming. Functional programming languages \
                   allow to improve on that model by treating components as \
@@ -91,21 +91,21 @@ let composable_guis_pattern = {
 
 let property_based_testing_pattern = {
   title = "Property-based testing";
-  filename = "property_based_testing.html";
+  route = "property_based_testing.html";
   short = p [txt "TODO"];
   long = div [p [(txt "TODO")]]
 }
 
 let formal_verification_pattern = {
   title = "Formal Verification";
-  filename = "formal_verification.html";
+  route = "formal_verification.html";
   short = p [txt "TODO"];
   long = div [p [(txt "TODO")]]
 }
 
 let denotational_design_pattern = {
   title = "Denotational Design";
-  filename = "denotational_design.html";
+  route = "denotational_design.html";
   short = p [txt "Denotational Design is a software design methodology which \
                   tries to extract the essence of a domain’s problem and \
                   describe it formally in machine-checkable \
