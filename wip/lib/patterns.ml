@@ -55,8 +55,12 @@ let event_sourcing_pattern = {
 let bidirectional_data_transformation_pattern = {
   title = "Bidirectional Data Transformations";
   route = "bidirectional_data_transformations";
-  short = p [txt "TODO"];
-  long = div [p [(txt "TODO")]]
+  short = p [txt "Different components of a system may need the same \
+                  information but may have different demands on its \
+                  structure. We employ bidirectional data \
+                  transformations with functional optics to simplify \
+                  conversions from one representation to the next."];
+  long = (Markdown.from_markdown_file "./patterns/bidirectional_data_transformations.md")
 }
 
 let edsl_pattern = {
