@@ -70,7 +70,7 @@ The de-facto standard lens library in Scala is called [Monocle](https://www.opti
 
 ### F#
 
-TODO
+[Aether](https://xyncro.tech/aether/) is an Optics library for F#, similar to the Haskell [`lens` package](https://hackage.haskell.org/package/lens).
 
 ### OCaml
 
