@@ -1,0 +1,36 @@
+** What is a value?
+
+"Something intrinsically valuable." Values are ends
+in themselves, whereas a principle is something that
+we follow because we believe it to lead to something
+else (some value).
+
+Values are subjective. We value simplicity, insight,
+and maintainability. We argue for it, but others
+might disagree, because they're simply more
+interested in paying the bills and moving on.
+
+** What is a principle?
+
+Principles are more objective. We say that _if_
+you're interested in maintainability, _then_ you
+should program with immutable values. _If_ you're
+interested in correctness, you should have a
+formalized idea of what it means to be correct,
+i.e. a model. _If_ you're interested in
+maintainability, you should describe your
+architecture as code.
+
+** What is a pattern?
+
+See discussion at FUNARCH 2023: [[https://www.youtube.com/watch?v=mB2ZhK8tB8Y]]
+
+A few salient points:
+
+- A pattern cannot be expressed as a library in its entirety. There
+  may be a mechanical part that can live in a library (such as lenses
+  for bidirectional data transformations) but in order to make
+  something a pattern, there has to be a part that cannot.
+- In most instances the part that cannot live in a library is the
+  question of when to employ a pattern or when to refrain from using
+  it.
