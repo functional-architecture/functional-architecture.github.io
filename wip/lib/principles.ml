@@ -126,9 +126,10 @@ let abstraction_principle = {
 let architecture_as_code_principle = {
   title = "Architecture as Code";
   route = "aac";
-  short = "In functional software architecture we use diagrams and \
-           descriptions as supporting documentation, but the source of \
-           truth is always to be found in the code.";
+  short = "Functional Software Architecture allows many architectural \
+           decisions to be expressed in code. We may still use \
+           diagrams and descriptions as supporting documentation, but \
+           the source of truth is always to be found in the code.";
   long = None;
 }
 
