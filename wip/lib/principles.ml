@@ -106,7 +106,7 @@ let composition_principle = {
 }
 
 let algebra_principle = {
-  title = "Algebraic models";
+  title = "Algebraic Modelling";
   route = "algebra";
   short = "Functional software architects try to find models that \
            build on algebraic structures that stood the test of time, \
