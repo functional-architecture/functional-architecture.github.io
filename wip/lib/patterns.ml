@@ -145,6 +145,14 @@ let parse_dont_validate_pattern = {
   long = div [p [txt "TODO"]]
 }
 
+let trees_that_grow_pattern = {
+  title = "Trees that grow";
+  route = "trees_that_grow";
+  short = p [txt "«Trees that grow» is a method to make models built \
+                  with algebraic data types more extensible."];
+  long = div [p [txt "TODO"]]
+}
+
 let patterns = [
   functional_core_imperative_shell_pattern;
   zipper_pattern;
