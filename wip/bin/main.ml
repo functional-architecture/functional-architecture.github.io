@@ -10,6 +10,10 @@ let main_head =
             (meta ~a:[a_http_equiv "content-type"; a_content "text/html; charset=utf-8"] ());
             (meta ~a:[a_name "viewport"; a_content "width=device-width, initial-scale=1.0"] ());
             (link ~rel:[`Icon] ~href:"favicon.svg" ~a:[a_mime_type "image/svg"] ());
+            (link ~rel:[`Stylesheet] ~href:"https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" ());
+            (script ~a:[a_src "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"] (txt ""));
+            (script ~a:[a_src "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/haskell.min.js"] (txt ""));
+            (script (txt "hljs.highlightAll();"));
           ];
           (List.map Funarch.Font.link_preload_font Funarch.Style.fonts);
           [
