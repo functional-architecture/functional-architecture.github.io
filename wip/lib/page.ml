@@ -19,7 +19,7 @@ let page_filename page = "./" ^ page.route ^ "/index.html"
 let page_link page = "/" ^ (page_route page)
 
 let string_of_html html =
-  Format.asprintf "%a" (Tyxml.Html.pp ~indent:true ()) html
+  Format.asprintf "%a" (Tyxml.Html.pp ~indent:false ()) html
 
 let rec create_dir dir =
   print_endline @@ "create_dir: " ^ dir;
