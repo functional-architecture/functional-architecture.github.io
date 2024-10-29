@@ -1,5 +1,30 @@
 open Tyxml.Html
 
+let highlight_js =
+  Funarch.Resource.make_resource "./js/highlight.min.js" "js/highlight.min.js"
+
+let highlight_js_java =
+  Funarch.Resource.make_resource "./js/languages/java.js" "js/languages/java.js"
+
+let highlight_js_haskell =
+  Funarch.Resource.make_resource "./js/languages/haskell.js" "js/languages/haskell.js"
+
+let highlight_js_inline =
+  Funarch.Js.make_js_inline_module
+    (Printf.sprintf
+     "import hljs from '%s'
+      import java from '%s'
+      import haskell from '%s'
+      hljs.registerLanguage('java', java);
+      hljs.registerLanguage('haskell', haskell);
+      hljs.highlightAll();"
+     (Funarch.Resource.resource_link highlight_js)
+     (Funarch.Resource.resource_link highlight_js_java)
+     (Funarch.Resource.resource_link highlight_js_haskell))
+
+let highlight_css =
+  Funarch.Resource.make_resource "./css/github.min.css" "css/github.min.css"
+
 let main_head =
   (head
      (title (txt "Functional Software Architecture"))
@@ -10,10 +35,8 @@ let main_head =
             (meta ~a:[a_http_equiv "content-type"; a_content "text/html; charset=utf-8"] ());
             (meta ~a:[a_name "viewport"; a_content "width=device-width, initial-scale=1.0"] ());
             (link ~rel:[`Icon] ~href:"favicon.svg" ~a:[a_mime_type "image/svg"] ());
-            (link ~rel:[`Stylesheet] ~href:"https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" ());
-            (script ~a:[a_src "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"] (txt ""));
-            (script ~a:[a_src "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/haskell.min.js"] (txt ""));
-            (script (txt "hljs.highlightAll();"));
+            (link ~rel:[`Stylesheet] ~href:(Funarch.Resource.resource_link highlight_css) ());
+            (Funarch.Js.js_script_tag highlight_js_inline);
           ];
           (List.map Funarch.Font.link_preload_font Funarch.Style.fonts);
           [
@@ -396,4 +419,8 @@ let () =
       then Sys.mkdir out_dir 0o777;
   Sys.chdir out_dir;
   List.iter Funarch.Page.render_page all_pages;
-  List.iter Funarch.Font.store_font Funarch.Style.fonts
+  List.iter Funarch.Font.store_font Funarch.Style.fonts;
+  List.iter Funarch.Resource.render_resource [highlight_js;
+                                              highlight_js_java;
+                                              highlight_js_haskell;
+                                              highlight_css];
