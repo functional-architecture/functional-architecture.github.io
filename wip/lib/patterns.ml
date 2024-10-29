@@ -153,6 +153,15 @@ let trees_that_grow_pattern = {
   long = div [p [txt "TODO"]]
 }
 
+let data_types_a_la_carte_pattern = {
+  title = "Data types à la carte";
+  route = "data_types_a_la_carte";
+  short = p [txt "«Data types à la carte» is a technique to deal with \
+                  the dreaded Expression Problem in functional \
+                  languages."];
+  long = div [p [txt "TODO"]];
+}
+
 let patterns = [
   functional_core_imperative_shell_pattern;
   zipper_pattern;
@@ -169,4 +178,6 @@ let patterns = [
   denotational_design_pattern;
   make_illegal_states_unrepresentable_pattern;
   parse_dont_validate_pattern;
+  trees_that_grow_pattern;
+  data_types_a_la_carte_pattern;
 ]
