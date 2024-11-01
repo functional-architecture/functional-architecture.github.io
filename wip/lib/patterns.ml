@@ -134,7 +134,7 @@ let make_illegal_states_unrepresentable_pattern = {
                   functional design technique that leverages product \
                   and sum types to decrease the bug surface of your \
                   software."];
-  long = div [p [txt "TODO"]];
+  long = (Markdown.from_markdown_file "./patterns/make_illegal_states_unrepresentable.md");
 }
 
 let parse_dont_validate_pattern = {
