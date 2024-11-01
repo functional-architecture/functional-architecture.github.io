@@ -9,18 +9,24 @@ let highlight_js_java =
 let highlight_js_haskell =
   Funarch.Resource.make_resource "./js/languages/haskell.js" "js/languages/haskell.js"
 
+let highlight_js_ocaml =
+  Funarch.Resource.make_resource "./js/languages/ocaml.js" "js/languages/ocaml.js"
+
 let highlight_js_inline =
   Funarch.Js.make_js_inline_module
     (Printf.sprintf
      "import hljs from '%s'
       import java from '%s'
       import haskell from '%s'
+      import ocaml from '%s'
       hljs.registerLanguage('java', java);
       hljs.registerLanguage('haskell', haskell);
+      hljs.registerLanguage('ocaml', ocaml);
       hljs.highlightAll();"
      (Funarch.Resource.resource_link highlight_js)
      (Funarch.Resource.resource_link highlight_js_java)
-     (Funarch.Resource.resource_link highlight_js_haskell))
+     (Funarch.Resource.resource_link highlight_js_haskell)
+     (Funarch.Resource.resource_link highlight_js_ocaml))
 
 let highlight_css =
   Funarch.Resource.make_resource "./css/github.min.css" "css/github.min.css"
@@ -423,4 +429,5 @@ let () =
   List.iter Funarch.Resource.render_resource [highlight_js;
                                               highlight_js_java;
                                               highlight_js_haskell;
+                                              highlight_js_ocaml;
                                               highlight_css];
