@@ -162,6 +162,16 @@ let data_types_a_la_carte_pattern = {
   long = div [p [txt "TODO"]];
 }
 
+let smart_constructor_pattern = {
+  title = "Smart constructor";
+  route = "smart_constructor";
+  short = p [txt "A smart constructor semantically behaves like any \
+                  ordinary constructor, but it performs some useful \
+                  computations such as preprocessing, normalization, \
+                  parsing, or validation."];
+  long = div [p [txt "TODO"]];
+}
+
 let patterns = [
   functional_core_imperative_shell_pattern;
   zipper_pattern;
@@ -180,4 +190,5 @@ let patterns = [
   parse_dont_validate_pattern;
   trees_that_grow_pattern;
   data_types_a_la_carte_pattern;
+  smart_constructor_pattern;
 ]
