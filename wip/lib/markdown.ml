@@ -60,7 +60,7 @@ let rec html_from_markdown_block (md : Omd.attributes Omd.block)
   | Thematic_break _attr -> hr ()
   | Heading (_attr, lvl, children) when is_front_matter lvl children -> txt ""
   | Heading (_attr, lvl, children) -> (h lvl) [(html_from_markdown_inline_with_a children)]
-  | Code_block (_attr, label, content) -> pre [code ~a:[a_class ["language-" ^ label]] [txt content]]
+  | Code_block (_attr, label, content) -> pre ~a:[a_style "white-space: pre-wrap"] [code ~a:[a_class ["language-" ^ label]] [txt content]]
   | Html_block (_attr, raw) -> Unsafe.data raw
   | Definition_list (_attr, _definitions) -> txt "TODO"
   | Table (_attr, _header, _body) -> txt "TODO" (* table [] *)
