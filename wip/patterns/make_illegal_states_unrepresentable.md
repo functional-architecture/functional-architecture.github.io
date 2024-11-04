@@ -6,9 +6,8 @@ nonsensical ("illegal") values ("states") are inexpressible
 
 The term "Make illegal states unrepresentable" was coined by Yaron
 Minsky in a 2010 guest lecture at Harvard. Ron never fully explained
-what "Make illegal states unrepresentable" means, but [his
-example](https://blog.janestreet.com/effective-ml-revisited/) is quite
-illuminating in its own right.
+what the mantra means, but [his example](https://blog.janestreet.com/effective-ml-revisited/)
+is quite illuminating in its own right.
 
 Minsky starts off with the following OCaml code as an example of bad
 data modelling.
@@ -30,8 +29,9 @@ type connection_info = {
 }
 ```
 
-Some illegal states can be represented. For example, we can come up
-with a `Connecting` state that has a `when_disconnected` value.
+With this representation some illegal states can be represented. For
+example, we can come up with a `Connecting` state that has a
+`when_disconnected` value.
 
 ```ocaml
 let illegal_1 = {
@@ -53,12 +53,13 @@ let illegal_2 = {
 }
 ```
 
-In essence, for the data model above, there are some invariants that
-aren't captured by the model, so they have to be adhered to by users
-of the model. The invariants have to be described outside of the
-programming language facilities, for instance in a comment. These
-descriptions can therefore get out of sync with the code. Since the
-invariants aren't machine checked they are a common source of bugs.
+In this representation there are some invariants that aren't captured
+by the model, so they have to be adhered to by users of the model,
+which introduces implicit coupling. The invariants have to be
+described outside of the programming language facilities, for instance
+in a comment. These descriptions can therefore get out of sync with
+the code. Since the invariants aren't machine checked they are a
+common source of bugs.
 
 An improved model that inherently expresses relevant invariants looks like this:
 
@@ -113,7 +114,7 @@ still make illegal states unrepresentable. The original example translated to Cl
 TODO
 ```
 
-## Illegal states vs. illegal values
+## Discussion: Illegal states vs. illegal values
 
 "Make illegal states unrepresentable" specifically mentions
 "states". In software engineering, "state" usually refers to mutable
