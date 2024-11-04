@@ -105,14 +105,31 @@ This [blog post](https://corrode.dev/blog/illegal-state/) discusses
 
 ### Clojure
 
-Minsky's original example suggests that "Make illegal states
+Minsky's original talk suggests that "Make illegal states
 unrepresentable" is about algebraic data types and compile-time type
-checking. Clojure doesn't support either of these features, but we can
-still make illegal states unconstructable with the help of smart
-constructors and runtime assertions. The original example translated
-to Clojure (+
+checking. The underlying ideas are applicable to dynamically typed
+languages such as Clojure (+
 [active-clojure](https://github.com/active-group/active-clojure)
-records) would look like this:
+records) as well, as is witnessed by the following contrasting pair of
+data representations.
+
+The bad representation uses a flat record as in the OCaml code above:
+
+```clojure
+(define-record-type ConnectionInfo
+  make-connection-info
+  connection-info?
+  [state connection-info-state ;; one of :connecting, :connected, :disconnected
+   server connection-info-server ;; non-nullable
+   last-ping-time connection-info-last-ping-time ;; nullable
+   last-ping-id connection-info-last-ping-id ;; nullable
+   session-id connection-info-session-id ;; nullable
+   when-initiated connection-info-when-initiated ;; nullable
+   when-disconnected connection-info-when-disconnected ;; nullable
+   ])
+```
+
+A better representation looks quite similar to the improved OCaml code above:
 
 ```clojure
 (define-record-type Connecting
@@ -169,8 +186,9 @@ records) would look like this:
 
 Since Clojure doesn't do proper static type checking, the smart
 constructor `make-connection-info` above can only check its parameters
-at runtime via `assert`. Any other user of this module, however, can
-rest assured that any `ConnectionInfo` object it is handed is legal.
+at runtime via `assert`. Still, this latter representation is
+preferable to the previous one for the same reasons as in the original
+OCaml example.
 
 ## Discussion: Illegal states vs. illegal values
 
