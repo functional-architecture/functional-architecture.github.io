@@ -1,7 +1,6 @@
 "Make illegal states unrepresentable" is a mantra commonly used in
-functional programming with static types (OCaml, Haskell, Scala,
-etc). The idea is to model data representations in such a way that
-nonsensical ("illegal") values ("states") are inexpressible
+functional modeling. The idea is to model data representations in such
+a way that nonsensical ("illegal") values ("states") are inexpressible
 ("unrepresentable").
 
 The term "Make illegal states unrepresentable" was coined by Yaron
