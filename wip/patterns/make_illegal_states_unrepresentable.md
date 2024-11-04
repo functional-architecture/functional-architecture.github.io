@@ -106,23 +106,81 @@ This [blog post](https://corrode.dev/blog/illegal-state/) discusses
 ### Clojure
 
 Minsky's original example suggests that "Make illegal states
-unrepresentable" is about algebraic data types and static type
+unrepresentable" is about algebraic data types and compile-time type
 checking. Clojure doesn't support either of these features, but we can
-still make illegal states unrepresentable. The original example translated to Clojure would look like this:
+still make illegal states unconstructable with the help of smart
+constructors and runtime assertions. The original example translated
+to Clojure (+
+[active-clojure](https://github.com/active-group/active-clojure)
+records) would look like this:
 
 ```clojure
-TODO
+(define-record-type Connecting
+  ^:private mk-connecting
+  connecting?
+  [when connecting-when])
+
+(defn make-connecting [when]
+  (assert (date? when))
+  (mk-connecting when))
+
+(define-record-type Connected
+  ^:private mk-connected
+  connected?
+  [last-ping connected-last-ping
+   session-id connected-session-id])
+
+(define-record-type Ping
+  make-ping
+  ping?
+  [when ping-when
+   id ping-id])
+
+(defn make-connected [last-ping session-id]
+  (assert (ping? last-ping))
+  (assert (session-id? session-id))
+  (mk-connected last-ping session-id))
+
+(define-record-type Disconnected
+  ^:private mk-disconnected
+  disconnected?
+  [when disconnected-when])
+
+(defn make-disconnected [when]
+  (assert (date? when))
+  (mk-disconnected when))
+
+(defn connection-state? [x]
+  (or (connecting? x)
+      (connected? x)
+      (disconnected? x))
+
+(define-record-type ConnectionInfo
+  mk-connection-info
+  connection-info?
+  [state connection-info-state
+   server connection-info-server])
+
+(defn make-connection-info [state server]
+  (assert (connection-state? state))
+  (assert (inet-addr? server))
+  (mk-connection-info state server))
 ```
+
+Since Clojure doesn't do proper static type checking, the smart
+constructor `make-connection-info` above can only check its parameters
+at runtime via `assert`. Any other user of this module, however, can
+rest assured that any `ConnectionInfo` object it is handed is legal.
 
 ## Discussion: Illegal states vs. illegal values
 
 "Make illegal states unrepresentable" specifically mentions
 "states". In software engineering, "state" usually refers to mutable
-state, but Ron Minsky's original examples illustrate that in this
+state, but Ron Minsky's original example illustrates that in this
 context "state" has a different notion. His `connection_state`
 describes immutable values. The term "state" hints at the idea that
 these values are parts of a state machine. `connection_state` most
-likely moves from `Connecting ...` to `Connected ...` to `Disconnected ...`.
+likely moves from `Connecting ...` via `Connected ...` to `Disconnected ...`.
 
 "Make illegal states unrepresentable" is applicable to use cases apart
 from state machines. A better term would be "Make illegal values
