@@ -66,7 +66,7 @@ let blocks ~id:_id contents = div ~a:[a_style "display: flex; gap: 3em; flex-wra
 let block contents = div ~a:[a_style "width: 20em;"] contents
 
 let menu children =
-  ul ~a:[a_style "list-style-type: none; padding: 0; margin: 0; display: flex; gap: 2em;"] children
+  ul ~a:[a_style "list-style-type: none; padding: 0; margin: 0; display: flex; gap: 2em; flex-wrap: wrap;"] children
 
 let menu_item ?(is_active = false) child =
   li ~a:[a_style (if is_active then "font-weight: bold;" else "")] [
@@ -81,7 +81,7 @@ let hdr ?(show_title=false) (highlight : [< `Overview | `Events | `Publications]
                     padding: 2em 0;
                     max-width: 120em;
                     border-bottom: 1px solid #ccc;" [
-          div_styled "display: flex; gap: 2em; justify-content: space-between;" [
+          div_styled "display: flex; gap: 2em; justify-content: space-between; flex-wrap: wrap;" [
             menu [
               menu_item
                 ~is_active:(highlight = `Overview)
