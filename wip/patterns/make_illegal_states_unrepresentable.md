@@ -156,7 +156,7 @@ records) would look like this:
       (disconnected? x))
 
 (define-record-type ConnectionInfo
-  mk-connection-info
+  ^:private mk-connection-info
   connection-info?
   [state connection-info-state
    server connection-info-server])
