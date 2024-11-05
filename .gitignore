@@ -1,7 +1,8 @@
-# project
-_site
-.sass-cache
-.vagrant
+# OCaml
+_build
+
+# Static site gen
+out
 
 # general
 .DS_Store
