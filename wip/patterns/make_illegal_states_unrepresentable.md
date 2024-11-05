@@ -128,6 +128,30 @@ The bad representation uses a flat record as in the OCaml code above:
    ])
 ```
 
+This, again, allows for nonsensical values to be representable:
+
+```clojure
+(def illegal-1
+  (make-connection-info
+   ;; connection-state
+   :connecting
+   ...
+   ;; when-disconnected
+   some-date))
+
+(def illegal-2
+  (make-connection-info
+   ;; connection-state
+   :connected
+   ...
+   ;; last-ping-time
+   some-date
+   ;; last-ping-id
+   nil
+   ...
+   ))
+```
+
 A better representation looks quite similar to the improved OCaml code above:
 
 ```clojure
