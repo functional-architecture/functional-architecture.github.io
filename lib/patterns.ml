@@ -127,16 +127,6 @@ let denotational_design_pattern = {
   long = div [p [(txt "TODO")]]
 }
 
-let make_illegal_states_unrepresentable_pattern = {
-  title = "Make Illegal States Unrepresentable";
-  route = "make_illegal_states_unrepresentable";
-  short = p [txt "«Make illegal states unrepresentable» is a \
-                  functional design technique that leverages product \
-                  and sum types to decrease the bug surface of your \
-                  software."];
-  long = (Markdown.from_markdown_file "./patterns/make_illegal_states_unrepresentable.md");
-}
-
 let parse_dont_validate_pattern = {
   title = "Parse, don’t validate";
   route = "parse_dont_validate";
@@ -186,7 +176,6 @@ let patterns = [
   property_based_testing_pattern;
   formal_verification_pattern;
   denotational_design_pattern;
-  make_illegal_states_unrepresentable_pattern;
   parse_dont_validate_pattern;
   trees_that_grow_pattern;
   data_types_a_la_carte_pattern;

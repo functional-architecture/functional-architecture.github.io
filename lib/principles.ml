@@ -154,6 +154,16 @@ let modularization_principle = {
   long = None;
 }
 
+let make_illegal_states_unrepresentable_principle = {
+  title = "Make Illegal States Unrepresentable";
+  route = "make_illegal_states_unrepresentable";
+  short = "«Make illegal states unrepresentable» is a \
+           functional design technique that leverages product \
+           and sum types to decrease the bug surface of your \
+           software.";
+  long = Some (Markdown.from_markdown_file "./principles/make_illegal_states_unrepresentable.md");
+}
+
 let principles = [
   immutability_principle;
   purity_principle;
@@ -164,4 +174,5 @@ let principles = [
   architecture_as_code_principle;
   decoupled_by_default_principle;
   modularization_principle;
+  make_illegal_states_unrepresentable_principle;
 ]
