@@ -162,6 +162,13 @@ let smart_constructor_pattern = {
   long = div [p [txt "TODO"]];
 }
 
+let correctness_by_construction_pattern = {
+  title = "Correctness by Construction";
+  route = "correctness_by_construction";
+  short = p [txt "TODO"];
+  long = div [p [txt "TODO"]];
+}
+
 let patterns = [
   functional_core_imperative_shell_pattern;
   zipper_pattern;
@@ -180,4 +187,5 @@ let patterns = [
   trees_that_grow_pattern;
   data_types_a_la_carte_pattern;
   smart_constructor_pattern;
+  correctness_by_construction_pattern;
 ]
