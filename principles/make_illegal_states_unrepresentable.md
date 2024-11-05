@@ -3,6 +3,10 @@ functional modeling. The idea is to model data representations in such
 a way that nonsensical ("illegal") values ("states") are inexpressible
 ("unrepresentable").
 
+Objectives: [Simplicity](/#values), [Maintainability](/#values), [Correctness](/#values)
+
+Related patterns: [Static types](/static_types), [Parse, don’t validate](/parse_dont_validate), [Smart Constructor](/smart_constructor)
+
 ## Introduction
 
 The term "Make illegal states unrepresentable" was coined by Yaron
