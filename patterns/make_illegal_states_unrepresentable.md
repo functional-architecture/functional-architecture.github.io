@@ -87,7 +87,7 @@ corresponding type only. The field `server` makes sense for all states
 and is therefore part of the larger `connection_info`
 type. Additionally, the requirement that `last_ping_time` and
 `last_ping_id` are either both `Some ...` or both `None` is now
-expressed by `last_ping** being a single option of a tuple.
+expressed by `last_ping` being a single option of a tuple.
 
 ## Common techniques
 
