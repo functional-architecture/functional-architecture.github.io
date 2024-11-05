@@ -100,8 +100,8 @@ div[role='doc-subtitle'] {
 }
 
 h2 {
-    font-size: 48px;
-    line-height: 52px;
+    font-size: 32px;
+    line-height: 42px;
 }
 
 
