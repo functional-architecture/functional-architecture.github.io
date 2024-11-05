@@ -1,11 +1,14 @@
 open Tyxml.Html
 
+let convert_quotes s =
+  Str.global_replace (Str.regexp "\"\\([^\"]*\\)\"") "“\\1”" s
+
 let rec html_from_markdown_inline (md : Omd.attributes Omd.inline)
   : Html_types.phrasing_without_interactive elt =
   match md with
   | Link (_attr, _link) -> assert false
   | Concat (_attr, children) -> span (List.map html_from_markdown_inline_with_a children)
-  | Text (_attr, s) -> txt s
+  | Text (_attr, s) -> txt (convert_quotes s)
   | Emph (_attr, child) -> em [(html_from_markdown_inline_with_a child)]
   | Strong (_attr, child) -> strong [(html_from_markdown_inline_with_a child)]
   | Code (_attr, str) -> code [(txt str)]
@@ -17,7 +20,7 @@ let rec html_from_markdown_inline (md : Omd.attributes Omd.inline)
 and html_from_markdown_inline_with_a (md : Omd.attributes Omd.inline) =
   match md with
   | Concat (_attr, children) -> span (List.map html_from_markdown_inline_with_a children)
-  | Text (_attr, s) -> txt s
+  | Text (_attr, s) -> txt (convert_quotes s)
   | Emph (_attr, child) -> em [(html_from_markdown_inline_with_a child)]
   | Strong (_attr, child) -> strong [(html_from_markdown_inline_with_a child)]
   | Code (_attr, str) -> code [(txt str)]
