@@ -3,6 +3,8 @@ functional modeling. The idea is to model data representations in such
 a way that nonsensical ("illegal") values ("states") are inexpressible
 ("unrepresentable").
 
+## Introduction
+
 The term "Make illegal states unrepresentable" was coined by Yaron
 Minsky in a 2010 guest lecture at Harvard. Ron never fully explained
 what the mantra means, but [his example](https://blog.janestreet.com/effective-ml-revisited/)
@@ -85,7 +87,75 @@ corresponding type only. The field `server` makes sense for all states
 and is therefore part of the larger `connection_info`
 type. Additionally, the requirement that `last_ping_time` and
 `last_ping_id` are either both `Some ...` or both `None` is now
-expressed by `last_ping` being a single option of a tuple.
+expressed by `last_ping** being a single option of a tuple.
+
+## Common techniques
+
+The example above – transforming a product type (`connection_info`)
+with many nullable fields into a sum type with less nullable fields –
+demonstrates one effective technique to make illegal states
+unrepresentable. There are others, such as using associative maps and
+functions. Take a Scala representation of time series as a list of
+time-double-tuples:
+
+```scala
+object TimeSeriesService {
+  type TimeSeries = List[(Time, Double)]
+}
+```
+
+This allows for illegal and nonsensical values to be represented:
+
+```scala
+// Let t1, t2, t3 be timestamps with t1 < t2 < t3
+val ts1 = List((t2, 6.5), (t1, 5.0), (t3, 7.3))
+val ts2 = List((t1, 6.5), (t1, 6.5))
+val ts3 = List((t1, 6.5), (t1, 13.4))
+```
+
+`ts3` is certainly illegal, and `ts1` and `ts2` are surely not the
+common case either. A user of the `TimeSeriesService` now has to think
+hard about what each these cases denote. A more straightforward model
+is to represent time series as associative maps from time to double:
+
+```scala
+object TimeSeriesService {
+  type TimeSeries = Map[Time, Double]
+}
+```
+
+Now contradictory or redundant values are inexpressible. An even
+better model is time series as functions from time to optional
+double:
+
+```scala
+sealed trait TS extends Function1[Time, Option[Double]]
+
+object TimeSeriesService {
+  type TimeSeries = TS
+}
+```
+
+This way, time series can be represented by lists, maps, proper
+functions, static values, etc, as long as we can make these types
+behave like a function:
+
+```scala
+class TSList(list: List[(Time, Option[Double])])
+    extends TS {
+
+  def apply(t: Time): Option[Double] =
+    list.find( (tx, _) => tx == t ).flatMap(_._2)
+}
+
+class TSConst(val: Double) extends TS {
+  def apply(_: Time): Option[Double] =
+    Some(val)
+}
+```
+
+With this model of time series as functions we made illegal states
+unrepresentable and also we made all legal states representable.
 
 ## Applicability to other programming paradigms
 
