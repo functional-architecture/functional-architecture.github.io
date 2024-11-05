@@ -58,7 +58,7 @@ In this representation there are some invariants that aren't captured
 by the model, so they have to be adhered to by users of the model,
 which introduces implicit coupling. The invariants have to be
 described outside of the programming language facilities, for instance
-in a comment. These descriptions can therefore get out of sync with
+in a comment. These descriptions can get out of sync with
 the code. Since the invariants aren't machine checked they are a
 common source of bugs.
 
