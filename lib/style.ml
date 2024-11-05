@@ -22,7 +22,7 @@ let font_output_file_name font =
 let font_store font =
   Out_channel.with_open_bin (font_output_file_name font) Out_channel.output_string
 
-let fonts_directory = "../assets/fonts"
+let fonts_directory = "assets/fonts"
 
 let plex_serif style weight filename =
   Font.make_font "Plex" style weight (fonts_directory ^ "/" ^ filename)
