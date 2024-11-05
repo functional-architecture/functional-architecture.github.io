@@ -30,10 +30,10 @@ jobs:
         uses: DeterminateSystems/nix-installer-action@main
       - uses: DeterminateSystems/magic-nix-cache-action@main
       - name: Build
-        working-directory: ./wip
+        working-directory: .
         run: nix build
       - name: Run
-        working-directory: ./wip
+        working-directory: .
         run: nix run
       - name: Set up Pages
         uses: actions/configure-pages@v2
@@ -41,7 +41,7 @@ jobs:
         uses: actions/upload-pages-artifact@v1
         with:
           # Upload html output only
-          path: './wip/out'
+          path: './out'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
