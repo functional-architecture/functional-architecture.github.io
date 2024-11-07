@@ -28,13 +28,17 @@ News is available on [Mastodon](https://discuss.systems/@funarch),
 [Bluesky](https://bsky.app/profile/funarch.bsky.social), and
 [Twitter](https://twitter.com/ACMFUNARCH).
 
+## Proceedings
+
+... are available from the [ACM Digital Library](https://dl.acm.org/doi/proceedings/10.1145/3677998).
+
 ## Code of Conduct
 
 FUNARCH adheres to the [SIGPLAN/ICFP Code of Conduct](https://icfp24.sigplan.org/attending/code-of-conduct).
 
 ## Program
 
-### Architecting Functional Programs
+### [Architecting Functional Programs](https://dl.acm.org/doi/10.1145/3677998.3678219)
 #### [Marco Sampellegrini](https://marcosampellegrini.com/)
 ##### (Keynote)
 
@@ -68,7 +72,7 @@ We'll talk about what I found to be the more effective techniques to
 architecture such large systems: event sourcing, cqrs and the over
 arching philosophy of Domain Driven Design.
 
-## F3: A Compiler For Feature Engineering
+## [F3: A Compiler For Feature Engineering](https://dl.acm.org/doi/10.1145/3677998.3678220)
 #### Weixi Ma, Arnaud Venet, Junhua Gu, Subbu Subramanian, Siyu	Wang, Rocky Liu (Meta)
 #### Daniel Friedman, Yafei	Yang (Indiana University)
 
@@ -81,7 +85,7 @@ developed at Meta. We show how F3 transforms the inspirations from
 functional programming and type theory to an industrial grade software
 architecture that empowers a platform that serves billions of users.
 
-## Design and implementation of a verified interpreter for additive manufacturing programs
+## [Design and implementation of a verified interpreter for additive manufacturing programs](https://dl.acm.org/doi/10.1145/3677998.3678221)
 #### Matthew Sottile, Mohit Tekriwal (Lawrence Livermore National Laboratory)
 ##### (Experience report)
 
@@ -96,7 +100,7 @@ decisions that were made to facilitate this process. Finally, we share
 a set of architectural lessons that are generally applicable to other
 software with a similar goal of integration of verified components.
 
-## Applying Continuous Formal Methods to Cardano
+## [Applying Continuous Formal Methods to Cardano](https://dl.acm.org/doi/10.1145/3677998.3678222)
 #### [James Chapman](http://www.cs.ioc.ee/~james), Arnaud Bailly, Polina Vinogradova (IOHK)
 ##### (Experience Report)
 
@@ -107,7 +111,7 @@ architecture and Haskell to building Cardano. We describe our
 strategy, our projects, reflect on lessons learned, the challenges we
 face and how we propose to meet them.
 
-## Continuations: what have they ever done for us?
+## [Continuations: what have they ever done for us?](https://dl.acm.org/doi/10.1145/3677998.3678223)
 #### [Marc Kaufmann](https://trichotomy.xyz/) (Austriae	Central European University), [Bogdan Popa](https://defn.io/)
 ##### (Experience Report)
 
@@ -123,7 +127,7 @@ dynamic variables, avoiding memory leaks, and the difficulty of
 debugging continuations. 
 
 
-## Bidirectional Data Transformations
+## [Bidirectional Data Transformations](https://dl.acm.org/doi/10.1145/3677998.3678224)
 #### Marcus Crestani, Markus Schlegel, Marco Schneider (Active Group)
 
 Data structures are the foundation of software. Different components
