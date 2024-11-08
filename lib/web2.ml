@@ -54,8 +54,13 @@ type element =
 and page =
   | LiftElement of string * ref option * element
   | WithRef of (ref -> page)
-  | Many of page list
   | LiftResource of ref * resource
+
+and website =
+  | Pages of page list
+  | WithRef of (ref -> website)
+
+let make_website pages = Pages pages
 
 let element_link_reference element =
   string_of_int (Hashtbl.hash element)
@@ -115,7 +120,6 @@ and html_of_element_inline element =
 
 and page_ref page =
   match page with
-  | Many _pages -> assert(false)
   | WithRef _ -> assert(false)
   | LiftResource (ref, _) -> ref
   | LiftElement (_title, refo, e) ->
@@ -135,111 +139,80 @@ let link (s : string) page = Link (s, page)
 let link_ref (s : string) ref = Link_ref (s, ref)
 let identify ref element = Identify (ref, element)
 
-
-
 let page_of_element ?(ref) title content = LiftElement (title, ref, content)
 
 let page_of_resource ref res = LiftResource (ref, res)
 
-let with_ref k = WithRef k
-
-let many pages = Many pages
+let with_ref k : website = WithRef k
 
 let identify_page ref page =
   match page with
   | LiftElement (title, _, e) -> LiftElement (title, Some ref, e)
-  | Many _ -> assert(false)
   | WithRef _ -> assert(false)
   | LiftResource (_, x) -> LiftResource (ref, x)
 
-let rec element_all_pages e =
-  match e with
-  | Fragment es -> List.concat_map element_all_pages es
-  | Attributed (_, e) -> element_all_pages e
-  | P (_, e) -> element_all_pages e
-  | Titled (_, e) -> element_all_pages e
-  | Link (_, page) -> page :: (page_all_pages page)
-  | Link_ref _ -> []
-  | Text _ -> []
-  | Image _ -> []
-  | Image_ref _ -> []
-  | Identify (_, e) -> element_all_pages e
 
-and page_all_pages page =
-  page ::
-  match page with
-  | LiftElement (_, _, e) -> element_all_pages e
-  | Many pages -> (List.concat_map page_all_pages pages)
-  | WithRef k -> page_all_pages (k (make_ref "TODO"))
-  | LiftResource _ -> []
-
-let rec element_all_resources e =
-  match e with
-  | Fragment es -> List.concat_map element_all_resources es
-  | Attributed (_, e) -> element_all_resources e
-  | P (_, e) -> element_all_resources e
-  | Titled (_, e) -> element_all_resources e
-  | Link (_, page) -> (page_all_resources page)
-  | Link_ref _ -> []
-  | Text _ -> []
-  | Image (_, _, res) -> [res]
-  | Image_ref _ -> []
-  | Identify (_, e) -> element_all_resources e
-  
-and page_all_resources page =
-  match page with
-  | LiftElement (_, _, e) -> element_all_resources e
-  | Many pages -> (List.concat_map page_all_resources pages)
-  | WithRef k -> page_all_resources (k (make_ref "TODO"))
-  | LiftResource _ -> []
-
+(* --- Rendering ---*)
 module StringMap = Map.Make(String)
 
-let string_of_html html =
-  Format.asprintf "%a" (Tyxml.Html.pp ~indent:false ()) html
-
-let rec render_page page =
+(** a.k.a. render *)
+let rec resource_of_page page =
+  let string_of_html html =
+    Format.asprintf "%a" (Tyxml.Html.pp ~indent:false ()) html in
   match page with
-  | LiftElement (title, _, e) -> (StringMap.singleton
-                                    (ref_file_path (page_ref page))
-                                    (string_of_html
+  | LiftElement (title, _, e) -> make_resource
+                                   title
+                                   (string_of_html
                                        (html
                                           (head
                                              (Tyxml.Html.title (txt title))
                                              [(meta ~a:[a_http_equiv "content-type"; a_content "text/html; charset=utf-8"] ())])
                                           (body
-                                             [html_of_element_block e]))))
-  | Many pages -> List.fold_right
-                    (fun page acc ->
-                       StringMap.union
-                         (fun _ _ x -> Some x)
-                         acc
-                         (render_page page))
-                    pages
-                    StringMap.empty
-  | WithRef k -> render_page (k (make_ref "TODO"))
-  | LiftResource (ref, resource) -> (StringMap.singleton
-                                       (ref_file_path ref)
-                                       (resource_data resource))
+                                             [html_of_element_block e])))
+  | WithRef k -> resource_of_page (k (make_ref "TODO"))
+  | LiftResource (_ref, resource) -> resource
 
-let render_website page =
-  let pages = page_all_pages page in
-  let resources = page_all_resources page in
-  List.fold_right
-    (fun page acc ->
-       StringMap.union
-         (fun _ _ x -> Some x)
-         acc
-         (render_page page))
-    pages
-    (List.fold_right
-       (fun resource acc ->
-          StringMap.add
-            (resource_file_path resource)
-            (resource_data resource)
-            acc)
-       resources
-       StringMap.empty)
+let rec gather_website_resources website : resource StringMap.t =
+  match website with
+  | Pages pages -> List.fold_right
+                     (fun page acc ->
+                        StringMap.union
+                          (fun _ _ x -> Some x)
+                          acc
+                          (gather_page_resources page))
+                     pages
+                     StringMap.empty
+  | WithRef k -> gather_website_resources (k (make_ref "TODO"))
+
+and gather_page_resources page : resource StringMap.t =
+  let r = (resource_of_page page) in
+  StringMap.add
+    (resource_file_path r)
+    r
+    (match page with
+     | LiftElement (_, _, e) -> gather_element_resources e
+     | WithRef k -> gather_page_resources (k (make_ref "TODO"))
+     | LiftResource (ref, resource) -> StringMap.singleton (ref_file_path ref) resource)
+
+and gather_element_resources e : resource StringMap.t =
+  match e with
+  | Fragment es -> List.fold_right
+                     (fun e acc ->
+                        StringMap.union
+                          (fun _ _ x -> Some x)
+                          acc
+                          (gather_element_resources e))
+                     es
+                     StringMap.empty
+  | Attributed (_, e) -> gather_element_resources e
+  | P (_, e) -> gather_element_resources e
+  | Titled (_, e) -> gather_element_resources e
+  | Link (_, page) -> (gather_page_resources page)
+  | Link_ref _ -> StringMap.empty
+  | Text _ -> StringMap.empty
+  | Image (_, _, res) -> StringMap.singleton (resource_file_path res) res
+  | Image_ref _ -> StringMap.empty
+  | Identify (_, e) -> gather_element_resources e
 
 let rec create_dir dir =
   print_endline @@ "create_dir: " ^ dir;
@@ -255,16 +228,16 @@ let write file s =
   create_dir dir;
   Out_channel.with_open_bin file (fun ch -> Out_channel.output_string ch s)
 
-let store_rendered_resources out_path page_map =
+let store_resource_map out_path resource_map =
   StringMap.iter
-    (fun filename page ->
+    (fun filename res ->
        Printf.printf "Rendering %s\n" filename;
-       let s = Printf.sprintf "%s\n" page in
+       let s = Printf.sprintf "%s\n" (resource_data res) in
        write (out_path ^ "/" ^ filename) s)
-    page_map
+    resource_map
 
 let render out_path page =
-  store_rendered_resources out_path (render_website page)
+  store_resource_map out_path (gather_website_resources page)
 
 (* --- *)
 
@@ -300,7 +273,7 @@ let pages =
                             link_ref "Zum ersten Abschnitt auf dieser Seite" r1
                            ])]) in
 
-               many [erste; zweite; page_of_resource r3 gute_bild]))))
+               make_website [erste; zweite; page_of_resource r3 gute_bild]))))
 
 let seite2 =
   page_of_element
@@ -314,7 +287,7 @@ let example2 =
         link "Seite 2" seite2])
 
 let website1 =
-  many [seite2; example2]
+  make_website [seite2; example2]
 
 
 let unterseite main_ref =
@@ -336,4 +309,4 @@ let hauptseite unterseite =
 let website3 =
   with_ref (fun r ->
       let u = unterseite r in
-      many [u; identify_page r (hauptseite u)])
+      make_website [u; identify_page r (hauptseite u)])
