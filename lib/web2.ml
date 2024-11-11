@@ -87,7 +87,7 @@ type element =
   | Identify of element_ref * element
 
 and page =
-  | LiftElement of element
+  | LiftElement of string option * element
   | PageWithPageRef of (page_ref -> page)
   | Identified of page_ref * page
   | LiftResource of resource
@@ -162,7 +162,7 @@ and page_ref page =
   | PageWithPageRef _ -> assert(false)
   | LiftResource res -> resource_ref res
   | Identified (pref, _) -> PageRef pref
-  | LiftElement e -> make_page_ref (string_of_int (Hashtbl.hash e))
+  | LiftElement (slug, e) -> make_page_ref (Option.value slug ~default:(string_of_int (Hashtbl.hash e)))
 
 let html_of_element_block = html_of_element_block_h 1
 
@@ -176,12 +176,19 @@ let link (s : string) page = Link (s, page)
 let link_ref (s : string) ref = Link_ref (s, ref)
 let identify ref element = Identify (ref, element)
 
-let page_of_element e = LiftElement e
+let page_of_element ?(slug = "") e =
+  let mslug = if slug = ""
+                 then None
+                 else Some slug in
+  LiftElement (mslug, e)
 
 let page_of_resource res = LiftResource res
 
-let website_with_page_ref ?(slug = None) k : website =
-  WebsiteWithPageRef (slug, k)
+let website_with_page_ref ?(slug = "") k : website =
+  let mslug = if slug = ""
+                 then None
+                 else Some slug in
+  WebsiteWithPageRef (mslug, k)
 
 let identify_page ref page =
   match page with
@@ -206,7 +213,7 @@ and wrap_page f (page: page) =
   | PageWithPageRef k -> PageWithPageRef (fun r -> wrap_page f (k r))
   | LiftResource res -> LiftResource res
   | Identified (pref, inner_page) -> Identified (pref, wrap_page f inner_page)
-  | LiftElement e -> LiftElement (f (wrap_element f e))
+  | LiftElement (slug, e) -> LiftElement (slug, (f (wrap_element f e)))
 
 let rec wrap (website : website) f =
   match website with
@@ -223,13 +230,13 @@ let rec string_of_page page =
     Format.asprintf "%a" (Tyxml.Html.pp ~indent:false ()) html in
   match page with
   | Identified (_, pg) -> string_of_page pg
-  | LiftElement e -> (string_of_html
-                        (html
-                           (head
-                              (Tyxml.Html.title (txt "TODO"))
-                              [(meta ~a:[a_http_equiv "content-type"; a_content "text/html; charset=utf-8"] ())])
-                           (body
-                              [html_of_element_block e])))
+  | LiftElement (_slug, e) -> (string_of_html
+                                (html
+                                   (head
+                                      (Tyxml.Html.title (txt "TODO"))
+                                      [(meta ~a:[a_http_equiv "content-type"; a_content "text/html; charset=utf-8"] ())])
+                                   (body
+                                      [html_of_element_block e])))
   | PageWithPageRef k -> string_of_page (k { slug = "TODO" })
   | LiftResource res -> resource_data res
 
@@ -247,7 +254,7 @@ and gather_page_resources page : resource list =
   r ::
   (match page with
    | Identified (_, pg) -> gather_page_resources pg
-   | LiftElement e -> gather_element_resources e
+   | LiftElement (_slug, e) -> gather_element_resources e
    | PageWithPageRef k -> gather_page_resources (k { slug = "TODO" })
    | LiftResource resource -> [resource])
 
@@ -310,6 +317,7 @@ let website1 =
 
 let unterseite main_ref =
   page_of_element
+    ~slug:"unterseite"
     (p [(text "Hallole");
         link_ref "Zurück zur Hauptseite" main_ref
        ])
@@ -328,7 +336,7 @@ let hauptseite unterseite =
 let website3 =
   wrap
     (website_with_page_ref
-       ~slug:(Some "hauptseite")
+       ~slug:"hauptseite"
        (fun r ->
           let u = unterseite (ref_of_page_ref r) in
           make_website [u; identify_page r (hauptseite u)]))
