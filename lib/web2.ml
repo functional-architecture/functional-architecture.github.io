@@ -85,6 +85,7 @@ type element =
   | Image of Html_types.img_attrib attrib list_wrap * string * resource
   | Image_ref of Html_types.img_attrib attrib list_wrap * string * ref
   | Identify of element_ref * element
+  | CallWithCurrentPageRef of (page_ref -> element)
 
 and page =
   | LiftElement of string option * element
@@ -107,16 +108,16 @@ let h lvl =
   | 5 -> Tyxml.Html.h5
   | _ -> Tyxml.Html.h6
 
-let rec html_of_element_block_h h_level element =
+let rec html_of_element_block_h current_page_ref h_level element =
   match element with
   | Fragment _ -> assert(false)
-  | Attributed (attrs, (Fragment es)) -> Tyxml.Html.div ~a:attrs (List.map (html_of_element_block_h h_level) es)
-  | Attributed (attrs, e) -> Tyxml.Html.div ~a:attrs [(html_of_element_block_h h_level e)]
-  | P (attrs, (Fragment es)) -> Tyxml.Html.p ~a:attrs (List.map html_of_element_inline es)
-  | P (attrs, e) -> Tyxml.Html.p ~a:attrs [(html_of_element_inline e)]
+  | Attributed (attrs, (Fragment es)) -> Tyxml.Html.div ~a:attrs (List.map (html_of_element_block_h current_page_ref h_level) es)
+  | Attributed (attrs, e) -> Tyxml.Html.div ~a:attrs [(html_of_element_block_h current_page_ref h_level e)]
+  | P (attrs, (Fragment es)) -> Tyxml.Html.p ~a:attrs (List.map (html_of_element_inline current_page_ref) es)
+  | P (attrs, e) -> Tyxml.Html.p ~a:attrs [(html_of_element_inline current_page_ref e)]
   | Titled (title, e) -> Tyxml.Html.div [
       (h h_level) [Tyxml.Html.txt title];
-      (html_of_element_block_h (h_level + 1) e)
+      (html_of_element_block_h current_page_ref (h_level + 1) e)
     ]
   | Link (s, page) -> Tyxml.Html.a ~a:[a_href (ref_url_path (page_ref page))] [txt s]
   | Link_ref (s, ref) -> Tyxml.Html.a ~a:[a_href (ref_url_path ref)] [txt s]
@@ -131,14 +132,15 @@ let rec html_of_element_block_h h_level element =
                                           ~alt:alt
                                           ~a:attrs
                                           ()
-  | Identify (ref, (Fragment es)) -> Tyxml.Html.div ~a:[a_id (element_ref_id ref)] (List.map (html_of_element_block_h h_level) es)
-  | Identify (ref, e) -> Tyxml.Html.div ~a:[a_id (element_ref_id ref)] [html_of_element_block_h h_level e]
+  | Identify (ref, (Fragment es)) -> Tyxml.Html.div ~a:[a_id (element_ref_id ref)] (List.map (html_of_element_block_h current_page_ref h_level) es)
+  | Identify (ref, e) -> Tyxml.Html.div ~a:[a_id (element_ref_id ref)] [html_of_element_block_h current_page_ref h_level e]
+  | CallWithCurrentPageRef k -> html_of_element_block_h current_page_ref h_level (k current_page_ref)
 
-and html_of_element_inline element =
+and html_of_element_inline (current_page_ref : page_ref) element =
   match element with
   | Fragment _ -> assert(false)
-  | Attributed (attrs, (Fragment es)) -> Tyxml.Html.span ~a:attrs (List.map html_of_element_inline es)
-  | Attributed (attrs, e) -> Tyxml.Html.span ~a:attrs [(html_of_element_inline e)]
+  | Attributed (attrs, (Fragment es)) -> Tyxml.Html.span ~a:attrs (List.map (html_of_element_inline current_page_ref) es)
+  | Attributed (attrs, e) -> Tyxml.Html.span ~a:attrs [(html_of_element_inline current_page_ref e)]
   | P _ -> assert(false)
   | Titled _ -> assert(false)
   | Link (s, page) -> Tyxml.Html.a ~a:[a_href (ref_url_path (page_ref page))] [txt s]
@@ -154,8 +156,9 @@ and html_of_element_inline element =
                                      ~alt:alt
                                      ~a:attrs
                                      ()
-  | Identify (ref, (Fragment es)) -> Tyxml.Html.span ~a:[a_id (element_ref_id ref)] (List.map html_of_element_inline es)
-  | Identify (ref, e) -> Tyxml.Html.span ~a:[a_id (element_ref_id ref)] [html_of_element_inline e]
+  | Identify (ref, (Fragment es)) -> Tyxml.Html.span ~a:[a_id (element_ref_id ref)] (List.map (html_of_element_inline current_page_ref) es)
+  | Identify (ref, e) -> Tyxml.Html.span ~a:[a_id (element_ref_id ref)] [html_of_element_inline current_page_ref e]
+  | CallWithCurrentPageRef k -> html_of_element_inline current_page_ref (k current_page_ref)
 
 and page_ref page =
   match page with
@@ -164,7 +167,7 @@ and page_ref page =
   | Identified (pref, _) -> PageRef pref
   | LiftElement (slug, e) -> make_page_ref (Option.value slug ~default:(string_of_int (Hashtbl.hash e)))
 
-let html_of_element_block = html_of_element_block_h 1
+let html_of_element_block current_page_ref = html_of_element_block_h current_page_ref 1
 
 let append ?(a = []) elements = Attributed (a, (Fragment elements))
 let p ?(a = []) elements = P (a, (Fragment elements))
@@ -175,6 +178,7 @@ let titled title elements = Titled (title, (Fragment elements))
 let link (s : string) page = Link (s, page)
 let link_ref (s : string) ref = Link_ref (s, ref)
 let identify ref element = Identify (ref, element)
+let call_with_current_page_ref k = CallWithCurrentPageRef k
 
 let page_of_element ?(slug = "") e =
   let mslug = if slug = ""
@@ -189,6 +193,21 @@ let website_with_page_ref ?(slug = "") k : website =
                  then None
                  else Some slug in
   WebsiteWithPageRef (mslug, k)
+
+let website_with_page_refs_3
+    ?(slug1 = "")
+    ?(slug2 = "")
+    ?(slug3 = "")
+    k
+  = website_with_page_ref
+    ~slug:slug1
+    (fun r1 ->
+       website_with_page_ref
+         ~slug:slug2
+         (fun r2 ->
+            (website_with_page_ref
+               ~slug:slug3
+               (k r1 r2))))
 
 let identify_page ref page =
   match page with
@@ -207,6 +226,7 @@ let rec wrap_element f (e : element) =
   | Image (attrs, alt, resource) -> Image (attrs, alt, resource)
   | Image_ref (attrs, alt, ref) -> Image_ref (attrs, alt, ref)
   | Identify (ref, e) -> Identify (ref, wrap_element f e)
+  | CallWithCurrentPageRef k -> CallWithCurrentPageRef (fun r -> wrap_element f (k r))
 
 and wrap_page f (page: page) =
   match page with
@@ -224,52 +244,63 @@ let rec wrap (website : website) f =
 (* --- Rendering ---*)
 module StringMap = Map.Make(String)
 
+let next_slug x = string_of_int (Hashtbl.hash x)
+
+let next_page_ref x = { slug = (next_slug x)}
+
 (** a.k.a. render *)
-let rec string_of_page page =
+let rec string_of_page current_page_ref page =
   let string_of_html html =
     Format.asprintf "%a" (Tyxml.Html.pp ~indent:false ()) html in
   match page with
-  | Identified (_, pg) -> string_of_page pg
+  | Identified (_, pg) -> string_of_page current_page_ref pg
   | LiftElement (_slug, e) -> (string_of_html
                                 (html
                                    (head
                                       (Tyxml.Html.title (txt "TODO"))
                                       [(meta ~a:[a_http_equiv "content-type"; a_content "text/html; charset=utf-8"] ())])
                                    (body
-                                      [html_of_element_block e])))
-  | PageWithPageRef k -> string_of_page (k { slug = "TODO" })
+                                      [html_of_element_block current_page_ref e])))
+  | PageWithPageRef k -> string_of_page current_page_ref (k (next_page_ref current_page_ref))
   | LiftResource res -> resource_data res
 
-let resource_of_page page =
+let resource_of_page current_page_ref page =
   let pref = page_ref page in
-  identify_resource (ref_file_path pref) (make_resource (string_of_page page))
+  identify_resource (ref_file_path pref) (make_resource (string_of_page current_page_ref page))
 
 let rec gather_website_resources website : resource list =
   match website with
-  | Pages pages -> List.concat_map gather_page_resources pages
-  | WebsiteWithPageRef (slug, k) -> gather_website_resources (k { slug = Option.value slug ~default:"TODO"; })
+  | Pages pages -> (List.fold_right
+                      (fun page acc ->
+                         List.append
+                           acc
+                           (gather_page_resources { slug = (next_slug page) } page))
+                      pages
+                      [])
+  | WebsiteWithPageRef (slug, k) -> gather_website_resources (k { slug = Option.value slug ~default:(next_slug k); })
 
-and gather_page_resources page : resource list =
-  let r = (resource_of_page page) in
+and gather_page_resources (current_page_ref : page_ref) page : resource list =
+  let r = (resource_of_page current_page_ref page) in
   r ::
   (match page with
-   | Identified (_, pg) -> gather_page_resources pg
-   | LiftElement (_slug, e) -> gather_element_resources e
-   | PageWithPageRef k -> gather_page_resources (k { slug = "TODO" })
+   | Identified (pref, pg) -> gather_page_resources pref pg
+   | LiftElement (_slug, e) -> gather_element_resources current_page_ref e
+   | PageWithPageRef k -> gather_page_resources current_page_ref (k (next_page_ref current_page_ref))
    | LiftResource resource -> [resource])
 
-and gather_element_resources e : resource list =
+and gather_element_resources (current_page_ref : page_ref) e : resource list =
   match e with
-  | Fragment es -> List.concat_map gather_element_resources es
-  | Attributed (_, e) -> gather_element_resources e
-  | P (_, e) -> gather_element_resources e
-  | Titled (_, e) -> gather_element_resources e
-  | Link (_, page) -> (gather_page_resources page)
+  | Fragment es -> List.concat_map (gather_element_resources current_page_ref) es
+  | Attributed (_, e) -> gather_element_resources current_page_ref e
+  | P (_, e) -> gather_element_resources current_page_ref e
+  | Titled (_, e) -> gather_element_resources current_page_ref e
+  | Link (_, page) -> (gather_page_resources current_page_ref page)
   | Link_ref _ -> []
   | Text _ -> []
   | Image (_, _, res) -> [res]
   | Image_ref _ -> []
-  | Identify (_, e) -> gather_element_resources e
+  | Identify (_, e) -> gather_element_resources current_page_ref e
+  | CallWithCurrentPageRef k -> gather_element_resources current_page_ref (k current_page_ref)
 
 let rec create_dir dir =
   print_endline @@ "create_dir: " ^ dir;
@@ -343,3 +374,35 @@ let website3 =
     (fun e ->
        append
          [(text "Hier ist noch ein Header"); e])
+
+let menu entries =
+  append
+    (List.map
+       (fun (ref, title) ->
+          call_with_current_page_ref
+            (fun current_ref ->
+               let active = current_ref == ref in
+               p ~a:(if active then [a_style "background: red"] else [])
+                 [link_ref title (ref_of_page_ref ref)]))
+       entries)
+
+let overview_page = page_of_element (text "Overview")
+let events_page = page_of_element (text "Events")
+let publications_page = page_of_element (text "Publications")
+
+let website4 =
+    (website_with_page_refs_3
+       ~slug1:"overview"
+       (fun overview_ref events_ref publications_ref ->
+          wrap
+            (make_website [identify_page overview_ref overview_page;
+                           identify_page events_ref events_page;
+                           identify_page publications_ref publications_page;])
+            (fun e ->
+               append
+                 [menu
+                    [(overview_ref, "Overview");
+                     (events_ref, "Events");
+                     (publications_ref, "Publications");];
+                  e])))
+
