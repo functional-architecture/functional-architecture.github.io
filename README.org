@@ -1,3 +1,7 @@
+** Build and run
+
+Run `nix run` to build and generate static files. Output is in directory `out`.
+
 ** What is a value?
 
 "Something intrinsically valuable." Values are ends
