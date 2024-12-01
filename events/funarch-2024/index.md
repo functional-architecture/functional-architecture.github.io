@@ -85,7 +85,7 @@ developed at Meta. We show how F3 transforms the inspirations from
 functional programming and type theory to an industrial grade software
 architecture that empowers a platform that serves billions of users.
 
-## [Design and implementation of a verified interpreter for additive manufacturing programs](https://dl.acm.org/doi/10.1145/3677998.3678221)
+## [Design and implementation of a verified interpreter for additive manufacturing programs](https://dl.acm.org/doi/10.1145/3677998.3678221?cid=99660065426)
 #### Matthew Sottile, Mohit Tekriwal (Lawrence Livermore National Laboratory)
 ##### (Experience report)
 
@@ -111,7 +111,7 @@ architecture and Haskell to building Cardano. We describe our
 strategy, our projects, reflect on lessons learned, the challenges we
 face and how we propose to meet them.
 
-## [Continuations: what have they ever done for us?](https://dl.acm.org/doi/10.1145/3677998.3678223)
+## [Continuations: what have they ever done for us?](https://dl.acm.org/doi/10.1145/3677998.3678223?cid=99661333902)
 #### [Marc Kaufmann](https://trichotomy.xyz/) (Austriae	Central European University), [Bogdan Popa](https://defn.io/)
 ##### (Experience Report)
 
