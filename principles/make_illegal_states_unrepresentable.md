@@ -1,21 +1,33 @@
 "Make illegal states unrepresentable" is a mantra commonly used in
-functional modeling. The idea is to model data representations in such
-a way that nonsensical ("illegal") values ("states") are inexpressible
-("unrepresentable").
+functional modeling. The mantra was coined by Yaron Minsky in a [2010
+guest lecture at
+Harvard.](https://blog.janestreet.com/effective-ml-revisited/) The
+idea is to model data representations in such a way that nonsensical
+("illegal") values ("states") are inexpressible
+("unrepresentable"). By adhering to "Make illegal states
+unrepresentable" the resulting models are often simpler, expressing
+the desired intent more directly. This leads to systems that are more
+robust (often correct by construction) and more loosely coupled.
 
 Objectives: [Simplicity](/#values), [Maintainability](/#values), [Correctness](/#values)
 
 Related patterns: [Static types](/static_types), [Parse, don’t validate](/parse_dont_validate), [Smart Constructor](/smart_constructor)
 
-## Introduction
 
-The term "Make illegal states unrepresentable" was coined by Yaron
-Minsky in a 2010 guest lecture at Harvard. Ron never fully explained
-what the mantra means, but [his example](https://blog.janestreet.com/effective-ml-revisited/)
-is quite illuminating in its own right.
+## Techniques
 
-Minsky starts off with the following OCaml code as an example of bad
-data modelling.
+"Make illegal states unrepresentable" was first introduced by Ron
+Minsky in the context of Ocaml, a statically typed language with
+explicit support for algebraic data types. The original example
+illustrates the mantra by turning a flat product type with many
+nullable fields into a sum-of-products. The mantra itself is not
+limited to statically typed languages and there are other techniques
+to implement the mantra.
+
+### Leveraging sum types
+
+Minsky's original example starts off with the following OCaml code,
+which illustrates some subtle data modelling issues.
 
 ```ocaml
 type connection_state =
@@ -93,100 +105,15 @@ type. Additionally, the requirement that `last_ping_time` and
 `last_ping_id` are either both `Some ...` or both `None` is now
 expressed by `last_ping` being a single option of a tuple.
 
-## Common techniques
+#### Leveraging sum types in dynamically typed languages
 
-The example above – transforming a product type (`connection_info`)
-with many nullable fields into a sum type with less nullable fields –
-demonstrates one effective technique to make illegal states
-unrepresentable. There are others, such as using associative maps and
-functions. Take a Scala representation of time series as a list of
-time-double-tuples:
-
-```scala
-object TimeSeriesService {
-  type TimeSeries = List[(Time, Double)]
-}
-```
-
-This allows for illegal and nonsensical values to be represented:
-
-```scala
-// Let t1, t2, t3 be timestamps with t1 < t2 < t3
-val ts1 = List((t2, 6.5), (t1, 5.0), (t3, 7.3))
-val ts2 = List((t1, 6.5), (t1, 6.5))
-val ts3 = List((t1, 6.5), (t1, 13.4))
-```
-
-`ts3` is certainly illegal, and `ts1` and `ts2` are surely not the
-common case either. A user of the `TimeSeriesService` now has to think
-hard about what each these cases denote. A more straightforward model
-is to represent time series as associative maps from time to double:
-
-```scala
-object TimeSeriesService {
-  type TimeSeries = Map[Time, Double]
-}
-```
-
-Now contradictory or redundant values are inexpressible. An even
-better model is time series as functions from time to optional
-double:
-
-```scala
-sealed trait TS extends Function1[Time, Option[Double]]
-
-object TimeSeriesService {
-  type TimeSeries = TS
-}
-```
-
-This way, time series can be represented by lists, maps, proper
-functions, static values, etc, as long as we can make these types
-behave like a function:
-
-```scala
-class TSList(list: List[(Time, Option[Double])])
-    extends TS {
-
-  def apply(t: Time): Option[Double] =
-    list.find( (tx, _) => tx == t ).flatMap(_._2)
-}
-
-class TSConst(val: Double) extends TS {
-  def apply(_: Time): Option[Double] =
-    Some(val)
-}
-```
-
-With this model of time series as functions we made illegal states
-unrepresentable and also we made all legal states representable.
-
-## Applicability to other programming paradigms
-
-"Make illegal states unrepresentable" was invented in the context of
-OCaml, which is a functional programming language with a strong static
-type system, but the mantra is applicable to most other programming
-paradigms. For example the Rust community adopted the mantra. Rust has
-a strong static type system but isn't a functional language. On the
-other hand, Clojure – a dynamically typed functional language – also
-allows programmers to make illegal states unrepresentable. 
-
-### Rust
-
-This [blog post](https://corrode.dev/blog/illegal-state/) discusses
-"Make illegal states unrepresentable" in the context of Rust.
-
-### Clojure
-
-Minsky's original talk suggests that "Make illegal states
-unrepresentable" is about algebraic data types and compile-time type
-checking. The underlying ideas are applicable to dynamically typed
-languages such as Clojure (+
+Dynamically typed languages such as Clojure do not explicitly mention
+algebraic data types as a language feature. Still, the above technique
+of turning a flat product into a sum-of-products can be used in
+dynamically typed languages as well. We use Clojure (+
 [active-clojure](https://github.com/active-group/active-clojure)
-records) as well, as is witnessed by the following contrasting pair of
-data representations.
-
-The bad representation uses a flat record as in the OCaml code above:
+records) to illustrate this point. The flawed representation uses a
+flat record as in the Ocaml code above:
 
 ```clojure
 (define-record-type ConnectionInfo
@@ -226,7 +153,7 @@ This, again, allows for nonsensical values to be representable:
    ))
 ```
 
-A better representation looks quite similar to the improved OCaml code above:
+A better representation looks quite similar to the improved Ocaml code above:
 
 ```clojure
 (define-record-type Connecting
@@ -285,9 +212,86 @@ Since Clojure doesn't do proper static type checking, the smart
 constructor `make-connection-info` above can only check its parameters
 at runtime via `assert`. Still, this latter representation is
 preferable to the previous one for the same reasons as in the original
-OCaml example.
+Ocaml example.
 
-## Discussion: Illegal states vs. illegal values
+
+
+
+
+### Leveraging associative maps and functions
+Some domains are best modelled with the help of associative key-value
+maps or pure functions.  As an example imagine we want to model the
+concept of a time series.  We start with a Scala
+representation of time series as a list of time-double-tuples:
+
+```scala
+object TimeSeriesService {
+  type TimeSeries = List[(Time, Double)]
+}
+```
+
+This allows for illegal and nonsensical values to be represented:
+
+```scala
+// Let t1, t2, t3 be timestamps with t1 < t2 < t3
+val ts1 = List((t2, 6.5), (t1, 5.0), (t3, 7.3))
+val ts2 = List((t1, 6.5), (t1, 6.5))
+val ts3 = List((t1, 6.5), (t1, 13.4))
+```
+
+`ts3` is certainly illegal, and `ts1` and `ts2` are surely not the
+common case either. A user of the `TimeSeriesService` now has to think
+hard about what each these cases denote. A more straightforward model
+is to represent time series as associative maps from time to double:
+
+```scala
+object TimeSeriesService {
+  type TimeSeries = Map[Time, Double]
+}
+```
+
+Now contradictory or redundant values are inexpressible. An even
+better model is time series as functions from time to optional
+double:
+
+```scala
+sealed trait TS extends Function1[Time, Option[Double]]
+
+object TimeSeriesService {
+  type TimeSeries = TS
+}
+```
+
+This way, time series can be represented by lists, maps, proper
+functions, static values, etc, as long as we can make these types
+behave like a function:
+
+```scala
+class TSList(list: List[(Time, Option[Double])])
+    extends TS {
+
+  def apply(t: Time): Option[Double] =
+    list.find( (tx, _) => tx == t ).flatMap(_._2)
+}
+
+class TSConst(val: Double) extends TS {
+  def apply(_: Time): Option[Double] =
+    Some(val)
+}
+```
+
+With this model of time series as functions we made illegal states
+unrepresentable and also we made all legal states representable, which
+might be just as important.
+
+
+### Smart constructors
+
+TODO
+
+## Architectural impact
+
+## Historical context and discussion
 
 "Make illegal states unrepresentable" specifically mentions
 "states". In software engineering, "state" usually refers to mutable
@@ -309,3 +313,26 @@ Order](https://personal.cis.strath.ac.uk/conor.mcbride/Pivotal.pdf) by
 Conor McBride and [Symbolic and Automatic Differentiation of
 Languages](http://conal.net/papers/language-derivatives/) by Conal
 Elliott.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
