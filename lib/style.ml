@@ -52,6 +52,7 @@ let css =
   font_decl ^
   {|
 html, body {
+    color: #333;
     margin: 0;
     padding: 0;
     font-size: 16px;
