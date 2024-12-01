@@ -291,6 +291,34 @@ TODO
 
 ## Architectural impact
 
+"Make illegal states unrepresentable" can have a great impact both for
+understanding a software's domain and for the software architecture
+itself. Models designed with "Make illegal states unrepresentable" in
+mind are simpler and therefore aid in gaining insight into a
+domain. Systems using these models are robust and loosely coupled.
+
+### Simplicity
+
+"Make illegal states unrepresentable" leads to simpler models. This
+frees the designer's mind from having to deal with arbitrary technical
+intracacies of the model. Take the model of time series as functions
+of time described above.
+
+```scala
+sealed trait TS extends Function1[Time, Option[Double]]
+```
+
+There's little you can do with functions, so there's little you can _do
+wrong_ with functions.
+
+### Robustness
+
+TODO
+
+### Decoupling
+
+TODO
+
 ## Historical context and discussion
 
 "Make illegal states unrepresentable" specifically mentions
