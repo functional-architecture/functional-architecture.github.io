@@ -36,7 +36,9 @@ News is available on [Mastodon](https://discuss.systems/@funarch),
 
 FUNARCH adheres to the [SIGPLAN/ICFP Code of Conduct](https://icfp24.sigplan.org/attending/code-of-conduct).
 
-## Program
+
+The videos are also available as a [YouTube playlist](https://www.youtube.com/playlist?list=PLyrlk8Xaylp6KYpIQg94J6vpyTW9x1Qe7).
+
 
 ### [Architecting Functional Programs](https://dl.acm.org/doi/10.1145/3677998.3678219)
 #### [Marco Sampellegrini](https://marcosampellegrini.com/)
@@ -85,6 +87,8 @@ developed at Meta. We show how F3 transforms the inspirations from
 functional programming and type theory to an industrial grade software
 architecture that empowers a platform that serves billions of users.
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/1NgrEH0RUAw?si=5JcKyyoiuskQiANM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 ## [Design and implementation of a verified interpreter for additive manufacturing programs](https://dl.acm.org/doi/10.1145/3677998.3678221?cid=99660065426)
 #### Matthew Sottile, Mohit Tekriwal (Lawrence Livermore National Laboratory)
 ##### (Experience report)
@@ -100,6 +104,8 @@ decisions that were made to facilitate this process. Finally, we share
 a set of architectural lessons that are generally applicable to other
 software with a similar goal of integration of verified components.
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/NFQBTJ0ASyE?si=TtatCVTgI_I3oDaM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 ## [Applying Continuous Formal Methods to Cardano](https://dl.acm.org/doi/10.1145/3677998.3678222)
 #### [James Chapman](http://www.cs.ioc.ee/~james), Arnaud Bailly, Polina Vinogradova (IOHK)
 ##### (Experience Report)
@@ -110,6 +116,8 @@ USD. In this paper we reflect on applying formal methods, functional
 architecture and Haskell to building Cardano. We describe our
 strategy, our projects, reflect on lessons learned, the challenges we
 face and how we propose to meet them.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/uZGckHd8yW4?si=ar-1gFzUzwrW9kB4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## [Continuations: what have they ever done for us?](https://dl.acm.org/doi/10.1145/3677998.3678223?cid=99661333902)
 #### [Marc Kaufmann](https://trichotomy.xyz/) (Austriae	Central European University), [Bogdan Popa](https://defn.io/)
@@ -126,6 +134,7 @@ continuations, such as persisting data across requests, working with
 dynamic variables, avoiding memory leaks, and the difficulty of
 debugging continuations. 
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Pzt3WhUF9bE?si=-0v9Phje_xviG6GO" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## [Bidirectional Data Transformations](https://dl.acm.org/doi/10.1145/3677998.3678224?cid=99661323233)
 #### Marcus Crestani, Markus Schlegel, Marco Schneider (Active Group)
@@ -148,7 +157,8 @@ and straightforward and foster understanding of the relationship
 between data structures by explicitly describing their connections in
 a composable manner.
 
-[Download](https://dl.acm.org/doi/10.1145/3677998.3678224?cid=99661323233)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Fl_ZEMOQr3U?si=SN8bWuDsiMLJftga" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 
 ## Program Chairs
 
