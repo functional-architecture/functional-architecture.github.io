@@ -36,7 +36,6 @@ News is available on [Mastodon](https://discuss.systems/@funarch),
 
 FUNARCH adheres to the [SIGPLAN/ICFP Code of Conduct](https://icfp24.sigplan.org/attending/code-of-conduct).
 
-## Program
 
 The videos are also available as a [YouTube playlist](https://www.youtube.com/playlist?list=PLyrlk8Xaylp6KYpIQg94J6vpyTW9x1Qe7).
 
