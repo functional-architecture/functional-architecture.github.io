@@ -313,7 +313,53 @@ wrong_ with functions.
 
 ### Robustness
 
-TODO
+The flawed representation of time series as a list of tuples allows
+for many illegal values to be represented:
+
+```scala
+object TimeSeriesServiceLegacy {
+  def getTimeSeriesData(from: Time, to: Time): List[(Time, Double)] = ???
+}
+
+// Let t1, t2, t3 be timestamps with t1 < t2 < t3
+val ts1 = List((t2, 6.5), (t1, 5.0), (t3, 7.3))
+val ts2 = List((t1, 6.5), (t1, 6.5))
+val ts3 = List((t1, 6.5), (t1, 13.4))
+```
+
+Since we _can_ represent these values, our software system _must_
+handle them consistently, i.e. each user of the corresponding
+interface has to agree on a course of action when encountering one of
+these values. In the case of time series as lists of tuples, we have
+to answer the following questions unanimously:
+
+* How do we deal with out-of-order entries in time series lists?
+* How do we deal with duplicate entries in time series lists?
+* How do we deal with contradictory entries in time series lists?
+
+Alternatively some users might choose to ignore these cases, relying
+on a separate validation step beforehand.
+
+All of this leads to brittle systems. With "Make illegal states
+unrepresentable" we simply define the problem away. Detailed decisions
+can be encapsulated in a single parse step ([Parse, don't
+validate](/parse_dont_validate)) so every subsequent calculation is
+freed from having to deal with these minutiae. In Domain-Driven-Design
+literature such a parse step is often referred to as an
+Anti-Corruption Layer.
+
+```scala
+object TimeSeriesServiceAntiCorruption {
+  private def parseList(lst: List[(Time, Double)], acc: Map[Time, Double]): Map[Time, Double] =
+    lst match {
+      case Nil => acc
+      case (t, x) :: rest => parseList(rest, acc + (t -> x))
+    }
+
+  def getTimeSeriesData(from: Time, to: Time): Map[Time, Double] =
+    parseList(TimeSeriesServiceLegacy.getTimeSeriesData(from, to), Map.empty)
+}
+```
 
 ### Decoupling
 
