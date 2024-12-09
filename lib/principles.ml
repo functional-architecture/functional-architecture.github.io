@@ -142,6 +142,18 @@ let decoupled_by_default_principle = {
   long = Some (Markdown.from_markdown_file "./principles/decoupled_by_default.md");
 }
 
+let late_decision_making_principle = {
+  title = "Late Decision Making";
+  route = "late";
+  short = "Software design is usually performed under \
+           uncertainty. Instead of trying to make the right decisions \
+           up front, we want to design our systems in such a way that \
+           it is easy to change our minds later in the process. This \
+           shifts our focus from making decisions to making decisions \
+           possible.";
+  long = Some (Markdown.from_markdown_file "./principles/late_decision_making.md");
+}
+
 let modularization_principle = {
   title = "Modularization";
   route = "modularization";
@@ -173,6 +185,7 @@ let principles = [
   abstraction_principle;
   architecture_as_code_principle;
   decoupled_by_default_principle;
+  late_decision_making_principle;
   modularization_principle;
   make_illegal_states_unrepresentable_principle;
 ]
