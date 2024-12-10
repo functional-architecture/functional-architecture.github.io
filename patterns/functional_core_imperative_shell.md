@@ -36,7 +36,61 @@ or swapped out without the need to touch the domain logic at all.
 
 ## Example
 
-FIXME
+Our simple example application reads user input, increments the input, and
+outputs the result:
+
+```ocaml
+fun increment() : Unit = {
+  print(read() + 1);
+}
+```
+
+The `increment` function couples the I/O code for reading and for displaying the
+result tightly to the pure logic for incrementing a value.  We can refactor this
+code to
+
+- a pure function that lives in our functional core with the single
+  responsibility to compute the result:
+
+```ocaml
+fun increment(Integer n) : Integer = {
+  return n + 1;
+}
+```
+
+- a side-effecting function with the single responsibility to supply the input
+  to the pure function:
+
+```ocaml
+fun input() : Integer = {
+  return read();
+}
+```
+
+- a side-effecting function with the single responsibility to do something with
+  the result of the pure function:
+
+```ocaml
+fun output(Integer n) : Unit = {
+  print(n);
+}
+```
+
+Our application's entry point function orchestrates the side-effecting functions
+(without error handling) of our imperative shell and calls the pure functions of
+the functional core:
+
+```ocaml
+fun main () : Unit = {
+  n = input();
+  n' = increment(n);
+  output(n');
+}
+```
+
+What we see here with this small example applies to larger, more complex
+programs.  And handling of errors and non-determinism can all happen locally in
+the shell and does not litter the domain logic.
 
 ## When to reach for this pattern
 
