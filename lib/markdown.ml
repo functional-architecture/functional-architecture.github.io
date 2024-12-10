@@ -14,7 +14,7 @@ let rec html_from_markdown_inline (md : Omd.attributes Omd.inline)
   | Code (_attr, str) -> code [(txt str)]
   | Hard_break _attr -> br ()
   | Soft_break _attr -> txt " "
-  | Image (_attr, _link) -> txt "TODO"
+  | Image (_attr, link) -> img ~src:link.destination ~alt:"TODO" ()
   | Html (_attr, _raw) -> txt "TODO"
 
 and html_from_markdown_inline_with_a (md : Omd.attributes Omd.inline) =
@@ -27,7 +27,7 @@ and html_from_markdown_inline_with_a (md : Omd.attributes Omd.inline) =
   | Hard_break _attr -> br ()
   | Soft_break _attr -> txt " "
   | Link (_attr, link) -> Tyxml.Html.a ~a:[a_href link.destination] [(html_from_markdown_inline link.label)]
-  | Image (_attr, _link) -> txt "TODO"
+  | Image (_attr, link) -> img ~src:link.destination ~alt:"TODO" ()
   | Html (_attr, _raw) -> txt "TODO"
 
 let h = function
