@@ -10,8 +10,8 @@ type pattern = {
 let functional_core_imperative_shell_pattern = {
   title = "Functional Core, Imperative Shell";
   route = "functional_core_imperative_shell";
-  short = p [(txt "Abundantly fruit upon winged. Yielding the image won't divide so. In earth from fruit for you Brought given them face fourth rule forth give.")];
-  long = div [p [(txt "TODO")]]
+  short = p [(txt "Structure software into functions in the core that are pure and functions in the shell that are impure.")];
+  long = (Markdown.from_markdown_file "./patterns/functional_core_imperative_shell.md")
 }
 
 let zipper_pattern = {
