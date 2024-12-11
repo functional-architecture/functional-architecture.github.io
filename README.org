@@ -25,6 +25,12 @@ i.e. a model. _If_ you're interested in
 maintainability, you should describe your
 architecture as code.
 
+A principle is something you can assess a new technology or pattern
+with.  E.g. somebody tells you that signals are the new hot shit in
+frontend architecture. Instead of having to follow your gut, you can
+assess the value of signals by checking against composability,
+abstraction, coupling, modelling ... principles.
+
 ** What is a pattern?
 
 See discussion at FUNARCH 2023: [[https://www.youtube.com/watch?v=mB2ZhK8tB8Y]]
