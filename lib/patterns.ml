@@ -80,6 +80,14 @@ let composable_effects_pattern = {
   long = div [p [(txt "TODO")]]
 }
 
+let composable_error_handling_pattern = {
+  title = "Composable Error Handling";
+  route = "composable_error_handling";
+  short = p [txt "Handle errors in a way that they can be composed, combined, \
+                  and passed through different parts of your program predictably."];
+  long = div [p [(txt "FIXME: maybe monad, ...")]]
+}
+
 let composable_guis_pattern = {
   title = "Composable GUI libraries";
   route = "composable_guis";
@@ -179,6 +187,7 @@ let patterns = [
   bidirectional_data_transformation_pattern;
   edsl_pattern;
   composable_effects_pattern;
+  composable_error_handling_pattern;
   composable_guis_pattern;
   property_based_testing_pattern;
   formal_verification_pattern;
