@@ -120,7 +120,8 @@ fun main () : Unit = {
 ```
 
 Handling of errors and non-determinism is left out here, but can all happen
-locally and coordinated in the `main` function.
+locally and coordinated in the `main` function.  See [Composable Error
+Handling](/composable_error_handling) for details.
 
 What we see here with this small example applies to larger, more complex
 programs.
