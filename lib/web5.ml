@@ -70,7 +70,21 @@ let div x y = Lift2 ((^), x, y)
 
 let with_ref k = With_ref k
 
-type 'a or_resource = ('a, string) Either.t
+type 'a or_resource =
+  | Value of 'a
+  | Resource of string
+  | Fail
+
+let or_resource_map f x =
+  match x with
+  | Value v -> Value (f v)
+  | Resource s -> Resource s
+  | Fail -> Fail
+
+let or_resource_map_2 f x y =
+  match (x, y) with
+  | (Value v, Value w) -> Value (f v w)
+  | _ -> Fail
 
 let rec resolve_acc : type a . a web -> ref_generator -> url -> (ref -> url option) -> (ref -> url option) =
   fun w ref_gen url_here url_of_ref r ->
@@ -112,17 +126,17 @@ let either_lift_2_left f x y =
     | Either.Right y' -> Either.Right y'
     | Either.Left y' -> Either.Left (f x' y')
 
-let rec run_fun_acc : type a . a web -> (ref -> url) -> ref_generator -> (url -> a or_resource option) =
+let rec run_fun_acc : type a . a web -> (ref -> url) -> ref_generator -> (url -> a or_resource) =
   fun w url_of_ref ref_gen u ->
     match w with
-    | Not_found -> None
-    | Const x -> Some (Either.Left x)
-    | Map (f, w') -> Option.map (Either.map_left f) (run_fun_acc w' url_of_ref ref_gen u)
-    | Lift2 (f, x, y) -> option_lift_2 (either_lift_2_left f) (run_fun_acc x url_of_ref ref_gen u) (run_fun_acc y url_of_ref ref_gen u)
+    | Not_found -> Fail
+    | Const x -> Value x
+    | Map (f, w') -> or_resource_map f (run_fun_acc w' url_of_ref ref_gen u)
+    | Lift2 (f, x, y) -> or_resource_map_2 f (run_fun_acc x url_of_ref ref_gen u) (run_fun_acc y url_of_ref ref_gen u)
     | With_ref k -> let (new_ref, ref_gen') = gen_ref ref_gen in
       run_fun_acc (k new_ref) url_of_ref ref_gen' u
     | Refer (_, w') -> run_fun_acc w' url_of_ref ref_gen u
-    | Resource data -> Some (Either.Right data)
+    | Resource data -> Resource data
     | Match (cases, default) ->
       match cases with
       | [] -> run_fun_acc default url_of_ref ref_gen u
@@ -134,7 +148,7 @@ let rec run_fun_acc : type a . a web -> (ref -> url) -> ref_generator -> (url ->
              then run_fun_acc w' url_of_ref ref_gen (mk_url u')
              else run_fun_acc (Match (cases', default)) url_of_ref ref_gen u
 
-let run_fun : 'a web -> (url -> 'a or_resource option) =
+let run_fun : 'a web -> (url -> 'a or_resource) =
   fun w u -> run_fun_acc w (resolve w) initial_ref_gen u
 
 
@@ -142,37 +156,32 @@ let run_fun : 'a web -> (url -> 'a or_resource option) =
 
 
 type 'a defaultMap = {
-  map : ('a option) M.t;
-  dflt : ('a option);
+  map : 'a M.t;
+  dflt : 'a;
 }
 
 let default_map_just v = {
   map = M.empty;
-  dflt = Some v;
-}
-
-let default_map_nothing = {
-  map = M.empty;
-  dflt = None;
+  dflt = v;
 }
 
 let default_map_map f dmap = {
-  map = M.map (Option.map f) dmap.map;
-  dflt = Option.map f dmap.dflt;
+  map = M.map f dmap.map;
+  dflt = f dmap.dflt;
 }
 
-let default_map_lift2 f m1 m2 = {
+let default_map_map_2 f m1 m2 = {
   map =
     M.merge
       (fun _k v1 v2 ->
          match (v1, v2) with
          | None, None -> None
-         | Some s1, None -> Some (option_lift_2 f s1 m2.dflt)
-         | None, Some s2 -> Some (option_lift_2 f m1.dflt s2) 
-         | Some s1, Some s2 -> Some (option_lift_2 f s1 s2))
+         | Some s1, None -> Some (f s1 m2.dflt)
+         | None, Some s2 -> Some (f m1.dflt s2) 
+         | Some s1, Some s2 -> Some (f s1 s2))
       m1.map
       m2.map;
-  dflt = option_lift_2 f m1.dflt m2.dflt;
+  dflt = f m1.dflt m2.dflt;
 }
 
 let prepend_segment seg m = {
@@ -185,20 +194,27 @@ let prepend_segment seg m = {
            acc)
       m.map
       (M.singleton seg m.dflt);
-  dflt = None;
+  dflt = Fail;
 }
 
 let rec run_dmap_acc : type a . a web -> (ref -> url) -> ref_generator -> a or_resource defaultMap =
   fun w url_of_ref ref_gen ->
     match w with
-    | Not_found -> { map = M.empty; dflt = None; }
-    | Const s -> default_map_just (Either.Left s)
-    | Map (f, w') -> default_map_map (Either.map_left f) (run_dmap_acc w' url_of_ref ref_gen)
-    | Lift2 (f, x, y) -> default_map_lift2 (either_lift_2_left f) (run_dmap_acc x url_of_ref ref_gen) (run_dmap_acc y url_of_ref ref_gen)
+    | Not_found -> { map = M.empty; dflt = Fail; }
+    | Const s -> default_map_just (Value s)
+    | Map (f, w') ->
+      default_map_map
+        (or_resource_map f)
+        (run_dmap_acc w' url_of_ref ref_gen)
+    | Lift2 (f, x, y) ->
+      default_map_map_2
+        (or_resource_map_2 f)
+        (run_dmap_acc x url_of_ref ref_gen)
+        (run_dmap_acc y url_of_ref ref_gen)
     | With_ref k -> let (new_ref, ref_gen') = gen_ref ref_gen in
       run_dmap_acc (k new_ref) url_of_ref ref_gen'
     | Refer (_, w') -> run_dmap_acc w' url_of_ref ref_gen
-    | Resource _data -> default_map_nothing (* TODO *)
+    | Resource data -> default_map_just (Resource data)
     | Match (cases, default) ->
       match cases with
       | [] -> run_dmap_acc default url_of_ref ref_gen
@@ -236,16 +252,14 @@ let map_of_dmap : string or_resource defaultMap -> string M.t =
   M.fold
     (fun k v acc ->
        match v with
-       | Some x ->
-         (match x with
-         | Either.Left s -> M.add (k ^ ".html") s acc
-         | Either.Right s -> M.add (k ^ ".TODO") s acc)
-       | None -> acc)
+       | Fail -> acc
+       | Resource data -> M.add (k ^ ".TODO") data acc
+       | Value s -> M.add (k ^ ".html") s acc)
     dm.map
     (match dm.dflt with
-     | None -> M.empty
-     | (Some (Left s)) -> (M.singleton "/index.html" s)
-     | (Some (Right s)) -> (M.singleton "/index.html" s))
+     | Fail -> M.empty
+     | Value s -> (M.singleton "/index.html" s)
+     | Resource s -> (M.singleton "/TODO.TODO" s))
 
 let rec create_dir dir =
   print_endline @@ "create_dir: " ^ dir;
