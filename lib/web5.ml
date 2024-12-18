@@ -142,18 +142,6 @@ let rec resolve_acc : type a . a web -> ref_generator -> url -> (ref -> url opti
 
 let resolve w r = Option.get (resolve_acc w initial_ref_gen empty_url (fun _ -> None) r)
 
-let option_lift_2 f xo yo =
-  Option.bind xo
-    (fun x ->
-       Option.map (f x) yo)
-
-let either_lift_2_left f x y =
-  match x with
-  | Either.Right x' -> Either.Right x'
-  | Either.Left x' -> match y with
-    | Either.Right y' -> Either.Right y'
-    | Either.Left y' -> Either.Left (f x' y')
-
 let rec run_fun_acc : type a . a web -> (ref -> url) -> ref_generator -> (url -> a or_resource) =
   fun w url_of_ref ref_gen u ->
     match w with
@@ -277,14 +265,6 @@ let run_dmap : 'a web -> 'a or_resource defaultMap =
      (fun _ ->
         let url_of_ref = resolve w in
         handle_refs url_of_ref (fun _ -> run_dmap_acc w url_of_ref initial_ref_gen)))
-
-let maybe_string_of x =
-  Option.map
-    (fun x ->
-       match x with
-       | Either.Left s -> s
-       | Either.Right s -> s)
-    x
 
 let map_of_dmap : string or_resource defaultMap -> string M.t =
   fun dm ->
