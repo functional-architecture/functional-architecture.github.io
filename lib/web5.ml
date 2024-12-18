@@ -2,6 +2,7 @@ module M = Map.Make(String)
 
 open Effect
 open Effect.Deep
+open Tyxml.Html
 
 type ref = {
   id : int;
@@ -47,17 +48,19 @@ let handle_refs (url_of_ref : ref -> url) f =
     }
 
 (* url -> string, for now *)
-type web =
-  | Not_found : web
-  | Const : string -> web
-  | Const_deferred : (unit -> string) -> web
-  | Map : (string -> string) * web -> web
-  | Lift2 : (string -> string -> string) * web * web -> web
-  | With_ref : (ref -> web) -> web
-  | Refer : ref * web -> web
-  | Link : ref -> web
-  | Resource : string -> web
-  | Match : (string * web) list * web -> web
+type 'a web =
+  | Not_found : 'a web
+  | Const : 'a -> 'a web
+  | Map : ('a -> 'b) * 'a web -> 'b web
+  | Lift2 : ('a -> 'b -> 'c) * 'a web * 'b web -> 'c web
+  | With_ref : (ref -> 'a web) -> 'a web
+  | Refer : ref * 'a web -> 'a web
+  | Resource : string -> 'a web
+  | Match : (string * 'a web) list * 'a web -> 'a web
+
+let map f x = Map (f, x)
+
+let map2 f x y = Lift2 (f, x, y)
 
 let case cases default = Match (cases, default)
 
@@ -67,7 +70,9 @@ let div x y = Lift2 ((^), x, y)
 
 let with_ref k = With_ref k
 
-let rec resolve_acc : web -> ref_generator -> url -> (ref -> url option) -> (ref -> url option) =
+type 'a or_resource = ('a, string) Either.t
+
+let rec resolve_acc : type a . a web -> ref_generator -> url -> (ref -> url option) -> (ref -> url option) =
   fun w ref_gen url_here url_of_ref r ->
     match (url_of_ref r) with
     | Some url -> Some url
@@ -75,7 +80,6 @@ let rec resolve_acc : web -> ref_generator -> url -> (ref -> url option) -> (ref
       match w with
       | Not_found -> None
       | Const _ -> None
-      | Const_deferred _ -> None
       | Map (_, w') -> resolve_acc w' ref_gen url_here url_of_ref r
       | Lift2 (_, x, y) -> (match resolve_acc x ref_gen url_here url_of_ref r with
           | Some url -> Some url
@@ -85,7 +89,6 @@ let rec resolve_acc : web -> ref_generator -> url -> (ref -> url option) -> (ref
       | Refer (r', w') -> if r = r'
                              then Some url_here
                              else resolve_acc w' ref_gen url_here url_of_ref r
-      | Link _ -> None
       | Resource _ -> None
       | Match (cases, default) ->
         match cases with
@@ -97,19 +100,29 @@ let rec resolve_acc : web -> ref_generator -> url -> (ref -> url option) -> (ref
 
 let resolve w r = Option.get (resolve_acc w initial_ref_gen empty_url (fun _ -> None) r)
 
-let rec run_fun_acc : web -> (ref -> url) -> ref_generator -> (url -> string) =
+let option_lift_2 f xo yo =
+  Option.bind xo
+    (fun x ->
+       Option.map (f x) yo)
+
+let either_lift_2_left f x y =
+  match x with
+  | Either.Right x' -> Either.Right x'
+  | Either.Left x' -> match y with
+    | Either.Right y' -> Either.Right y'
+    | Either.Left y' -> Either.Left (f x' y')
+
+let rec run_fun_acc : type a . a web -> (ref -> url) -> ref_generator -> (url -> a or_resource option) =
   fun w url_of_ref ref_gen u ->
     match w with
-    | Not_found -> "NOT FOUND"
-    | Const s -> s
-    | Const_deferred thunk -> thunk ()
-    | Map (f, w') -> f (run_fun_acc w' url_of_ref ref_gen u)
-    | Lift2 (f, x, y) -> f (run_fun_acc x url_of_ref ref_gen u) (run_fun_acc y url_of_ref ref_gen u)
+    | Not_found -> None
+    | Const x -> Some (Either.Left x)
+    | Map (f, w') -> Option.map (Either.map_left f) (run_fun_acc w' url_of_ref ref_gen u)
+    | Lift2 (f, x, y) -> option_lift_2 (either_lift_2_left f) (run_fun_acc x url_of_ref ref_gen u) (run_fun_acc y url_of_ref ref_gen u)
     | With_ref k -> let (new_ref, ref_gen') = gen_ref ref_gen in
       run_fun_acc (k new_ref) url_of_ref ref_gen' u
     | Refer (_, w') -> run_fun_acc w' url_of_ref ref_gen u
-    | Link r -> "Link: " ^ (string_of_url (url_of_ref r))
-    | Resource data -> "Some resource: (TODO) " ^ data
+    | Resource data -> Some (Either.Right data)
     | Match (cases, default) ->
       match cases with
       | [] -> run_fun_acc default url_of_ref ref_gen u
@@ -121,38 +134,34 @@ let rec run_fun_acc : web -> (ref -> url) -> ref_generator -> (url -> string) =
              then run_fun_acc w' url_of_ref ref_gen (mk_url u')
              else run_fun_acc (Match (cases', default)) url_of_ref ref_gen u
 
-let run_fun : web -> (url -> string) =
+let run_fun : 'a web -> (url -> 'a or_resource option) =
   fun w u -> run_fun_acc w (resolve w) initial_ref_gen u
 
 
 (* ----- *)
 
-let option_lift_2 f xo yo =
-  Option.bind xo
-    (fun x ->
-       Option.map (f x) yo)
 
-type defaultStringMap = {
-  map : (string option) M.t;
-  dflt : (string option);
+type 'a defaultMap = {
+  map : ('a option) M.t;
+  dflt : ('a option);
 }
 
-let default_string_map_just v = {
+let default_map_just v = {
   map = M.empty;
   dflt = Some v;
 }
 
-let default_string_map_nothing = {
+let default_map_nothing = {
   map = M.empty;
   dflt = None;
 }
 
-let default_string_map_map f dmap = {
+let default_map_map f dmap = {
   map = M.map (Option.map f) dmap.map;
   dflt = Option.map f dmap.dflt;
 }
 
-let default_string_map_lift2 f m1 m2 = {
+let default_map_lift2 f m1 m2 = {
   map =
     M.merge
       (fun _k v1 v2 ->
@@ -179,19 +188,17 @@ let prepend_segment seg m = {
   dflt = None;
 }
 
-let rec run_map_acc : web -> (ref -> url) -> ref_generator -> defaultStringMap =
+let rec run_map_acc : type a . a web -> (ref -> url) -> ref_generator -> a or_resource defaultMap =
   fun w url_of_ref ref_gen ->
     match w with
     | Not_found -> { map = M.empty; dflt = None; }
-    | Const s -> default_string_map_just s
-    | Const_deferred thunk -> default_string_map_just (thunk ())
-    | Map (f, w') -> default_string_map_map f (run_map_acc w' url_of_ref ref_gen)
-    | Lift2 (f, x, y) -> default_string_map_lift2 f (run_map_acc x url_of_ref ref_gen) (run_map_acc y url_of_ref ref_gen)
+    | Const s -> default_map_just (Either.Left s)
+    | Map (f, w') -> default_map_map (Either.map_left f) (run_map_acc w' url_of_ref ref_gen)
+    | Lift2 (f, x, y) -> default_map_lift2 (either_lift_2_left f) (run_map_acc x url_of_ref ref_gen) (run_map_acc y url_of_ref ref_gen)
     | With_ref k -> let (new_ref, ref_gen') = gen_ref ref_gen in
       run_map_acc (k new_ref) url_of_ref ref_gen'
     | Refer (_, w') -> run_map_acc w' url_of_ref ref_gen
-    | Link r -> default_string_map_just @@ "Link: " ^ (string_of_url (url_of_ref r))
-    | Resource data -> default_string_map_just @@ "Resource (TODO): " ^ data
+    | Resource _data -> default_map_nothing (* TODO *)
     | Match (cases, default) ->
       match cases with
       | [] -> run_map_acc default url_of_ref ref_gen
@@ -207,7 +214,7 @@ let rec run_map_acc : web -> (ref -> url) -> ref_generator -> defaultStringMap =
           dflt = other.dflt;
         }
 
-let run_map : web -> defaultStringMap =
+let run_map : 'a web -> 'a or_resource defaultMap =
   fun w ->
   (handle_refs
      (* for calls from resolve: return some dummy urls *)
@@ -238,6 +245,22 @@ let ex5 =
           ("about",
            div
              (Const "hier geht zu employes: ")
-             (div
-                (Link r)
-                (Const (deref r))))])
+             (Const (deref r)))])
+
+let ex6 =
+  map2
+    (fun x y -> Tyxml.Html.div [x; y])
+    (Const (p [txt "sup"]))
+    (Const (p [txt "dawg"]))
+
+let ex7 =
+  map
+    (fun x ->
+       html
+         (head (title (txt "Hi")) [])
+         (body [x]))
+    ex6
+
+let pr_html x = Format.asprintf "%a" (Tyxml.Html.pp ~indent:false ()) x
+
+let ex8 = map pr_html ex7
