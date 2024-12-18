@@ -188,24 +188,24 @@ let prepend_segment seg m = {
   dflt = None;
 }
 
-let rec run_map_acc : type a . a web -> (ref -> url) -> ref_generator -> a or_resource defaultMap =
+let rec run_dmap_acc : type a . a web -> (ref -> url) -> ref_generator -> a or_resource defaultMap =
   fun w url_of_ref ref_gen ->
     match w with
     | Not_found -> { map = M.empty; dflt = None; }
     | Const s -> default_map_just (Either.Left s)
-    | Map (f, w') -> default_map_map (Either.map_left f) (run_map_acc w' url_of_ref ref_gen)
-    | Lift2 (f, x, y) -> default_map_lift2 (either_lift_2_left f) (run_map_acc x url_of_ref ref_gen) (run_map_acc y url_of_ref ref_gen)
+    | Map (f, w') -> default_map_map (Either.map_left f) (run_dmap_acc w' url_of_ref ref_gen)
+    | Lift2 (f, x, y) -> default_map_lift2 (either_lift_2_left f) (run_dmap_acc x url_of_ref ref_gen) (run_dmap_acc y url_of_ref ref_gen)
     | With_ref k -> let (new_ref, ref_gen') = gen_ref ref_gen in
-      run_map_acc (k new_ref) url_of_ref ref_gen'
-    | Refer (_, w') -> run_map_acc w' url_of_ref ref_gen
+      run_dmap_acc (k new_ref) url_of_ref ref_gen'
+    | Refer (_, w') -> run_dmap_acc w' url_of_ref ref_gen
     | Resource _data -> default_map_nothing (* TODO *)
     | Match (cases, default) ->
       match cases with
-      | [] -> run_map_acc default url_of_ref ref_gen
+      | [] -> run_dmap_acc default url_of_ref ref_gen
       | ((segment, w') :: cases') ->
-        let inner = run_map_acc w' url_of_ref ref_gen in
+        let inner = run_dmap_acc w' url_of_ref ref_gen in
         let this = prepend_segment segment inner in
-        let other = run_map_acc (Match (cases', default)) url_of_ref ref_gen in
+        let other = run_dmap_acc (Match (cases', default)) url_of_ref ref_gen in
         {
           map = M.union
                   (fun _k v1 _v2 -> Some v1)
@@ -214,14 +214,58 @@ let rec run_map_acc : type a . a web -> (ref -> url) -> ref_generator -> a or_re
           dflt = other.dflt;
         }
 
-let run_map : 'a web -> 'a or_resource defaultMap =
+let run_dmap : 'a web -> 'a or_resource defaultMap =
   fun w ->
   (handle_refs
      (* for calls from resolve: return some dummy urls *)
      (fun _ -> empty_url)
      (fun _ ->
         let url_of_ref = resolve w in
-        handle_refs url_of_ref (fun _ -> run_map_acc w url_of_ref initial_ref_gen)))
+        handle_refs url_of_ref (fun _ -> run_dmap_acc w url_of_ref initial_ref_gen)))
+
+let maybe_string_of x =
+  Option.map
+    (fun x ->
+       match x with
+       | Either.Left s -> s
+       | Either.Right s -> s)
+    x
+
+let map_of_dmap : string or_resource defaultMap -> string M.t =
+  fun dm ->
+  M.fold
+    (fun k v acc ->
+       match v with
+       | Some x ->
+         (match x with
+         | Either.Left s -> M.add (k ^ ".html") s acc
+         | Either.Right s -> M.add (k ^ ".TODO") s acc)
+       | None -> acc)
+    dm.map
+    (match dm.dflt with
+     | None -> M.empty
+     | (Some (Left s)) -> (M.singleton "/index.html" s)
+     | (Some (Right s)) -> (M.singleton "/index.html" s))
+
+let rec create_dir dir =
+  print_endline @@ "create_dir: " ^ dir;
+  if Sys.file_exists dir
+  then ()
+  else let prefix = Filename.dirname dir in
+    create_dir prefix;
+    Sys.mkdir dir 0o755
+
+let write file s =
+  let dir = Filename.dirname file in
+  print_endline @@ "writing to: " ^ file;
+  create_dir dir;
+  Out_channel.with_open_bin file (fun ch -> Out_channel.output_string ch s)
+
+let render : string M.t -> unit =
+  M.iter
+    (fun filename content ->
+      Printf.printf "Rendering %s\n" filename;
+      write filename content)
 
 (* Examples *)
 
@@ -247,7 +291,7 @@ let ex5 =
              (Const "hier geht zu employes: ")
              (Const (deref r)))])
 
-let ex6 =
+let ex6 : [`Div] elt web =
   map2
     (fun x y -> Tyxml.Html.div [x; y])
     (Const (p [txt "sup"]))
@@ -264,3 +308,5 @@ let ex7 =
 let pr_html x = Format.asprintf "%a" (Tyxml.Html.pp ~indent:false ()) x
 
 let ex8 = map pr_html ex7
+
+let dm8 = run_dmap ex8
