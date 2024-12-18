@@ -49,6 +49,7 @@ let handle_refs (url_of_ref : ref -> url) f =
 
 (* url -> string, for now *)
 type 'a web =
+  (* aka empty (Alternative) *)
   | Not_found : 'a web
   (* aka pure *)
   | Const : 'a -> 'a web
@@ -58,10 +59,16 @@ type 'a web =
   | Lift2 : ('a -> 'b -> 'c) * 'a web * 'b web -> 'c web
   (* aka sequenceA, web is a traversable functor *)
   | Sequence : 'a web list -> 'a list web
+
   | With_ref : (ref -> 'a web) -> 'a web
   | Refer : ref * 'a web -> 'a web
+
   | Resource : string -> 'a web
-  | Match : (string * 'a web) list * 'a web -> 'a web
+
+  (* primitive parser *)
+  | Seg : string * 'a web -> 'a web
+  (* aka <|> *)
+  | Or : 'a web * 'a web -> 'a web
 
 let map f x = Map (f, x)
 
@@ -71,7 +78,12 @@ let sequence xs = Sequence xs
 
 let mapn f xs = map f (sequence xs)
 
-let case cases default = Match (cases, default)
+let case cases default =
+  List.fold_right
+    (fun (seg, w) acc ->
+       Or (Seg (seg, w), acc))
+    cases
+    default
 
 let case_else_fail cases = case cases Not_found
 
@@ -99,12 +111,18 @@ let or_resource_map_2 f x y =
   | (_, Resource r) -> Resource r
   | _ -> Fail
 
+(* TODO: we need to split the ref_generator for the different branches of Or, Lift2, Sequence *)
 let rec resolve_acc : type a . a web -> ref_generator -> url -> (ref -> url option) -> (ref -> url option) =
   fun w ref_gen url_here url_of_ref r ->
     match (url_of_ref r) with
     | Some url -> Some url
     | None ->
       match w with
+      | Or (x, y) ->
+        (match resolve_acc x ref_gen url_here url_of_ref r with
+         | Some url -> Some url
+         | None -> resolve_acc y ref_gen url_here url_of_ref r)
+      | Seg (segment, w') -> resolve_acc w' ref_gen (url_snoc url_here segment) url_of_ref r
       | Not_found -> None
       | Const _ -> None
       | Map (_, w') -> resolve_acc w' ref_gen url_here url_of_ref r
@@ -121,13 +139,6 @@ let rec resolve_acc : type a . a web -> ref_generator -> url -> (ref -> url opti
                              then Some url_here
                              else resolve_acc w' ref_gen url_here url_of_ref r
       | Resource _ -> None
-      | Match (cases, default) ->
-        match cases with
-        | [] -> resolve_acc default ref_gen url_here url_of_ref r
-        | ((segment, w') :: cases') ->
-          match resolve_acc w' ref_gen (url_snoc url_here segment) url_of_ref r with
-          | Some url -> Some url
-          | None -> resolve_acc (Match (cases', default)) ref_gen url_here url_of_ref r
 
 let resolve w r = Option.get (resolve_acc w initial_ref_gen empty_url (fun _ -> None) r)
 
@@ -146,6 +157,18 @@ let either_lift_2_left f x y =
 let rec run_fun_acc : type a . a web -> (ref -> url) -> ref_generator -> (url -> a or_resource) =
   fun w url_of_ref ref_gen u ->
     match w with
+    | Or (x, y) ->
+      (match run_fun_acc x url_of_ref ref_gen u with
+       | Value v -> Value v
+       | Resource r -> Resource r
+       | Fail -> run_fun_acc y url_of_ref ref_gen u)
+    | Seg (segment, w') ->
+      (match u.path with
+       | [] -> Fail
+       | segment' :: u' ->
+         if segment = segment'
+         then run_fun_acc w' url_of_ref ref_gen (mk_url u')
+         else Fail)
     | Not_found -> Fail
     | Const x -> Value x
     | Map (f, w') -> or_resource_map f (run_fun_acc w' url_of_ref ref_gen u)
@@ -159,16 +182,6 @@ let rec run_fun_acc : type a . a web -> (ref -> url) -> ref_generator -> (url ->
       run_fun_acc (k new_ref) url_of_ref ref_gen' u
     | Refer (_, w') -> run_fun_acc w' url_of_ref ref_gen u
     | Resource s -> Resource s
-    | Match (cases, default) ->
-      match cases with
-      | [] -> run_fun_acc default url_of_ref ref_gen u
-      | ((segment, w') :: cases') ->
-        match u.path with
-        | [] -> run_fun_acc default url_of_ref ref_gen u
-        | segment' :: u' ->
-          if segment = segment'
-             then run_fun_acc w' url_of_ref ref_gen (mk_url u')
-             else run_fun_acc (Match (cases', default)) url_of_ref ref_gen u
 
 let run_fun : 'a web -> (url -> 'a or_resource) =
   fun w u -> run_fun_acc w (resolve w) initial_ref_gen u
@@ -222,6 +235,18 @@ let prepend_segment seg m = {
 let rec run_dmap_acc : type a . a web -> (ref -> url) -> ref_generator -> a or_resource defaultMap =
   fun w url_of_ref ref_gen ->
     match w with
+    | Or (x, y) ->
+      let xdm = run_dmap_acc x url_of_ref ref_gen in
+      let ydm = run_dmap_acc y url_of_ref ref_gen in
+      {
+        map = M.union
+                (fun _k v1 _v2 -> Some v1)
+                xdm.map
+                ydm.map;
+        dflt = ydm.dflt;
+      }
+    | Seg (segment, w') ->
+      prepend_segment segment (run_dmap_acc w' url_of_ref ref_gen)
     | Not_found -> { map = M.empty; dflt = Fail; }
     | Const s -> default_map_just (Value s)
     | Map (f, w') ->
@@ -243,20 +268,6 @@ let rec run_dmap_acc : type a . a web -> (ref -> url) -> ref_generator -> a or_r
       run_dmap_acc (k new_ref) url_of_ref ref_gen'
     | Refer (_, w') -> run_dmap_acc w' url_of_ref ref_gen
     | Resource s -> default_map_just (Resource s)
-    | Match (cases, default) ->
-      match cases with
-      | [] -> run_dmap_acc default url_of_ref ref_gen
-      | ((segment, w') :: cases') ->
-        let inner = run_dmap_acc w' url_of_ref ref_gen in
-        let this = prepend_segment segment inner in
-        let other = run_dmap_acc (Match (cases', default)) url_of_ref ref_gen in
-        {
-          map = M.union
-                  (fun _k v1 _v2 -> Some v1)
-                  this.map
-                  other.map;
-          dflt = other.dflt;
-        }
 
 let run_dmap : 'a web -> 'a or_resource defaultMap =
   fun w ->
@@ -352,13 +363,48 @@ let ex6 : [`Div] elt web =
     [(Const (p [txt "sup"]));
      (Const (p [txt "dawg"]))]
 
+let read_file file =
+  In_channel.with_open_bin file In_channel.input_all
+
+let with_resource ?(filename = "") contents k =
+  let filename = match filename with
+    | "" -> string_of_int (Hashtbl.hash contents)
+    | _ -> filename in
+  with_ref
+    (fun r ->
+       case
+         [(filename, refer r (Resource contents))]
+         (k r))
+
+let js =
+  with_resource
+    ~filename:"highlight.min.js"
+    (read_file "./js/highlight.min.js")
+    (fun hljs_ref ->
+       with_resource
+         (read_file "./js/languages/java.js")
+         (fun java_ref ->
+            (Const
+               (script ~a:[a_script_type `Module]
+                  (txt
+                     (Printf.sprintf
+                        "import hljs from '%s'
+                         import java from '%s'
+                         hljs.registerLanguage('java', java);
+                         hljs.highlightAll();"
+                        (deref hljs_ref)
+                        (deref java_ref)))))))
+
 let ex7 =
-  map
-    (fun x ->
+  map2
+    (fun x js ->
        html
-         (head (title (txt "Hi")) [])
+         (head
+            (title (txt "Hi"))
+            [js])
          (body [x]))
     ex6
+    js
 
 let pr_html x = Format.asprintf "%a" (Tyxml.Html.pp ~indent:false ()) x
 
