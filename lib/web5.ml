@@ -183,7 +183,7 @@ type 'a defaultMap = {
   dflt : 'a;
 }
 
-let default_map_just v = {
+let default_map_const v = {
   map = M.empty;
   dflt = v;
 }
@@ -236,7 +236,7 @@ let rec run_dmap_acc : type a . a web -> (ref -> url) -> ref_generator -> a or_r
     | Seg (segment, w') ->
       prepend_segment segment (run_dmap_acc w' url_of_ref ref_gen)
     | Not_found -> { map = M.empty; dflt = Fail; }
-    | Const s -> default_map_just (Value s)
+    | Const s -> default_map_const (Value s)
     | Map (f, w') ->
       default_map_map
         (or_resource_map f)
@@ -246,7 +246,7 @@ let rec run_dmap_acc : type a . a web -> (ref -> url) -> ref_generator -> a or_r
         (or_resource_map_2 f)
         (run_dmap_acc x url_of_ref ref_gen)
         (run_dmap_acc y url_of_ref ref_gen)
-    | Sequence [] -> default_map_just (Value [])
+    | Sequence [] -> default_map_const (Value [])
     | Sequence (w' :: ws) ->
       default_map_map_2
         (or_resource_map_2 List.cons)
@@ -255,7 +255,7 @@ let rec run_dmap_acc : type a . a web -> (ref -> url) -> ref_generator -> a or_r
     | With_ref k -> let (new_ref, ref_gen') = gen_ref ref_gen in
       run_dmap_acc (k new_ref) url_of_ref ref_gen'
     | Refer (_, w') -> run_dmap_acc w' url_of_ref ref_gen
-    | Resource s -> default_map_just (Resource s)
+    | Resource s -> default_map_const (Resource s)
 
 let run_dmap : 'a web -> 'a or_resource defaultMap =
   fun w ->
