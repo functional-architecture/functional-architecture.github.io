@@ -70,6 +70,8 @@ let div x y = Lift2 ((^), x, y)
 
 let with_ref k = With_ref k
 
+let refer r w = Refer (r, w)
+
 type 'a or_resource =
   | Value of 'a
   | Resource of string
@@ -84,6 +86,8 @@ let or_resource_map f x =
 let or_resource_map_2 f x y =
   match (x, y) with
   | (Value v, Value w) -> Value (f v w)
+  | (Resource r, _) -> Resource r
+  | (_, Resource r) -> Resource r
   | _ -> Fail
 
 let rec resolve_acc : type a . a web -> ref_generator -> url -> (ref -> url option) -> (ref -> url option) =
@@ -136,7 +140,7 @@ let rec run_fun_acc : type a . a web -> (ref -> url) -> ref_generator -> (url ->
     | With_ref k -> let (new_ref, ref_gen') = gen_ref ref_gen in
       run_fun_acc (k new_ref) url_of_ref ref_gen' u
     | Refer (_, w') -> run_fun_acc w' url_of_ref ref_gen u
-    | Resource data -> Resource data
+    | Resource s -> Resource s
     | Match (cases, default) ->
       match cases with
       | [] -> run_fun_acc default url_of_ref ref_gen u
@@ -189,7 +193,7 @@ let prepend_segment seg m = {
     M.fold
       (fun k v acc ->
          M.add
-           (seg ^ k)
+           (seg ^ "/" ^ k)
            v
            acc)
       m.map
@@ -214,7 +218,7 @@ let rec run_dmap_acc : type a . a web -> (ref -> url) -> ref_generator -> a or_r
     | With_ref k -> let (new_ref, ref_gen') = gen_ref ref_gen in
       run_dmap_acc (k new_ref) url_of_ref ref_gen'
     | Refer (_, w') -> run_dmap_acc w' url_of_ref ref_gen
-    | Resource data -> default_map_just (Resource data)
+    | Resource s -> default_map_just (Resource s)
     | Match (cases, default) ->
       match cases with
       | [] -> run_dmap_acc default url_of_ref ref_gen
@@ -253,13 +257,13 @@ let map_of_dmap : string or_resource defaultMap -> string M.t =
     (fun k v acc ->
        match v with
        | Fail -> acc
-       | Resource data -> M.add (k ^ ".TODO") data acc
-       | Value s -> M.add (k ^ ".html") s acc)
+       | Resource s -> M.add k s acc
+       | Value s -> M.add (k ^ "/index.html") s acc)
     dm.map
     (match dm.dflt with
      | Fail -> M.empty
-     | Value s -> (M.singleton "/index.html" s)
-     | Resource s -> (M.singleton "/TODO.TODO" s))
+     | Value s -> (M.singleton "./index.html" s)
+     | Resource s -> (M.singleton "undefined.undefined" s))
 
 let rec create_dir dir =
   print_endline @@ "create_dir: " ^ dir;
@@ -283,10 +287,22 @@ let render : string M.t -> unit =
 
 (* Examples *)
 
+let img_text filename content =
+  with_ref
+    (fun r ->
+       case
+         [(filename, refer r (Resource content))]
+         (Const ("<img src=" ^ (deref r) ^ " />")))
+
+let ex0 =
+  div
+    (Const "undich frank, mein fote ist: ")
+    (img_text "frank.jpg" "BINARY")
+
 let ex1 =
   case_else_fail
     [("juergen", Const "Ja moin ich bin juerg");
-     ("frank", Const "undich frank, mein fote ist: ")]
+     ("frank", ex0)]
 
 let ex2 = div ex1 ex1
 
