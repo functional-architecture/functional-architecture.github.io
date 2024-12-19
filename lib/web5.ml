@@ -113,6 +113,8 @@ let with_resource ?(filename = "") contents k =
 
 let (let&) x f = with_resource x f
 let (let@) (name, x) f = with_resource ~filename:name x f
+let (let+) x f = map f x
+let (let$) _x f = with_ref f
 
 (* --- *)
 

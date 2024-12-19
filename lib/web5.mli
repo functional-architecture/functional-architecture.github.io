@@ -32,6 +32,8 @@ val deref : ref -> string
 
 val (let&) : string -> (ref -> 'a web) -> 'a web
 val (let@) : (string * string) -> (ref -> 'a web) -> 'a web
+val (let+) : 'a web -> ('a -> 'b) -> 'b web
+val (let$) : 'a -> (ref -> 'b web) -> 'b web
 
 val render : string web -> unit
 
