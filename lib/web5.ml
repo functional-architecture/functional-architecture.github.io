@@ -2,7 +2,6 @@ module M = Map.Make(String)
 
 open Effect
 open Effect.Deep
-open Tyxml.Html
 
 type ref = {
   id : int;
@@ -11,6 +10,8 @@ type ref = {
 let mk_ref i = {
   id = i;
 }
+
+let refs_eq r1 r2 = r1.id = r2.id
 
 type ref_generator = int
 let gen_ref rg = (mk_ref rg, rg + 1)
@@ -70,6 +71,10 @@ type 'a web =
   (* aka <|> *)
   | Or : 'a web * 'a web -> 'a web
 
+let empty = Not_found
+
+let pure x = Const x
+
 let map f x = Map (f, x)
 
 let map2 f x y = Lift2 (f, x, y)
@@ -77,6 +82,10 @@ let map2 f x y = Lift2 (f, x, y)
 let sequence xs = Sequence xs
 
 let mapn f xs = map f (sequence xs)
+
+let seg s w = Seg (s, w)
+
+let (||) x y = Or (x, y)
 
 let case cases default =
   List.fold_right
@@ -87,11 +96,26 @@ let case cases default =
 
 let case_else_fail cases = case cases Not_found
 
-let div x y = Lift2 ((^), x, y)
+let resource r = Resource r
 
 let with_ref k = With_ref k
 
 let refer r w = Refer (r, w)
+
+let with_resource ?(filename = "") contents k =
+  let filename = match filename with
+    | "" -> string_of_int (Hashtbl.hash contents)
+    | _ -> filename in
+  with_ref
+    (fun r ->
+       case
+         [(filename, refer r (Resource contents))]
+         (k r))
+
+let (let&) x f = with_resource x f
+let (let@) (name, x) f = with_resource ~filename:name x f
+
+(* --- *)
 
 type 'a or_resource =
   | Value of 'a
@@ -135,7 +159,7 @@ let rec resolve_acc : type a . a web -> ref_generator -> url -> (ref -> url opti
           | None -> resolve_acc (Sequence ws) ref_gen url_here url_of_ref r)
       | With_ref k -> let (new_ref, ref_gen') = gen_ref ref_gen in
         resolve_acc (k new_ref) ref_gen' url_here url_of_ref r
-      | Refer (r', w') -> if r = r'
+      | Refer (r', w') -> if refs_eq r r'
                              then Some url_here
                              else resolve_acc w' ref_gen url_here url_of_ref r
       | Resource _ -> None
@@ -294,100 +318,93 @@ let write file s =
   create_dir dir;
   Out_channel.with_open_bin file (fun ch -> Out_channel.output_string ch s)
 
-let render : string M.t -> unit =
+let render_map : string M.t -> unit =
   M.iter
     (fun filename content ->
       Printf.printf "Rendering %s\n" filename;
       write filename content)
 
+let render : string web -> unit =
+  fun w -> render_map (map_of_dmap (run_dmap w))
+
 (* Examples *)
 
-let img_text filename content =
-  with_ref
-    (fun r ->
-       case
-         [(filename, refer r (Resource content))]
-         (Const ("<img src=" ^ (deref r) ^ " />")))
+(* open Tyxml.Html *)
 
-let ex0 =
-  mapn
-    (String.concat "...")
-    [(Const "undich frank, mein fote ist: ");
-     (img_text "frank.jpg" "BINARY")]
+(* let div x y = Lift2 ((^), x, y) *)
 
-let ex1 =
-  case_else_fail
-    [("juergen", Const "Ja moin ich bin juerg");
-     ("frank", ex0)]
+(* let img_text filename content = *)
+(*   with_ref *)
+(*     (fun r -> *)
+(*        case *)
+(*          [(filename, refer r (Resource content))] *)
+(*          (Const ("<img src=" ^ (deref r) ^ " />"))) *)
 
-let ex2 = div ex1 ex1
+(* let ex0 = *)
+(*   mapn *)
+(*     (String.concat "...") *)
+(*     [(Const "undich frank, mein fote ist: "); *)
+(*      (img_text "frank.jpg" "BINARY")] *)
 
-let ex3 =
-  case_else_fail
-    [("employees", ex1);
-     ("about", Const "A very nice website")]
+(* let ex1 = *)
+(*   case_else_fail *)
+(*     [("juergen", Const "Ja moin ich bin juerg"); *)
+(*      ("frank", ex0)] *)
 
-let ex5 =
-  with_ref
-    (fun r ->
-       case_else_fail
-         [("employees", Refer (r, ex3));
-          ("about",
-           div
-             (Const "hier geht zu employes: ")
-             (Const (deref r)))])
+(* let ex2 = div ex1 ex1 *)
 
-let ex6 : [`Div] elt web =
-  mapn
-    (Tyxml.Html.div ~a:[a_style "background: red"])
-    [(Const (p [txt "sup"]));
-     (Const (p [txt "dawg"]))]
+(* let ex3 = *)
+(*   case_else_fail *)
+(*     [("employees", ex1); *)
+(*      ("about", Const "A very nice website")] *)
 
-let read_file file =
-  In_channel.with_open_bin file In_channel.input_all
+(* let ex5 = *)
+(*   with_ref *)
+(*     (fun r -> *)
+(*        case_else_fail *)
+(*          [("employees", Refer (r, ex3)); *)
+(*           ("about", *)
+(*            div *)
+(*              (Const "hier geht zu employes: ") *)
+(*              (Const (deref r)))]) *)
 
-let with_resource ?(filename = "") contents k =
-  let filename = match filename with
-    | "" -> string_of_int (Hashtbl.hash contents)
-    | _ -> filename in
-  with_ref
-    (fun r ->
-       case
-         [(filename, refer r (Resource contents))]
-         (k r))
+(* let ex6 : [`Div] elt web = *)
+(*   mapn *)
+(*     (Tyxml.Html.div ~a:[a_style "background: red"]) *)
+(*     [(Const (p [txt "sup"])); *)
+(*      (Const (p [txt "dawg"]))] *)
 
-let js =
-  with_resource
-    ~filename:"highlight.min.js"
-    (read_file "./js/highlight.min.js")
-    (fun hljs_ref ->
-       with_resource
-         (read_file "./js/languages/java.js")
-         (fun java_ref ->
-            (Const
-               (script ~a:[a_script_type `Module]
-                  (txt
-                     (Printf.sprintf
-                        "import hljs from '%s'
-                         import java from '%s'
-                         hljs.registerLanguage('java', java);
-                         hljs.highlightAll();"
-                        (deref hljs_ref)
-                        (deref java_ref)))))))
+(* let read_file file = *)
+(*   In_channel.with_open_bin file In_channel.input_all *)
 
-let ex7 =
-  map2
-    (fun x js ->
-       html
-         (head
-            (title (txt "Hi"))
-            [js])
-         (body [x]))
-    ex6
-    js
 
-let pr_html x = Format.asprintf "%a" (Tyxml.Html.pp ~indent:false ()) x
+(* let js = *)
+(*   let& hljs_ref = (read_file "./js/highlight.min.js") in *)
+(*   let@ java_ref = ("java.js", (read_file "./js/languages/java.js")) in *)
+(*   (pure *)
+(*      (script ~a:[a_script_type `Module] *)
+(*         (txt *)
+(*            (Printf.sprintf *)
+(*               "import hljs from '%s' *)
+(*                          import java from '%s' *)
+(*                          hljs.registerLanguage('java', java); *)
+(*                          hljs.highlightAll();" *)
+(*               (deref hljs_ref) *)
+(*               (deref java_ref))))) *)
 
-let ex8 = map pr_html ex7
+(* let ex7 = *)
+(*   map2 *)
+(*     (fun x js -> *)
+(*        html *)
+(*          (head *)
+(*             (title (txt "Hi")) *)
+(*             [js]) *)
+(*          (body [x])) *)
+(*     ex6 *)
+(*     js *)
 
-let dm8 = run_dmap ex8
+(* let pr_html x = Format.asprintf "%a" (Tyxml.Html.pp ~indent:false ()) x *)
+
+(* let ex8 = map pr_html ex7 *)
+
+(* let dm8 = run_dmap ex8 *)
