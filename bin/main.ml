@@ -1,49 +1,57 @@
 open Tyxml.Html
+open Funarch.Web5
 
-let highlight_js =
-  Funarch.Resource.make_resource "./js/highlight.min.js" "js/highlight.min.js"
+let read_file file =
+  In_channel.with_open_bin file In_channel.input_all
 
-let highlight_js_java =
-  Funarch.Resource.make_resource "./js/languages/java.js" "js/languages/java.js"
+let highlight_js_data = (read_file "./js/highlight.min.js")
 
-let highlight_js_haskell =
-  Funarch.Resource.make_resource "./js/languages/haskell.js" "js/languages/haskell.js"
+let highlight_js_java_data = (read_file "./js/languages/java.js")
 
-let highlight_js_ocaml =
-  Funarch.Resource.make_resource "./js/languages/ocaml.js" "js/languages/ocaml.js"
+let highlight_js_haskell_data = (read_file "./js/languages/haskell.js")
 
-let highlight_js_clojure =
-  Funarch.Resource.make_resource "./js/languages/clojure.js" "js/languages/clojure.js"
+let highlight_js_ocaml_data = (read_file "./js/languages/ocaml.js")
 
-let highlight_js_scala =
-  Funarch.Resource.make_resource "./js/languages/scala.js" "js/languages/scala.js"
+let highlight_js_clojure_data = (read_file "./js/languages/clojure.js")
 
-let highlight_js_inline =
-  Funarch.Js.make_js_inline_module
-    (Printf.sprintf
-     "import hljs from '%s'
-      import java from '%s'
-      import haskell from '%s'
-      import ocaml from '%s'
-      import clojure from '%s'
-      import scala from '%s'
-      hljs.registerLanguage('java', java);
-      hljs.registerLanguage('haskell', haskell);
-      hljs.registerLanguage('ocaml', ocaml);
-      hljs.registerLanguage('clojure', clojure);
-      hljs.registerLanguage('scala', scala);
-      hljs.highlightAll();"
-     (Funarch.Resource.resource_link highlight_js)
-     (Funarch.Resource.resource_link highlight_js_java)
-     (Funarch.Resource.resource_link highlight_js_haskell)
-     (Funarch.Resource.resource_link highlight_js_ocaml)
-     (Funarch.Resource.resource_link highlight_js_clojure)
-     (Funarch.Resource.resource_link highlight_js_scala))
+let highlight_js_scala_data = (read_file "./js/languages/scala.js")
 
-let highlight_css =
-  Funarch.Resource.make_resource "./css/github.min.css" "css/github.min.css"
+let hl_js =
+  let@ highlight_js = ("highlight.min.js", highlight_js_data) in
+  let@ highlight_js_java = ("highlight_java.js", highlight_js_java_data) in
+  let@ highlight_js_haskell = ("highlight_haskell.js", highlight_js_haskell_data) in
+  let@ highlight_js_ocaml = ("highlight_ocaml.js", highlight_js_ocaml_data) in
+  let@ highlight_js_clojure = ("highlight_clojure.js", highlight_js_clojure_data) in
+  let@ highlight_js_scala = ("highlight_scala.js", highlight_js_scala_data) in
+  pure
+    (script
+     ~a:[a_script_type `Module]
+     (txt
+        (Printf.sprintf
+           "import hljs from '%s'
+            import java from '%s'
+            import haskell from '%s'
+            import ocaml from '%s'
+            import clojure from '%s'
+            import scala from '%s'
+            hljs.registerLanguage('java', java);
+            hljs.registerLanguage('haskell', haskell);
+            hljs.registerLanguage('ocaml', ocaml);
+            hljs.registerLanguage('clojure', clojure);
+            hljs.registerLanguage('scala', scala);
+            hljs.highlightAll();"
+           (deref highlight_js)
+           (deref highlight_js_java)
+           (deref highlight_js_haskell)
+           (deref highlight_js_ocaml)
+           (deref highlight_js_clojure)
+           (deref highlight_js_scala))))
 
-let main_head =
+let highlight_css_data = read_file "./css/github.min.css"
+
+let head =
+  let@ hl_css = ("highlight.css", highlight_css_data) in
+  let+ hl_js in
   (head
      (title (txt "Functional Software Architecture"))
 
@@ -53,8 +61,8 @@ let main_head =
             (meta ~a:[a_http_equiv "content-type"; a_content "text/html; charset=utf-8"] ());
             (meta ~a:[a_name "viewport"; a_content "width=device-width, initial-scale=1.0"] ());
             (link ~rel:[`Icon] ~href:"favicon.svg" ~a:[a_mime_type "image/svg"] ());
-            (link ~rel:[`Stylesheet] ~href:(Funarch.Resource.resource_link highlight_css) ());
-            (Funarch.Js.js_script_tag highlight_js_inline);
+            (link ~rel:[`Stylesheet] ~href:(deref hl_css) ());
+            hl_js;
           ];
           (List.map Funarch.Font.link_preload_font Funarch.Style.fonts);
           [
@@ -186,36 +194,30 @@ let centered_with_footer ?(max_width="120em") content =
 
 let page_of_principle (pr : Funarch.Principles.principle) =
   let open Funarch.Principles in
-  Funarch.Page.make_page pr.route
-    (html
-       main_head
-       (body
-          [hdr ~show_title:true `Overview;
-           (centered_with_footer
-              ~max_width: "50em"
-              (div
-                 [(h1 [txt pr.title]);
-                  div ~a:[a_role ["doc-subtitle"]]
-                    [txt "A";
-                     txt " ";
-                     a ~a:[a_href "/"] [txt "Functional Software Architecture"];
-                     txt " ";
-                     txt "Principle"
-                    ];
-                  vspace;
-                  match pr.long with
-                  | Some desc -> desc
-                  | None -> txt "TODO"]))]))
+  (body
+     [hdr ~show_title:true `Overview;
+      (centered_with_footer
+         ~max_width: "50em"
+         (div
+            [(h1 [txt pr.title]);
+             div ~a:[a_role ["doc-subtitle"]]
+               [txt "A";
+                txt " ";
+                a ~a:[a_href "/"] [txt "Functional Software Architecture"];
+                txt " ";
+                txt "Principle"
+               ];
+             vspace;
+             match pr.long with
+             | Some desc -> desc
+             | None -> txt "TODO"]))])
 
-let principle_link pr =
-  Funarch.Page.page_link (page_of_principle pr)
-
-let pr_principle_short_block principle =
+let pr_principle_short_block (principle, page_ref) =
   let open Funarch.Principles in
   block [
     h3 [txt principle.title];
     p [txt principle.short];
-    a ~a:[a_href (principle_link principle)] [
+    a ~a:[a_href (deref page_ref)] [
       txt "→ ";
       txt "More";
     ]
@@ -226,36 +228,29 @@ let pr_principles_blocks ps =
 
 let page_of_pattern (pattern : Funarch.Patterns.pattern) =
   let open Funarch.Patterns in
-  Funarch.Page.make_page
-    pattern.route
-    (html
-       main_head
-       (body
-          [hdr ~show_title:true `Overview;
-           (centered_with_footer
-              ~max_width: "50em"
-              (div
-                 [(h1 [txt pattern.title]);
-                  div ~a:[a_role ["doc-subtitle"]]
-                    [txt "A";
-                     txt " ";
-                     a ~a:[a_href "/"] [txt "Functional Software Architecture"];
-                     txt " ";
-                     txt "Pattern"
-                    ];
-                  vspace;
-                  pattern.long
-                 ]))]))
+  (body
+     [hdr ~show_title:true `Overview;
+      (centered_with_footer
+         ~max_width: "50em"
+         (div
+            [(h1 [txt pattern.title]);
+             div ~a:[a_role ["doc-subtitle"]]
+               [txt "A";
+                txt " ";
+                a ~a:[a_href "/"] [txt "Functional Software Architecture"];
+                txt " ";
+                txt "Pattern"
+               ];
+             vspace;
+             pattern.long
+            ]))])
 
-let pattern_link pattern =
-  Funarch.Page.page_link (page_of_pattern pattern)
-
-let pr_pattern_short_block pattern =
+let pr_pattern_short_block (pattern, ref) =
   let open Funarch.Patterns in
   block [
     h3 [txt pattern.title];
     pattern.short;
-    a ~a:[a_href (pattern_link pattern)] [
+    a ~a:[a_href (deref ref)] [
       txt "→ ";
       txt "More";
     ]]
@@ -276,22 +271,22 @@ let pr_faqs fs =
 
 let the_values = pr_value_blocks Funarch.Values.values
 
-let the_principles =
+let the_principles principles =
   div [
     h2 ~a:[a_id "principles"] [txt "Principles"];
     p [txt "We strive for the values described above. We do so by
             following this set of principles."];
     vspace;
-    pr_principles_blocks Funarch.Principles.principles;
+    pr_principles_blocks principles;
   ]
 
-let the_patterns =
+let the_patterns patterns =
   div [
     h2 ~a:[a_id "patterns"] [txt "Patterns, Tools, and Techniques"];
     p [txt "We follow the principles described above by \
             employing some of the following techniques."];
     vspace;
-    pr_patterns_blocks Funarch.Patterns.patterns;
+    pr_patterns_blocks patterns;
   ]
 
 let the_faqs =
@@ -303,7 +298,7 @@ let the_faqs =
   ]
 
 
-let main_body = (body [
+let main_body principles patterns = (body [
     hdr `Overview;
     centered_with_footer
     (
@@ -331,103 +326,108 @@ let main_body = (body [
           ];
         ];
         the_values;
-        the_principles;
-        the_patterns;
+        the_principles principles;
+        the_patterns patterns;
         the_faqs;
       ]
     )])
 
-let main_page = Funarch.Page.make_page "/" (html main_head main_body)
+let funarch_2024 = (Funarch.Markdown.from_markdown_file "./events/funarch-2024/index.md")
+let funarch_2023 = (Funarch.Markdown.from_markdown_file "./events/funarch-2023/index.md")
 
-let principles_pages =
-  List.map page_of_principle Funarch.Principles.principles
-
-let patterns_pages =
-  List.map page_of_pattern Funarch.Patterns.patterns
-
-let rec mk_events_overview_page () =
-  Funarch.Page.make_page
-    "events"
-    (html
-       main_head
-       (body
-          [hdr ~show_title:true `Events;
-           (centered_with_footer
-              ~max_width: "50em"
-              (div
-                 [(h1 [txt "Events"]);
-                  div ~a:[a_role ["doc-subtitle"]]
-                    [a ~a:[a_href ".."] [txt "Functional Software Architecture"]];
-                  vspace;
-                  a ~a:[a_href (Funarch.Page.page_link (mk_funarch_2023_page ()))] [txt "FUNARCH 2023"];
-                  a ~a:[a_href (Funarch.Page.page_link (mk_funarch_2024_page ()))] [txt "FUNARCH 2024"];
-                 ]))]))
-
-and mk_funarch_2023_page () =
-  Funarch.Page.make_page
-    "events/funarch-2023"
-    (html
-       main_head
-       (body
-          [hdr ~show_title:true `Events;
-           (centered_with_footer
-              ~max_width: "50em"
-              (div
-                 [(h1 [txt "FUNARCH 2023"]);
-                  div ~a:[a_role ["doc-subtitle"]] [txt "Functional Software Architecture Workshop co-located with ICFP 2023"];
-                  vspace;
-                  (Funarch.Markdown.from_markdown_file "events/funarch-2023/index.md")
-                 ]))]))
-
-and mk_funarch_2024_page () =
-  Funarch.Page.make_page
-    "events/funarch-2024"
-    (html
-       main_head
-       (body
-          [hdr ~show_title:true `Events;
-           (centered_with_footer
-              ~max_width: "50em"
-              (div
-                 [(h1 [txt "FUNARCH 2024"]);
-                  div ~a:[a_role ["doc-subtitle"]] [txt "Functional Software Architecture Workshop co-located with ICFP 2024"];
-                  vspace;
-                  (Funarch.Markdown.from_markdown_file "events/funarch-2024/index.md")
-                 ]))]))
-
-let events_pages =
-  [
-    mk_events_overview_page ();
-    mk_funarch_2023_page ();
-    mk_funarch_2024_page ();
-  ]
+let events =
+  let$ ref_2024 = 1 in
+  let$ ref_2023 = 2 in
+  (case
+     [("funarch-2023",
+       refer
+         ref_2023
+         (pure
+            (body
+             [hdr ~show_title:true `Events;
+              (centered_with_footer
+                 ~max_width: "50em"
+                 (div
+                    [(h1 [txt "FUNARCH 2023"]);
+                     div ~a:[a_role ["doc-subtitle"]] [txt "Functional Software Architecture Workshop co-located with ICFP 2023"];
+                     vspace;
+                     funarch_2023
+                    ]))])));
+      ("funarch-2024",
+       refer ref_2024
+         (pure
+            (body
+             [hdr ~show_title:true `Events;
+              (centered_with_footer
+                 ~max_width: "50em"
+                 (div
+                    [(h1 [txt "FUNARCH 2024"]);
+                     div ~a:[a_role ["doc-subtitle"]] [txt "Functional Software Architecture Workshop co-located with ICFP 2024"];
+                     vspace;
+                     funarch_2024
+                    ]))])))]
+     (* default / *)
+     (pure
+        (body
+         [hdr ~show_title:true `Events;
+          (centered_with_footer
+             ~max_width: "50em"
+             (div
+                [(h1 [txt "Events"]);
+                 div ~a:[a_role ["doc-subtitle"]]
+                   [a ~a:[a_href ".."] [txt "Functional Software Architecture"]];
+                 vspace;
+                 a ~a:[a_href (deref ref_2023)] [txt "FUNARCH 2023"];
+                 a ~a:[a_href (deref ref_2024)] [txt "FUNARCH 2024"];
+                ]))])))
 
 let publications_page =
-  Funarch.Page.make_page
-    "publications"
-    (html
-       main_head
-       (body
-          [hdr ~show_title:true `Publications;
-           (centered_with_footer
-              ~max_width: "50em"
-              (div
-                 [(h1 [txt "Publications"]);
-                  div ~a:[a_role ["doc-subtitle"]] [txt "Functional Software Architecture"];
-                  vspace;
-                  txt "TODO";
-                 ]))]))
+  pure
+    (body
+       [hdr ~show_title:true `Publications;
+        (centered_with_footer
+           ~max_width: "50em"
+           (div
+              [(h1 [txt "Publications"]);
+               div ~a:[a_role ["doc-subtitle"]] [txt "Functional Software Architecture"];
+               vspace;
+               txt "TODO";
+              ]))])
 
-let publications_pages =
-  [publications_page]
+let rec refify' xs k acc =
+  match xs with
+  | [] -> k acc
+  | (x :: xs) ->
+    with_ref (fun r -> refify' xs k (List.cons (x, r) acc))
 
-let all_pages =
-  List.concat
-    [[main_page];
-     principles_pages;
-     patterns_pages;
-     events_pages;
-     publications_pages;]
+let refify (xs : 'a list) (k : ('a * ref) list -> 'b web) : 'b web =
+  refify' xs k []
+
+let website =
+  map2
+    html
+    head
+    (refify
+       Funarch.Principles.principles
+       (fun principles ->
+          refify
+            Funarch.Patterns.patterns
+            (fun patterns ->
+              case
+                (List.concat
+                   [[("publications", publications_page); ("events", events)];
+                    (List.map
+                       (fun (pr, r) ->
+                          (pr.Funarch.Principles.route, (refer r (pure (page_of_principle pr)))))
+                       principles);
+                    (List.map
+                       (fun (pat, r) ->
+                          (pat.Funarch.Patterns.route, (refer r (pure (page_of_pattern pat)))))
+                       patterns);
+                   ])
+                (pure (main_body principles patterns)))))
+
+let pr_html x = Format.asprintf "%a" (Tyxml.Html.pp ~indent:false ()) x
 
 let out_dir = "out"
 
@@ -436,12 +436,5 @@ let () =
   if not (Sys.file_exists out_dir)
       then Sys.mkdir out_dir 0o777;
   Sys.chdir out_dir;
-  List.iter Funarch.Page.render_page all_pages;
+  render (map pr_html website);
   List.iter Funarch.Font.store_font Funarch.Style.fonts;
-  List.iter Funarch.Resource.render_resource [highlight_js;
-                                              highlight_js_java;
-                                              highlight_js_haskell;
-                                              highlight_js_ocaml;
-                                              highlight_js_clojure;
-                                              highlight_js_scala;
-                                              highlight_css];
