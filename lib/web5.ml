@@ -33,8 +33,7 @@ let url_snoc u seg = {
   path = List.append u.path [seg]
 }
 
-let string_of_url u = String.concat "/" u.path
-
+let string_of_url u = "/" ^ String.concat "/" u.path
 
 type _ Effect.t += Deref: ref -> string t
 let deref r = perform (Deref r)
