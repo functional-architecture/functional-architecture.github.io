@@ -396,7 +396,7 @@ let publications_page =
 
 let rec refify' xs k acc =
   match xs with
-  | [] -> k acc
+  | [] -> k (List.rev acc)
   | (x :: xs) ->
     with_ref (fun r -> refify' xs k (List.cons (x, r) acc))
 
