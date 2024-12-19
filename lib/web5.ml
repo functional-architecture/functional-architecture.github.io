@@ -16,6 +16,7 @@ let refs_eq r1 r2 = r1.id = r2.id
 type ref_generator = int
 let gen_ref rg = (mk_ref rg, rg + 1)
 let initial_ref_gen = 0
+let ref_gen_split rg = rg + 1000
 
 type url = {
   path : string list;
@@ -146,26 +147,31 @@ let rec resolve_acc : type a . a web -> ref_generator -> url -> (ref -> url opti
       | Or (x, y) ->
         (match resolve_acc x ref_gen url_here url_of_ref r with
          | Some url -> Some url
-         | None -> resolve_acc y ref_gen url_here url_of_ref r)
+         | None -> resolve_acc y (ref_gen_split ref_gen) url_here url_of_ref r)
       | Seg (segment, w') -> resolve_acc w' ref_gen (url_snoc url_here segment) url_of_ref r
       | Not_found -> None
       | Const _ -> None
       | Map (_, w') -> resolve_acc w' ref_gen url_here url_of_ref r
-      | Lift2 (_, x, y) -> (match resolve_acc x ref_gen url_here url_of_ref r with
+      | Lift2 (_, x, y) ->
+        (match resolve_acc x ref_gen url_here url_of_ref r with
           | Some url -> Some url
-          | None -> resolve_acc y ref_gen url_here url_of_ref r)
+          | None -> resolve_acc y (ref_gen_split ref_gen) url_here url_of_ref r)
       | Sequence [] -> None
-      | Sequence (w' :: ws) -> (match resolve_acc w' ref_gen url_here url_of_ref r with
+      | Sequence (w' :: ws) ->
+        (match resolve_acc w' ref_gen url_here url_of_ref r with
           | Some url -> Some url
-          | None -> resolve_acc (Sequence ws) ref_gen url_here url_of_ref r)
-      | With_ref k -> let (new_ref, ref_gen') = gen_ref ref_gen in
+          | None -> resolve_acc (Sequence ws) (ref_gen_split ref_gen) url_here url_of_ref r)
+      | With_ref k ->
+        let (new_ref, ref_gen') = gen_ref ref_gen in
         resolve_acc (k new_ref) ref_gen' url_here url_of_ref r
-      | Refer (r', w') -> if refs_eq r r'
-                             then Some url_here
-                             else resolve_acc w' ref_gen url_here url_of_ref r
+      | Refer (r', w') ->
+        if refs_eq r r'
+        then Some url_here
+        else resolve_acc w' ref_gen url_here url_of_ref r
       | Resource _ -> None
 
-let resolve w r = Option.get (resolve_acc w initial_ref_gen empty_url (fun _ -> None) r)
+let resolve w r =
+  Option.get (resolve_acc w initial_ref_gen empty_url (fun _ -> None) r)
 
 let rec run_fun_acc : type a . a web -> (ref -> url) -> ref_generator -> (url -> a or_resource) =
   fun w url_of_ref ref_gen u ->
@@ -174,7 +180,7 @@ let rec run_fun_acc : type a . a web -> (ref -> url) -> ref_generator -> (url ->
       (match run_fun_acc x url_of_ref ref_gen u with
        | Value v -> Value v
        | Resource r -> Resource r
-       | Fail -> run_fun_acc y url_of_ref ref_gen u)
+       | Fail -> run_fun_acc y url_of_ref (ref_gen_split ref_gen) u)
     | Seg (segment, w') ->
       (match u.path with
        | [] -> Fail
@@ -185,12 +191,15 @@ let rec run_fun_acc : type a . a web -> (ref -> url) -> ref_generator -> (url ->
     | Not_found -> Fail
     | Const x -> Value x
     | Map (f, w') -> or_resource_map f (run_fun_acc w' url_of_ref ref_gen u)
-    | Lift2 (f, x, y) -> or_resource_map_2 f (run_fun_acc x url_of_ref ref_gen u) (run_fun_acc y url_of_ref ref_gen u)
+    | Lift2 (f, x, y) -> or_resource_map_2
+                           f
+                           (run_fun_acc x url_of_ref ref_gen u)
+                           (run_fun_acc y url_of_ref (ref_gen_split ref_gen) u)
     | Sequence [] -> Value []
     | Sequence (w' :: ws) -> or_resource_map_2
                                List.cons
                                (run_fun_acc w' url_of_ref ref_gen u)
-                               (run_fun_acc (Sequence ws) url_of_ref ref_gen u)
+                               (run_fun_acc (Sequence ws) url_of_ref (ref_gen_split ref_gen) u)
     | With_ref k -> let (new_ref, ref_gen') = gen_ref ref_gen in
       run_fun_acc (k new_ref) url_of_ref ref_gen' u
     | Refer (_, w') -> run_fun_acc w' url_of_ref ref_gen u
@@ -250,7 +259,7 @@ let rec run_dmap_acc : type a . a web -> (ref -> url) -> ref_generator -> a or_r
     match w with
     | Or (x, y) ->
       let xdm = run_dmap_acc x url_of_ref ref_gen in
-      let ydm = run_dmap_acc y url_of_ref ref_gen in
+      let ydm = run_dmap_acc y url_of_ref (ref_gen_split ref_gen) in
       {
         map = M.union
                 (fun _k v1 _v2 -> Some v1)
@@ -270,13 +279,13 @@ let rec run_dmap_acc : type a . a web -> (ref -> url) -> ref_generator -> a or_r
       default_map_map_2
         (or_resource_map_2 f)
         (run_dmap_acc x url_of_ref ref_gen)
-        (run_dmap_acc y url_of_ref ref_gen)
+        (run_dmap_acc y url_of_ref (ref_gen_split ref_gen))
     | Sequence [] -> default_map_const (Value [])
     | Sequence (w' :: ws) ->
       default_map_map_2
         (or_resource_map_2 List.cons)
         (run_dmap_acc w' url_of_ref ref_gen)
-        (run_dmap_acc (Sequence ws) url_of_ref ref_gen)
+        (run_dmap_acc (Sequence ws) url_of_ref (ref_gen_split ref_gen))
     | With_ref k -> let (new_ref, ref_gen') = gen_ref ref_gen in
       run_dmap_acc (k new_ref) url_of_ref ref_gen'
     | Refer (_, w') -> run_dmap_acc w' url_of_ref ref_gen
@@ -330,7 +339,7 @@ let render : string web -> unit =
 
 (* Examples *)
 
-(* open Tyxml.Html *)
+(* module H = Tyxml.Html *)
 
 (* let div x y = Lift2 ((^), x, y) *)
 
@@ -369,11 +378,11 @@ let render : string web -> unit =
 (*              (Const "hier geht zu employes: ") *)
 (*              (Const (deref r)))]) *)
 
-(* let ex6 : [`Div] elt web = *)
+(* let ex6 : [`Div] H.elt web = *)
 (*   mapn *)
-(*     (Tyxml.Html.div ~a:[a_style "background: red"]) *)
-(*     [(Const (p [txt "sup"])); *)
-(*      (Const (p [txt "dawg"]))] *)
+(*     (Tyxml.Html.div ~a:[H.a_style "background: red"]) *)
+(*     [(Const (H.p [H.txt "sup"])); *)
+(*      (Const (H.p [H.txt "dawg"]))] *)
 
 (* let read_file file = *)
 (*   In_channel.with_open_bin file In_channel.input_all *)
@@ -383,8 +392,8 @@ let render : string web -> unit =
 (*   let& hljs_ref = (read_file "./js/highlight.min.js") in *)
 (*   let@ java_ref = ("java.js", (read_file "./js/languages/java.js")) in *)
 (*   (pure *)
-(*      (script ~a:[a_script_type `Module] *)
-(*         (txt *)
+(*      (H.script ~a:[H.a_script_type `Module] *)
+(*         (H.txt *)
 (*            (Printf.sprintf *)
 (*               "import hljs from '%s' *)
 (*                          import java from '%s' *)
@@ -396,16 +405,14 @@ let render : string web -> unit =
 (* let ex7 = *)
 (*   map2 *)
 (*     (fun x js -> *)
-(*        html *)
-(*          (head *)
-(*             (title (txt "Hi")) *)
+(*        H.html *)
+(*          (H.head *)
+(*             (H.title (H.txt "Hi")) *)
 (*             [js]) *)
-(*          (body [x])) *)
+(*          (H.body [x])) *)
 (*     ex6 *)
 (*     js *)
 
 (* let pr_html x = Format.asprintf "%a" (Tyxml.Html.pp ~indent:false ()) x *)
 
 (* let ex8 = map pr_html ex7 *)
-
-(* let dm8 = run_dmap ex8 *)
