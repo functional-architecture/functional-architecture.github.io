@@ -19,9 +19,6 @@ let make_font family style weight file_path =
 let font_output_file_name font =
   font.font_family ^ "_" ^ font.font_style ^ "_" ^ font.font_weight ^ "_" ^ string_of_int (Hashtbl.hash font.data) ^ ".woff2"
 
-let font_store font =
-  Out_channel.with_open_bin (font_output_file_name font) Out_channel.output_string
-
 let fonts_directory = "assets/fonts"
 
 let plex_serif style weight filename =
@@ -44,12 +41,13 @@ let fonts = [
   plex_serif "italic" "700" "ibm-plex-serif-v19-latin-700italic.woff2";
 ]
 
-let font_decl =
-  String.concat "\n"
-  @@ List.map Font.declare_font fonts
+let font_decl fonts_with_refs =
+  (String.concat
+     "\n"
+     (List.map Font.declare_font fonts_with_refs))
 
-let css =
-  font_decl ^
+let css fonts_with_refs =
+  (font_decl fonts_with_refs) ^
   {|
 html, body {
     color: #333;

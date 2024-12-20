@@ -49,27 +49,54 @@ let hl_js =
 
 let highlight_css_data = read_file "./css/github.min.css"
 
-let head =
-  let@ hl_css = ("highlight.css", highlight_css_data) in
-  let+ hl_js in
-  (head
-     (title (txt "Functional Software Architecture"))
+let rec refify' xs k acc =
+  match xs with
+  | [] -> k (List.rev acc)
+  | (x :: xs) ->
+    with_ref (fun r -> refify' xs k (List.cons (x, r) acc))
 
-     (List.concat
-        [
-          [
-            (meta ~a:[a_http_equiv "content-type"; a_content "text/html; charset=utf-8"] ());
-            (meta ~a:[a_name "viewport"; a_content "width=device-width, initial-scale=1.0"] ());
-            (link ~rel:[`Icon] ~href:"favicon.svg" ~a:[a_mime_type "image/svg"] ());
-            (link ~rel:[`Stylesheet] ~href:(deref hl_css) ());
-            hl_js;
-          ];
-          (List.map Funarch.Font.link_preload_font Funarch.Style.fonts);
-          [
-            (style [txt ":root {--highlight-color: gray;}"]);
-            (style [txt Funarch.Style.css]);
-          ]
-        ]))
+let refify (xs : 'a list) (k : ('a * ref) list -> 'b web) : 'b web =
+  refify' xs k []
+
+(* let with_resources ress get_data get_filename k = assert false *)
+
+let head =
+  refify Funarch.Style.fonts
+    (fun fonts ->
+       case
+         (List.map
+            (fun (font, ref) ->
+               (Funarch.Font.font_output_file_name font,
+                refer
+                  ref
+                  (resource
+                   (font.Funarch.Font.data))))
+            fonts)
+       (
+       let@ hl_css = ("highlight.css", highlight_css_data) in
+       let+ hl_js in
+
+       (head
+          (title (txt "Functional Software Architecture"))
+
+          (List.concat
+             [
+               [
+                 (meta ~a:[a_http_equiv "content-type"; a_content "text/html; charset=utf-8"] ());
+                 (meta ~a:[a_name "viewport"; a_content "width=device-width, initial-scale=1.0"] ());
+                 (link ~rel:[`Icon] ~href:"favicon.svg" ~a:[a_mime_type "image/svg"] ());
+                 (link ~rel:[`Stylesheet] ~href:(deref hl_css) ());
+                 hl_js;
+               ];
+               (List.map
+                  (fun (_, r) ->
+                     Funarch.Font.link_preload_font r)
+                  fonts);
+               [
+                 (style [txt ":root {--highlight-color: gray;}"]);
+                 (style [txt (Funarch.Style.css fonts)]);
+               ]
+             ]))))
 
 let div_styled sty contents = div ~a:[a_style sty] contents
 
@@ -394,14 +421,6 @@ let publications_page =
                txt "TODO";
               ]))])
 
-let rec refify' xs k acc =
-  match xs with
-  | [] -> k (List.rev acc)
-  | (x :: xs) ->
-    with_ref (fun r -> refify' xs k (List.cons (x, r) acc))
-
-let refify (xs : 'a list) (k : ('a * ref) list -> 'b web) : 'b web =
-  refify' xs k []
 
 let website =
   map2
@@ -437,4 +456,3 @@ let () =
       then Sys.mkdir out_dir 0o777;
   Sys.chdir out_dir;
   render (map pr_html website);
-  List.iter Funarch.Font.store_font Funarch.Style.fonts;
