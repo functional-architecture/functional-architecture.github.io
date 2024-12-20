@@ -18,6 +18,8 @@ let make_font family style weight file_path =
     data = read_file file_path;
   }
 
+let font_data fnt = fnt.data
+
 let font_output_file_name font =
   font.font_family ^ "_" ^ font.font_style ^ "_" ^ font.font_weight ^ "_" ^ string_of_int (Hashtbl.hash font.data) ^ ".woff2"
 

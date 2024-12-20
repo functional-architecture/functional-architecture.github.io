@@ -58,21 +58,30 @@ let rec refify' xs k acc =
 let refify (xs : 'a list) (k : ('a * ref) list -> 'b web) : 'b web =
   refify' xs k []
 
-(* let with_resources ress get_data get_filename k = assert false *)
+let rec with_resources_acc ress get_data get_filename k acc =
+  match ress with
+  | [] -> k (List.rev acc)
+  | (x :: xs) ->
+    with_resource
+      ~filename:(get_filename x)
+      (get_data x)
+      (fun ref ->
+         (with_resources_acc
+            xs
+            get_data
+            get_filename
+            k
+            (List.cons (x, ref) acc)))
+
+let with_resources ress get_data get_filename k =
+  with_resources_acc ress get_data get_filename k []
 
 let head =
-  refify Funarch.Style.fonts
+  with_resources
+    Funarch.Style.fonts
+    Funarch.Font.font_data
+    Funarch.Font.font_output_file_name
     (fun fonts ->
-       case
-         (List.map
-            (fun (font, ref) ->
-               (Funarch.Font.font_output_file_name font,
-                refer
-                  ref
-                  (resource
-                   (font.Funarch.Font.data))))
-            fonts)
-       (
        let@ hl_css = ("highlight.css", highlight_css_data) in
        let+ hl_js in
 
@@ -96,7 +105,7 @@ let head =
                  (style [txt ":root {--highlight-color: gray;}"]);
                  (style [txt (Funarch.Style.css fonts)]);
                ]
-             ]))))
+             ])))
 
 let div_styled sty contents = div ~a:[a_style sty] contents
 

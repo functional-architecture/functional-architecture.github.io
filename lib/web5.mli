@@ -30,6 +30,8 @@ val refer : ref -> 'a web -> 'a web
 
 val deref : ref -> string
 
+val with_resource : ?filename:string -> string -> (ref -> 'a web) -> 'a web
+
 val (let&) : string -> (ref -> 'a web) -> 'a web
 val (let@) : (string * string) -> (ref -> 'a web) -> 'a web
 val (let+) : 'a web -> ('a -> 'b) -> 'b web
