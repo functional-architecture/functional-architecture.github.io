@@ -75,3 +75,23 @@ let from_markdown_file path =
   let open Omd in
   let md = of_channel (open_in path) in
   (html_from_markdown md)
+
+let read_file file =
+  In_channel.with_open_bin file In_channel.input_all
+
+let rec replace_params s formal_params actual_params =
+  match formal_params with
+  | [] -> s
+  | (p :: ps) -> (let actual = List.hd actual_params in
+                  let actuals = List.tl actual_params in
+                  let s' = Str.global_replace (Str.regexp p) actual s in
+                  (replace_params s' ps actuals))
+
+let function_of_parameterized_markdown path formal_params =
+  let open Omd in
+  let s = read_file path in
+  fun actual_params ->
+    assert ((List.length formal_params) = (List.length actual_params));
+    let s' = (replace_params s formal_params actual_params) in
+    let md = of_string s' in
+    (html_from_markdown md)
