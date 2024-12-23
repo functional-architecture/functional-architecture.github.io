@@ -139,36 +139,51 @@ let or_resource_map_2 f x y =
   | (_, Resource r) -> Resource r
   | _ -> Fail
 
-(* TODO: we need to split the ref_generator for the different branches of Or, Lift2, Sequence *)
-let rec resolve_acc : type a . a web -> ref_generator -> url -> (ref -> url option) -> (ref -> url option) =
-  fun w ref_gen url_here url_of_ref r ->
-    match (url_of_ref r) with
-    | Some url -> Some url
-    | None ->
-      match w with
-      | Or (x, y) ->
-        (match resolve_acc x ref_gen url_here url_of_ref r with
-         | Some url -> Some url
-         | None -> resolve_acc y (ref_gen_split ref_gen) url_here url_of_ref r)
-      | Seg (segment, w') -> resolve_acc w' ref_gen (url_snoc url_here segment) url_of_ref r
-      | Not_found -> None
-      | Const _ -> None
-      | Map (_, w') -> resolve_acc w' ref_gen url_here url_of_ref r
-      | Lift2 (_, x, y) ->
-        (match resolve_acc x ref_gen url_here url_of_ref r with
-          | Some url -> Some url
-          | None -> resolve_acc y (ref_gen_split ref_gen) url_here url_of_ref r)
-      | With_ref k ->
-        let (new_ref, ref_gen') = gen_ref ref_gen in
-        resolve_acc (k new_ref) ref_gen' url_here url_of_ref r
-      | Refer (r', w') ->
-        if refs_eq r r'
-        then Some url_here
-        else resolve_acc w' ref_gen url_here url_of_ref r
-      | Resource _ -> None
+type 'a lowered =
+  | LNot_found : 'a lowered
+  | LConst : 'a -> 'a lowered
+  | LMap : ('a -> 'b) * 'a lowered -> 'b lowered
+  | LMap2 : ('a -> 'b -> 'c) * 'a lowered * 'b lowered -> 'c lowered
+  | LRefer : ref * 'a lowered -> 'a lowered
+  | LResource : string -> 'a lowered
+  | LSeg : string * 'a lowered -> 'a lowered
+  | LOr : 'a lowered * 'a lowered -> 'a lowered
+
+let rec lower : type a . ref_generator -> a web -> a lowered =
+  fun ref_gen w ->
+  match w with
+  | Not_found -> LNot_found
+  | Const x -> LConst x
+  | Map (f, w') -> LMap (f, lower ref_gen w')
+  | Lift2 (f, w1, w2) -> LMap2 (f, lower ref_gen w1, lower (ref_gen_split ref_gen) w2)
+  | With_ref k ->
+    let (new_ref, ref_gen') = gen_ref ref_gen in
+    lower ref_gen' (k new_ref)
+  | Refer (r, w) -> LRefer (r, lower ref_gen w)
+  | Resource s -> LResource s
+  | Seg (s, w') -> LSeg (s, lower ref_gen w')
+  | Or (w1, w2) -> LOr (lower ref_gen w1, lower (ref_gen_split ref_gen) w2)
+
+let opt_or o1 o2 =
+  match o1 with
+  | Some x -> Some x
+  | None -> o2
+
+let rec resolve' : type a . a lowered -> url -> (ref -> url option) =
+  fun l url_here r ->
+  match l with
+  | LMap (_, l') -> resolve' l' url_here r
+  | LMap2 (_, l1, l2) -> opt_or (resolve' l1 url_here r) (resolve' l2 url_here r)
+  | LRefer (r', l') ->
+    if (refs_eq r r')
+    then (Some url_here)
+    else resolve' l' url_here r
+  | LSeg (seg, l') -> resolve' l' (url_snoc url_here seg) r
+  | LOr (l1, l2) -> opt_or (resolve' l1 url_here r) (resolve' l2 url_here r)
+  | _ -> None
 
 let resolve w r =
-  Option.get (resolve_acc w initial_ref_gen empty_url (fun _ -> None) r)
+  Option.get (resolve' (lower initial_ref_gen w) empty_url r)
 
 let rec run_fun_acc : type a . a web -> (ref -> url) -> ref_generator -> (url -> a or_resource) =
   fun w url_of_ref ref_gen u ->
