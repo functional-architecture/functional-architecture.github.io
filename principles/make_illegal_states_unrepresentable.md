@@ -11,7 +11,7 @@ robust (often correct by construction) and more loosely coupled.
 
 Objectives: [Simplicity](/#values), [Maintainability](/#values), [Correctness](/#values)
 
-Related patterns: [Static types](/static_types), [Parse, don’t validate](/parse_dont_validate), [Smart Constructor](/smart_constructor)
+Related patterns: [Static types]({{link_static_types}}), [Parse, don’t validate]({{link_parse_dont_validate}}), [Smart Constructor]({{link_smart_constructor}})
 
 
 ## Techniques

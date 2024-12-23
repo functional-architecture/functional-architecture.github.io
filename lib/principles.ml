@@ -166,17 +166,30 @@ let modularization_principle = {
   long = None;
 }
 
-let make_illegal_states_unrepresentable_principle = {
+let misu to_static_types to_parse_dont_validate to_smart_constructor =
+  Markdown.function_of_parameterized_markdown
+    "./principles/make_illegal_states_unrepresentable.md"
+    ["{{link_static_types}}";
+     "{{link_parse_dont_validate}}";
+     "{{link_smart_constructor}}";]
+    [to_static_types;
+     to_parse_dont_validate;
+     to_smart_constructor;]
+
+let make_illegal_states_unrepresentable_principle
+    to_static_types
+    to_parse_dont_validate
+    to_smart_constructor = {
   title = "Make Illegal States Unrepresentable";
   route = "make_illegal_states_unrepresentable";
   short = "«Make illegal states unrepresentable» is a \
            functional design technique that leverages product \
            and sum types to decrease the bug surface of your \
            software.";
-  long = Some (Markdown.from_markdown_file "./principles/make_illegal_states_unrepresentable.md");
+  long = Some (misu to_static_types to_parse_dont_validate to_smart_constructor);
 }
 
-let principles = [
+let principles to_static_types to_parse_dont_validate to_smart_constructor = [
   immutability_principle;
   purity_principle;
   everything_as_a_value_principle;
@@ -187,5 +200,5 @@ let principles = [
   decoupled_by_default_principle;
   late_decision_making_principle;
   modularization_principle;
-  make_illegal_states_unrepresentable_principle;
+  make_illegal_states_unrepresentable_principle to_static_types to_parse_dont_validate to_smart_constructor;
 ]

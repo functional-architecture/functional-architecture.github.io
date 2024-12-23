@@ -36,6 +36,7 @@ val (let&) : string -> (ref -> 'a web) -> 'a web
 val (let@) : (string * string) -> (ref -> 'a web) -> 'a web
 val (let+) : 'a web -> ('a -> 'b) -> 'b web
 val (let$) : 'a -> (ref -> 'b web) -> 'b web
+val (let^) : (string * 'a web) -> (ref -> 'a web) -> 'a web
 
 val render : ?directory:string -> string web -> unit
 

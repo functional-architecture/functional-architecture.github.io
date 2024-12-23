@@ -49,14 +49,14 @@ let hl_js =
 
 let highlight_css_data = read_file "./css/github.min.css"
 
-let rec refify' xs k acc =
-  match xs with
-  | [] -> k (List.rev acc)
-  | (x :: xs) ->
-    with_ref (fun r -> refify' xs k (List.cons (x, r) acc))
+(* let rec refify' xs k acc = *)
+(*   match xs with *)
+(*   | [] -> k (List.rev acc) *)
+(*   | (x :: xs) -> *)
+(*     with_ref (fun r -> refify' xs k (List.cons (x, r) acc)) *)
 
-let refify (xs : 'a list) (k : ('a * ref) list -> 'b web) : 'b web =
-  refify' xs k []
+(* let refify (xs : 'a list) (k : ('a * ref) list -> 'b web) : 'b web = *)
+(*   refify' xs k [] *)
 
 let rec with_resources_acc ress get_data get_filename k acc =
   match ress with
@@ -431,30 +431,92 @@ let publications_page =
                txt "TODO";
               ]))])
 
+let web_of_principle pr =
+  pr.Funarch.Principles.route, (pure (page_of_principle pr))
+
+let web_of_pattern pat =
+  pat.Funarch.Patterns.route, (page_of_pattern pat)
 
 let website =
+  let open Funarch.Principles in
+  let open Funarch.Patterns in
   map2
     html
     head
-    (refify
-       Funarch.Principles.principles
-       (fun principles ->
-          refify
-            Funarch.Patterns.patterns
-            (fun patterns ->
-              case
-                (List.concat
-                   [[("publications", publications_page); ("events", events)];
-                    (List.map
-                       (fun (pr, r) ->
-                          (pr.Funarch.Principles.route, (refer r (pure (page_of_principle pr)))))
-                       principles);
-                    (List.map
-                       (fun (pat, r) ->
-                          (pat.Funarch.Patterns.route, (refer r (page_of_pattern pat))))
-                       patterns);
-                   ])
-                (pure (main_body principles patterns)))))
+    (let^ functional_core_imperative_shell_ref = web_of_pattern functional_core_imperative_shell_pattern in
+     let^ zipper_ref = web_of_pattern zipper_pattern in
+     let^ continuations_ref = web_of_pattern continuations_pattern in
+     let^ functional_programming_languages_ref = web_of_pattern functional_programming_languages_pattern in
+     let^ static_types_ref = web_of_pattern static_types_pattern in
+     let^ event_sourcing_ref = web_of_pattern event_sourcing_pattern in
+     let^ bidirectional_data_transformation_ref = web_of_pattern bidirectional_data_transformation_pattern in
+     let^ edsl_ref = web_of_pattern edsl_pattern in
+     let^ composable_effects_ref = web_of_pattern composable_effects_pattern in
+     let^ composable_error_handling_ref = web_of_pattern composable_error_handling_pattern in
+     let^ composable_guis_ref = web_of_pattern composable_guis_pattern in
+     let^ property_based_testing_ref = web_of_pattern property_based_testing_pattern in
+     let^ formal_verification_ref = web_of_pattern formal_verification_pattern in
+     let^ denotational_design_ref = web_of_pattern denotational_design_pattern in
+     let^ parse_dont_validate_ref = web_of_pattern parse_dont_validate_pattern in
+     let^ trees_that_grow_ref = web_of_pattern trees_that_grow_pattern in
+     let^ data_types_a_la_carte_ref = web_of_pattern data_types_a_la_carte_pattern in
+     let^ smart_constructor_ref = web_of_pattern smart_constructor_pattern in
+     let^ correctness_by_construction_ref = web_of_pattern correctness_by_construction_pattern in
+
+     let^ immutability_ref = web_of_principle immutability_principle in
+     let^ purity_ref = web_of_principle purity_principle in
+     let^ everything_as_a_value_ref = web_of_principle everything_as_a_value_principle in
+     let^ composition_ref = web_of_principle composition_principle in
+     let^ algebra_ref = web_of_principle algebra_principle in
+     let^ abstraction_ref = web_of_principle abstraction_principle in
+     let^ architecture_as_code_ref = web_of_principle architecture_as_code_principle in
+     let^ decoupled_by_default_ref = web_of_principle decoupled_by_default_principle in
+     let^ late_decision_making_ref = web_of_principle late_decision_making_principle in
+     let^ modularization_ref = web_of_principle modularization_principle in
+     let misu = (make_illegal_states_unrepresentable_principle
+                   (deref static_types_ref)
+                   (deref parse_dont_validate_ref)
+                   (deref smart_constructor_ref)) in
+     let^ misu_ref = web_of_principle misu in
+     case
+       [("publications", publications_page);
+        ("events", events)]
+       (pure (main_body
+                [
+                  (immutability_principle, immutability_ref);
+                  (purity_principle, purity_ref);
+                  (everything_as_a_value_principle, everything_as_a_value_ref);
+                  (composition_principle, composition_ref);
+                  (algebra_principle, algebra_ref);
+                  (abstraction_principle, abstraction_ref);
+                  (architecture_as_code_principle, architecture_as_code_ref);
+                  (decoupled_by_default_principle, decoupled_by_default_ref);
+                  (late_decision_making_principle, late_decision_making_ref);
+                  (modularization_principle, modularization_ref);
+                  (misu, misu_ref);
+                ]
+                [
+                  (functional_core_imperative_shell_pattern, functional_core_imperative_shell_ref);
+                  (functional_core_imperative_shell_pattern, functional_core_imperative_shell_ref);
+                  (zipper_pattern, zipper_ref);
+                  (continuations_pattern, continuations_ref);
+                  (functional_programming_languages_pattern, functional_programming_languages_ref);
+                  (static_types_pattern, static_types_ref);
+                  (event_sourcing_pattern, event_sourcing_ref);
+                  (bidirectional_data_transformation_pattern, bidirectional_data_transformation_ref);
+                  (edsl_pattern, edsl_ref);
+                  (composable_effects_pattern, composable_effects_ref);
+                  (composable_error_handling_pattern, composable_error_handling_ref);
+                  (composable_guis_pattern, composable_guis_ref);
+                  (property_based_testing_pattern, property_based_testing_ref);
+                  (formal_verification_pattern, formal_verification_ref);
+                  (denotational_design_pattern, denotational_design_ref);
+                  (parse_dont_validate_pattern, parse_dont_validate_ref);
+                  (trees_that_grow_pattern, trees_that_grow_ref);
+                  (data_types_a_la_carte_pattern, data_types_a_la_carte_ref);
+                  (smart_constructor_pattern, smart_constructor_ref);
+                  (correctness_by_construction_pattern, correctness_by_construction_ref);
+                ])))
 
 let pr_html x = Format.asprintf "%a" (Tyxml.Html.pp ~indent:false ()) x
 
