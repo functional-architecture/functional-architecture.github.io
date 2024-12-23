@@ -58,8 +58,6 @@ type 'a web =
   | Map : ('a -> 'b) * 'a web -> 'b web
   (* aka liftA2, web is an applicative functor *)
   | Lift2 : ('a -> 'b -> 'c) * 'a web * 'b web -> 'c web
-  (* aka sequenceA, web is a traversable functor *)
-  | Sequence : 'a web list -> 'a list web
 
   | With_ref : (ref -> 'a web) -> 'a web
   | Refer : ref * 'a web -> 'a web
@@ -79,7 +77,10 @@ let map f x = Map (f, x)
 
 let map2 f x y = Lift2 (f, x, y)
 
-let sequence xs = Sequence xs
+let rec sequence xs =
+  match xs with
+  | [] -> pure []
+  | (x :: xs) -> map2 List.cons x (sequence xs)
 
 let mapn f xs = map f (sequence xs)
 
@@ -157,11 +158,6 @@ let rec resolve_acc : type a . a web -> ref_generator -> url -> (ref -> url opti
         (match resolve_acc x ref_gen url_here url_of_ref r with
           | Some url -> Some url
           | None -> resolve_acc y (ref_gen_split ref_gen) url_here url_of_ref r)
-      | Sequence [] -> None
-      | Sequence (w' :: ws) ->
-        (match resolve_acc w' ref_gen url_here url_of_ref r with
-          | Some url -> Some url
-          | None -> resolve_acc (Sequence ws) (ref_gen_split ref_gen) url_here url_of_ref r)
       | With_ref k ->
         let (new_ref, ref_gen') = gen_ref ref_gen in
         resolve_acc (k new_ref) ref_gen' url_here url_of_ref r
@@ -196,11 +192,6 @@ let rec run_fun_acc : type a . a web -> (ref -> url) -> ref_generator -> (url ->
                            f
                            (run_fun_acc x url_of_ref ref_gen u)
                            (run_fun_acc y url_of_ref (ref_gen_split ref_gen) u)
-    | Sequence [] -> Value []
-    | Sequence (w' :: ws) -> or_resource_map_2
-                               List.cons
-                               (run_fun_acc w' url_of_ref ref_gen u)
-                               (run_fun_acc (Sequence ws) url_of_ref (ref_gen_split ref_gen) u)
     | With_ref k -> let (new_ref, ref_gen') = gen_ref ref_gen in
       run_fun_acc (k new_ref) url_of_ref ref_gen' u
     | Refer (_, w') -> run_fun_acc w' url_of_ref ref_gen u
@@ -281,12 +272,6 @@ let rec run_dmap_acc : type a . a web -> (ref -> url) -> ref_generator -> a or_r
         (or_resource_map_2 f)
         (run_dmap_acc x url_of_ref ref_gen)
         (run_dmap_acc y url_of_ref (ref_gen_split ref_gen))
-    | Sequence [] -> default_map_const (Value [])
-    | Sequence (w' :: ws) ->
-      default_map_map_2
-        (or_resource_map_2 List.cons)
-        (run_dmap_acc w' url_of_ref ref_gen)
-        (run_dmap_acc (Sequence ws) url_of_ref (ref_gen_split ref_gen))
     | With_ref k -> let (new_ref, ref_gen') = gen_ref ref_gen in
       run_dmap_acc (k new_ref) url_of_ref ref_gen'
     | Refer (_, w') -> run_dmap_acc w' url_of_ref ref_gen
