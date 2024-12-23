@@ -264,6 +264,7 @@ let pr_principles_blocks ps =
 
 let page_of_pattern (pattern : Funarch.Patterns.pattern) =
   let open Funarch.Patterns in
+  let+ pat = pattern.long in
   (body
      [hdr ~show_title:true `Overview;
       (centered_with_footer
@@ -278,7 +279,7 @@ let page_of_pattern (pattern : Funarch.Patterns.pattern) =
                 txt "Pattern"
                ];
              vspace;
-             pattern.long
+             pat
             ]))])
 
 let pr_pattern_short_block (pattern, ref) =
@@ -450,7 +451,7 @@ let website =
                        principles);
                     (List.map
                        (fun (pat, r) ->
-                          (pat.Funarch.Patterns.route, (refer r (pure (page_of_pattern pat)))))
+                          (pat.Funarch.Patterns.route, (refer r (page_of_pattern pat))))
                        patterns);
                    ])
                 (pure (main_body principles patterns)))))

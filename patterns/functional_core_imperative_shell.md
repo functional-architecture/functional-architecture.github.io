@@ -11,7 +11,7 @@ The typical visualization shows a big functional core where all the pure
 functions live, and a thin functional shell where the impure functions interface
 with the outside world:
 
-![Functional core, imperative shell](functional_core_imperative_shell.png)
+![Functional core, imperative shell]({{functional_core_imperative_shell_png}})
 
 The domain logic -- *what* the software does -- is part of the functional core.
 The lack of side-effects and infrastructure makes the functions of the core
