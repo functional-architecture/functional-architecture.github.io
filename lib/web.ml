@@ -328,14 +328,15 @@ let write file s =
   create_dir dir;
   Out_channel.with_open_bin file (fun ch -> Out_channel.output_string ch s)
 
-let render_map : string M.t -> unit =
+let render_map dir string_map =
   M.iter
     (fun filename content ->
       Printf.printf "Rendering %s\n" filename;
-      write filename content)
+      write (dir ^ "/" ^ filename) content)
+  string_map
 
-let render : string web -> unit =
-  fun w -> render_map (map_of_dmap (run_dmap w))
+let render ?(directory = ".") w =
+  render_map directory (map_of_dmap (run_dmap w))
 
 (* Examples *)
 

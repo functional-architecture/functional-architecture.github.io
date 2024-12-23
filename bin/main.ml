@@ -463,5 +463,4 @@ let () =
   Printf.printf "Functional Software Architecture\n";
   if not (Sys.file_exists out_dir)
       then Sys.mkdir out_dir 0o777;
-  Sys.chdir out_dir;
-  render (map pr_html website);
+  render ~directory:out_dir (map pr_html website);
