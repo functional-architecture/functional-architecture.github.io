@@ -1,5 +1,5 @@
 open Tyxml.Html
-open Funarch.Web5
+open Funarch.Web
 
 let read_file file =
   In_channel.with_open_bin file In_channel.input_all

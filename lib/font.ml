@@ -1,4 +1,4 @@
-open Web5
+open Web
 
 type font = {
   font_family : string;
