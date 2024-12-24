@@ -7,19 +7,18 @@ type ref = {
   id : int;
 }
 
+let inc_ref r = {
+  id = r.id + 1;
+}
+
 let string_of_ref r =
   string_of_int r.id
 
-let mk_ref i = {
-  id = i;
-}
-
 let refs_eq r1 r2 = r1.id = r2.id
 
-type ref_generator = int
-let gen_ref rg = (mk_ref rg, rg + 1)
-let initial_ref_gen = 0
-let ref_gen_split rg = rg + 1000
+let initial_ref = {
+  id = 0;
+}
 
 type url = {
   path : string list;
@@ -152,20 +151,26 @@ type 'a lowered =
   | LSeg : string * 'a lowered -> 'a lowered
   | LOr : 'a lowered * 'a lowered -> 'a lowered
 
-let rec lower : type a . ref_generator -> a web -> a lowered =
-  fun ref_gen w ->
+let rec lower' : type a . ref -> a web -> (ref * a lowered) =
+  fun ref w ->
   match w with
-  | Not_found -> LNot_found
-  | Const x -> LConst x
-  | Map (f, w') -> LMap (f, lower ref_gen w')
-  | Lift2 (f, w1, w2) -> LMap2 (f, lower ref_gen w1, lower (ref_gen_split ref_gen) w2)
-  | With_ref k ->
-    let (new_ref, ref_gen') = gen_ref ref_gen in
-    lower ref_gen' (k new_ref)
-  | Refer (r, w) -> LRefer (r, lower ref_gen w)
-  | Resource s -> LResource s
-  | Seg (s, w') -> LSeg (s, lower ref_gen w')
-  | Or (w1, w2) -> LOr (lower ref_gen w1, lower (ref_gen_split ref_gen) w2)
+  | Not_found -> (ref, LNot_found)
+  | Const x -> (ref, LConst x)
+  | Map (f, w') -> let (ref', l) = lower' ref w' in (ref', LMap (f, l))
+  | Lift2 (f, w1, w2) ->
+    let (ref1, l1) = lower' ref w1 in
+    let (ref2, l2) = lower' ref1 w2 in
+    (ref2, LMap2 (f, l1, l2))
+  | With_ref k -> lower' (inc_ref ref) (k ref)
+  | Refer (r, w) -> let (ref', l) = lower' ref w in (ref' , LRefer (r, l))
+  | Resource s -> (ref, LResource s)
+  | Seg (s, w') -> let (ref', l) = lower' ref w' in (ref', LSeg (s, l))
+  | Or (w1, w2) ->
+    let (ref1, l1) = lower' ref w1 in
+    let (ref2, l2) = lower' ref1 w2 in
+    (ref2, LOr (l1, l2))
+
+let lower w = let (_, l) = lower' initial_ref w in l
 
 let opt_or o1 o2 =
   match o1 with
@@ -186,7 +191,7 @@ let rec resolve' : type a . a lowered -> url -> (ref -> url option) =
   | _ -> None
 
 let resolve w r =
-  Option.get (resolve' (lower initial_ref_gen w) empty_url r)
+  Option.get (resolve' (lower w) empty_url r)
 
 let rec ind i =
   if i = 0
@@ -215,7 +220,7 @@ let string_of_web w =
      (fun _ -> empty_url)
      (fun _ ->
         let url_of_ref = resolve w in
-        handle_refs url_of_ref (fun _ -> string_of_lowered (lower initial_ref_gen w))))
+        handle_refs url_of_ref (fun _ -> string_of_lowered (lower w))))
 
 let rec run_fun' : type a . a lowered -> (ref -> url) -> (url -> a or_resource) =
   fun l url_of_ref u ->
@@ -243,7 +248,7 @@ let rec run_fun' : type a . a lowered -> (ref -> url) -> (url -> a or_resource) 
        | Fail -> run_fun' l2 url_of_ref u)
 
 let run_fun : 'a web -> (url -> 'a or_resource) =
-  fun w u -> run_fun' (lower initial_ref_gen w) (resolve w) u
+  fun w u -> run_fun' (lower w) (resolve w) u
 
 
 (* ----- *)
@@ -324,7 +329,7 @@ let run_dmap : 'a web -> 'a or_resource defaultMap =
      (fun _ -> empty_url)
      (fun _ ->
         let url_of_ref = resolve w in
-        handle_refs url_of_ref (fun _ -> run_dmap' (lower initial_ref_gen w) url_of_ref)))
+        handle_refs url_of_ref (fun _ -> run_dmap' (lower w) url_of_ref)))
 
 let map_of_dmap : string or_resource defaultMap -> string M.t =
   fun dm ->
