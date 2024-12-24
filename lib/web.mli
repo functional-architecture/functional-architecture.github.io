@@ -46,4 +46,4 @@ type 'a or_resource
 
 val run_fun : 'a web -> (url -> 'a or_resource)
 
-
+val string_of_web : 'a web -> string

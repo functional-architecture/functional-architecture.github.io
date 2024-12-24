@@ -7,6 +7,9 @@ type ref = {
   id : int;
 }
 
+let string_of_ref r =
+  string_of_int r.id
+
 let mk_ref i = {
   id = i;
 }
@@ -185,35 +188,62 @@ let rec resolve' : type a . a lowered -> url -> (ref -> url option) =
 let resolve w r =
   Option.get (resolve' (lower initial_ref_gen w) empty_url r)
 
-let rec run_fun_acc : type a . a web -> (ref -> url) -> ref_generator -> (url -> a or_resource) =
-  fun w url_of_ref ref_gen u ->
-    match w with
-    | Or (x, y) ->
-      (match run_fun_acc x url_of_ref ref_gen u with
+let rec ind i =
+  if i = 0
+     then ""
+     else "  " ^ ind (i - 1)
+
+let rec string_of_lowered' : type a . int -> a lowered -> string
+  = fun i l ->
+    match l with
+    | LNot_found -> ind i ^ "Not_found"
+    | LConst _ -> ind i ^ "Const: TODO"
+    | LMap (_, l') -> ind i ^ "Map:\n" ^ string_of_lowered' (i + 1) l'
+    | LMap2 (_, l1, l2) -> ind i ^ "Map2:\n" ^ (string_of_lowered' (i + 1) l1) ^ "\n" ^ (string_of_lowered' (i + 1) l2)
+    | LRefer (r, l') -> ind i ^ "Refer: " ^ string_of_ref r ^ "\n" ^ (string_of_lowered' (i + 1) l')
+    | LResource _ -> ind i ^ "Resource"
+    | LSeg (seg, l') ->
+      ind i ^ "Seg: " ^ seg ^ "\n" ^ (string_of_lowered' (i + 1) l')
+    | LOr (l1, l2) ->
+      ind i ^ "Or:\n" ^ (string_of_lowered' (i + 1) l1) ^ "\n" ^ (string_of_lowered' (i + 1) l2)
+
+let string_of_lowered l = string_of_lowered' 0 l
+
+let string_of_web w =
+  (handle_refs
+     (* for calls from resolve: return some dummy urls *)
+     (fun _ -> empty_url)
+     (fun _ ->
+        let url_of_ref = resolve w in
+        handle_refs url_of_ref (fun _ -> string_of_lowered (lower initial_ref_gen w))))
+
+let rec run_fun' : type a . a lowered -> (ref -> url) -> (url -> a or_resource) =
+  fun l url_of_ref u ->
+  match l with
+  | LNot_found -> Fail
+  | LConst x -> Value x
+  | LMap (f, l') -> or_resource_map f (run_fun' l' url_of_ref u)
+  | LMap2 (f, l1, l2) -> or_resource_map_2
+                           f
+                           (run_fun' l1 url_of_ref u)
+                           (run_fun' l2 url_of_ref u)
+  | LRefer (_, l') -> run_fun' l' url_of_ref u
+  | LResource s -> Resource s
+  | LSeg (seg, l') ->
+    (match u.path with
+     | [] -> Fail
+     | segment' :: u' ->
+       if seg = segment'
+       then run_fun' l' url_of_ref (mk_url u')
+       else Fail)
+  | LOr (l1, l2) ->
+      (match run_fun' l1 url_of_ref u with
        | Value v -> Value v
        | Resource r -> Resource r
-       | Fail -> run_fun_acc y url_of_ref (ref_gen_split ref_gen) u)
-    | Seg (segment, w') ->
-      (match u.path with
-       | [] -> Fail
-       | segment' :: u' ->
-         if segment = segment'
-         then run_fun_acc w' url_of_ref ref_gen (mk_url u')
-         else Fail)
-    | Not_found -> Fail
-    | Const x -> Value x
-    | Map (f, w') -> or_resource_map f (run_fun_acc w' url_of_ref ref_gen u)
-    | Lift2 (f, x, y) -> or_resource_map_2
-                           f
-                           (run_fun_acc x url_of_ref ref_gen u)
-                           (run_fun_acc y url_of_ref (ref_gen_split ref_gen) u)
-    | With_ref k -> let (new_ref, ref_gen') = gen_ref ref_gen in
-      run_fun_acc (k new_ref) url_of_ref ref_gen' u
-    | Refer (_, w') -> run_fun_acc w' url_of_ref ref_gen u
-    | Resource s -> Resource s
+       | Fail -> run_fun' l2 url_of_ref u)
 
 let run_fun : 'a web -> (url -> 'a or_resource) =
-  fun w u -> run_fun_acc w (resolve w) initial_ref_gen u
+  fun w u -> run_fun' (lower initial_ref_gen w) (resolve w) u
 
 
 (* ----- *)
@@ -261,36 +291,31 @@ let prepend_segment seg m = {
   dflt = Fail;
 }
 
-let rec run_dmap_acc : type a . a web -> (ref -> url) -> ref_generator -> a or_resource defaultMap =
-  fun w url_of_ref ref_gen ->
-    match w with
-    | Or (x, y) ->
-      let xdm = run_dmap_acc x url_of_ref ref_gen in
-      let ydm = run_dmap_acc y url_of_ref (ref_gen_split ref_gen) in
+let rec run_dmap' : type a . a lowered -> (ref -> url) -> a or_resource defaultMap =
+  fun l url_of_ref ->
+  match l with
+  | LNot_found -> { map = M.empty; dflt = Fail; }
+  | LConst x -> default_map_const (Value x)
+  | LMap (f, l') -> default_map_map
+                      (or_resource_map f)
+                      (run_dmap' l' url_of_ref)
+  | LMap2 (f, l1, l2) -> default_map_map_2
+                           (or_resource_map_2 f)
+                           (run_dmap' l1 url_of_ref)
+                           (run_dmap' l2 url_of_ref)
+  | LRefer (_, l') -> run_dmap' l' url_of_ref
+  | LResource s -> default_map_const (Resource s)
+  | LSeg (seg, l') -> prepend_segment seg (run_dmap' l' url_of_ref)
+  | LOr (l1, l2) ->
+      let dm1 = run_dmap' l1 url_of_ref in
+      let dm2 = run_dmap' l2 url_of_ref in
       {
         map = M.union
                 (fun _k v1 _v2 -> Some v1)
-                xdm.map
-                ydm.map;
-        dflt = ydm.dflt;
+                dm1.map
+                dm2.map;
+        dflt = dm2.dflt;
       }
-    | Seg (segment, w') ->
-      prepend_segment segment (run_dmap_acc w' url_of_ref ref_gen)
-    | Not_found -> { map = M.empty; dflt = Fail; }
-    | Const s -> default_map_const (Value s)
-    | Map (f, w') ->
-      default_map_map
-        (or_resource_map f)
-        (run_dmap_acc w' url_of_ref ref_gen)
-    | Lift2 (f, x, y) ->
-      default_map_map_2
-        (or_resource_map_2 f)
-        (run_dmap_acc x url_of_ref ref_gen)
-        (run_dmap_acc y url_of_ref (ref_gen_split ref_gen))
-    | With_ref k -> let (new_ref, ref_gen') = gen_ref ref_gen in
-      run_dmap_acc (k new_ref) url_of_ref ref_gen'
-    | Refer (_, w') -> run_dmap_acc w' url_of_ref ref_gen
-    | Resource s -> default_map_const (Resource s)
 
 let run_dmap : 'a web -> 'a or_resource defaultMap =
   fun w ->
@@ -299,7 +324,7 @@ let run_dmap : 'a web -> 'a or_resource defaultMap =
      (fun _ -> empty_url)
      (fun _ ->
         let url_of_ref = resolve w in
-        handle_refs url_of_ref (fun _ -> run_dmap_acc w url_of_ref initial_ref_gen)))
+        handle_refs url_of_ref (fun _ -> run_dmap' (lower initial_ref_gen w) url_of_ref)))
 
 let map_of_dmap : string or_resource defaultMap -> string M.t =
   fun dm ->
