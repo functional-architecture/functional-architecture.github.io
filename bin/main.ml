@@ -245,8 +245,9 @@ let page_of_principle (pr : Funarch.Principles.principle) =
                ];
              vspace;
              match pr.long with
-             | Some desc -> desc
-             | None -> txt "TODO"]))])
+             | Draft desc -> desc
+             | Published desc -> desc
+             | Todo -> txt "TODO"]))])
 
 let pr_principle_short_block (principle, page_ref) =
   let open Funarch.Principles in
@@ -254,11 +255,12 @@ let pr_principle_short_block (principle, page_ref) =
     h3 [txt principle.title];
     p [txt principle.short];
     match principle.long with
-    | Some _ -> (a ~a:[a_href (deref page_ref)] [
+    | Published _ -> (a ~a:[a_href (deref page_ref)] [
         txt "→ ";
         txt "More";
       ])
-    | None -> txt "";
+    | Draft _ -> txt "";
+    | Todo -> txt "";
   ]
 
 let pr_principles_blocks ps =

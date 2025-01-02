@@ -1,10 +1,15 @@
 open Tyxml.Html
 
+type 'a publishing_state =
+  | Published of 'a
+  | Draft of 'a
+  | Todo
+
 type principle = {
     title : string;
     route : string;
     short : string;
-    long : Html_types.div_content elt option;
+    long : Html_types.div_content elt publishing_state;
 }
 
 let immutability_principle = {
@@ -12,7 +17,7 @@ let immutability_principle = {
   route = "immutability";
   short = "Stop thinking in terms of state and resource management and \
            start thinking in terms of your domain.";
-  long = None;
+  long = Todo;
 }
 
 let purity_principle = {
@@ -20,7 +25,7 @@ let purity_principle = {
   route = "pure_functions";
   short = "A pure function transforms immutable values without \
            performing any side effects.";
-  long = None;
+  long = Todo;
 }
 
 let everything_as_a_value_principle = {
@@ -30,7 +35,7 @@ let everything_as_a_value_principle = {
            be passed around, analyzed and composed. Functions as \
            values, property accessors as values, UI components as \
            values ...";
-  long = Some (div [
+  long = Draft (div [
       p [
         txt "Every software is _about_ something: A simple calculator \
              application is about numbers and operations thereon, an \
@@ -102,7 +107,7 @@ let composition_principle = {
   title = "Composition and Closure";
   route = "composition";
   short = "We like to combine small software structures to form larger structures – without cognitive overhead.";
-  long = None;
+  long = Todo;
 }
 
 let algebra_principle = {
@@ -111,7 +116,7 @@ let algebra_principle = {
   short = "Functional software architects try to find models that \
            build on algebraic structures that stood the test of time, \
            such as Monoids, Functors, and Monads.";
-  long = None;
+  long = Todo;
 }
 
 let abstraction_principle = {
@@ -120,7 +125,7 @@ let abstraction_principle = {
   short = "Abstraction is the sharpest weapon of reason. Functional \
            software architects welcome abstraction as a tool for \
            coping with complexity.";
-  long = None;
+  long = Todo;
 }
 
 let architecture_as_code_principle = {
@@ -130,7 +135,7 @@ let architecture_as_code_principle = {
            decisions to be expressed in code. We may still use \
            diagrams and descriptions as supporting documentation, but \
            the source of truth is always to be found in the code.";
-  long = None;
+  long = Todo;
 }
 
 let decoupled_by_default_principle = {
@@ -139,7 +144,7 @@ let decoupled_by_default_principle = {
   short = "Make the communication channels between building blocks as \
            wide as neccessary and as narrow as possible. Build tools \
            with affordances toward low coupling and high cohesion.";
-  long = Some (Markdown.from_markdown_file "./principles/decoupled_by_default.md");
+  long = Draft (Markdown.from_markdown_file "./principles/decoupled_by_default.md");
 }
 
 let late_decision_making_principle = {
@@ -151,7 +156,7 @@ let late_decision_making_principle = {
            it is easy to change our minds later in the process. This \
            shifts our focus from making decisions to making decisions \
            possible.";
-  long = Some (Markdown.from_markdown_file "./principles/late_decision_making.md");
+  long = Draft (Markdown.from_markdown_file "./principles/late_decision_making.md");
 }
 
 let modularization_principle = {
@@ -163,7 +168,7 @@ let modularization_principle = {
            abstractions allow for simpler interfaces and therefore \
            allow to hide more decisions, leading to more malleable \
            designs overall.";
-  long = None;
+  long = Todo;
 }
 
 let misu to_static_types to_parse_dont_validate to_smart_constructor =
@@ -186,7 +191,7 @@ let make_illegal_states_unrepresentable_principle
            functional design technique that leverages product \
            and sum types to decrease the bug surface of your \
            software.";
-  long = Some (misu to_static_types to_parse_dont_validate to_smart_constructor);
+  long = Published (misu to_static_types to_parse_dont_validate to_smart_constructor);
 }
 
 let principles to_static_types to_parse_dont_validate to_smart_constructor = [
