@@ -509,7 +509,6 @@ let website =
                 ]
                 [
                   (functional_core_imperative_shell_pattern, functional_core_imperative_shell_ref);
-                  (functional_core_imperative_shell_pattern, functional_core_imperative_shell_ref);
                   (zipper_pattern, zipper_ref);
                   (continuations_pattern, continuations_ref);
                   (functional_programming_languages_pattern, functional_programming_languages_ref);
