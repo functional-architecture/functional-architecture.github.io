@@ -270,8 +270,9 @@ let page_of_pattern (pattern : Funarch.Patterns.pattern) =
   let open Funarch.Patterns in
   let pato = pattern.long in
   let+ pat = match pato with
-    | Some w -> w
-    | None -> pure (txt "TODO") in
+    | Published w -> w
+    | Draft w -> w
+    | Todo -> pure (txt "TODO") in
   (body
      [hdr ~show_title:true `Overview;
       (centered_with_footer
@@ -295,11 +296,12 @@ let pr_pattern_short_block (pattern, ref) =
     h3 [txt pattern.title];
     pattern.short;
     match pattern.long with
-    | Some _ -> (a ~a:[a_href (deref ref)] [
+    | Published _ -> (a ~a:[a_href (deref ref)] [
         txt "→ ";
         txt "More";
       ])
-    | None -> txt "";
+    | Draft _ -> txt "";
+    | Todo -> txt "";
   ]
 
 let pr_patterns_blocks ps =
