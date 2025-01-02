@@ -253,10 +253,12 @@ let pr_principle_short_block (principle, page_ref) =
   block [
     h3 [txt principle.title];
     p [txt principle.short];
-    a ~a:[a_href (deref page_ref)] [
-      txt "→ ";
-      txt "More";
-    ]
+    match principle.long with
+    | Some _ -> (a ~a:[a_href (deref page_ref)] [
+        txt "→ ";
+        txt "More";
+      ])
+    | None -> txt "";
   ]
 
 let pr_principles_blocks ps =
@@ -264,7 +266,10 @@ let pr_principles_blocks ps =
 
 let page_of_pattern (pattern : Funarch.Patterns.pattern) =
   let open Funarch.Patterns in
-  let+ pat = pattern.long in
+  let pato = pattern.long in
+  let+ pat = match pato with
+    | Some w -> w
+    | None -> pure (txt "TODO") in
   (body
      [hdr ~show_title:true `Overview;
       (centered_with_footer
@@ -287,10 +292,13 @@ let pr_pattern_short_block (pattern, ref) =
   block [
     h3 [txt pattern.title];
     pattern.short;
-    a ~a:[a_href (deref ref)] [
-      txt "→ ";
-      txt "More";
-    ]]
+    match pattern.long with
+    | Some _ -> (a ~a:[a_href (deref ref)] [
+        txt "→ ";
+        txt "More";
+      ])
+    | None -> txt "";
+  ]
 
 let pr_patterns_blocks ps =
   blocks ~id:"patterns" (List.map pr_pattern_short_block ps)

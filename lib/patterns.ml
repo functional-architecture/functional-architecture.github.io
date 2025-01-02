@@ -4,7 +4,7 @@ type pattern = {
   title : string;
   route : string;
   short : Html_types.div_content elt;
-  long : Html_types.div_content elt Web.web;
+  long : Html_types.div_content elt Web.web option;
 }
 
 let read_file file =
@@ -20,7 +20,7 @@ let functional_core_imperative_shell_pattern = {
   title = "Functional Core, Imperative Shell";
   route = "functional_core_imperative_shell";
   short = p [(txt "Structure software into functions in the core that are pure and functions in the shell that are impure.")];
-  long = (Web.with_resource
+  long = Some (Web.with_resource
             ~filename:"fcis.png"
             (read_file "./patterns/functional_core_imperative_shell.png")
             (fun r ->
@@ -32,14 +32,14 @@ let zipper_pattern = {
   title = "Zipper";
   route = "zipper";
   short = p [txt "TODO"];
-  long = Web.pure @@ div [p [(txt "TODO")]]
+  long = None;
 }
 
 let continuations_pattern = {
   title = "Continuations";
   route = "continuations";
   short = p [txt "TODO"];
-  long = Web.pure @@ div [p [(txt "TODO")]]
+  long = None;
 }
 
 let functional_programming_languages_pattern = {
@@ -47,7 +47,7 @@ let functional_programming_languages_pattern = {
   route = "functional_programming_languages";
   short = p [txt "Functional software architecture is best done in proper \
                   functional programming languages."];
-  long = Web.pure @@ div [p [(txt "TODO")]]
+  long = None;
 }
 
 let static_types_pattern = {
@@ -56,14 +56,14 @@ let static_types_pattern = {
   short = p [txt "Type systems allow you to enrich your code with \
                   descriptions of properties and requirements, which can be \
                   statically checked and enforced."];
-  long = Web.pure @@ div [p [(txt "TODO")]]
+  long = None;
 }
 
 let event_sourcing_pattern = {
   title = "Event Sourcing";
   route = "event_sourcing";
   short = p [txt "TODO"];
-  long = Web.pure @@ div [p [(txt "TODO")]]
+  long = None;
 }
 
 let bidirectional_data_transformation_pattern = {
@@ -74,14 +74,14 @@ let bidirectional_data_transformation_pattern = {
                   structure. We employ bidirectional data \
                   transformations with functional optics to simplify \
                   conversions from one representation to the next."];
-  long = Web.pure (Markdown.from_markdown_file "./patterns/bidirectional_data_transformations.md")
+  long = Some (Web.pure (Markdown.from_markdown_file "./patterns/bidirectional_data_transformations.md"));
 }
 
 let edsl_pattern = {
   title = "Embedded Domain-Specific Languages";
   route = "dsl";
   short = p [txt "TODO"];
-  long = Web.pure @@ div [p [(txt "TODO")]]
+  long = None;
 }
 
 let composable_effects_pattern = {
@@ -91,7 +91,7 @@ let composable_effects_pattern = {
                   explicit. Effect systems also allow effectful code to be \
                   run in a pure environment, which makes our code better \
                   testable."];
-  long = Web.pure @@ div [p [(txt "TODO")]]
+  long = None;
 }
 
 let composable_error_handling_pattern = {
@@ -99,7 +99,7 @@ let composable_error_handling_pattern = {
   route = "composable_error_handling";
   short = p [txt "Handle errors in a way that they can be composed, combined, \
                   and passed through different parts of your program predictably."];
-  long = Web.pure @@ div [p [(txt "TODO")]]
+  long = None;
 }
 
 let composable_guis_pattern = {
@@ -112,21 +112,21 @@ let composable_guis_pattern = {
                   libraries provide a set of primitive components and a set \
                   of UI combinators, which let you build sophisticated \
                   graphical user interfaces without cognitive overhead."];
-  long = Web.pure @@ div [p [(txt "TODO")]]
+  long = None;
 }
 
 let property_based_testing_pattern = {
   title = "Property-based testing";
   route = "property_based_testing";
   short = p [txt "TODO"];
-  long = Web.pure @@ div [p [(txt "TODO")]]
+  long = None;
 }
 
 let formal_verification_pattern = {
   title = "Formal Verification";
   route = "formal_verification";
   short = p [txt "TODO"];
-  long = Web.pure @@ div [p [(txt "TODO")]]
+  long = None;
 }
 
 let denotational_design_pattern = {
@@ -146,7 +146,7 @@ let denotational_design_pattern = {
                   implementation of a unit of software without coupling \
                   them. Denotational Design is therefore a methodology to \
                   build airtight abstraction barriers."];
-  long = Web.pure @@ div [p [(txt "TODO")]]
+  long = None;
 }
 
 let parse_dont_validate_pattern = {
@@ -154,7 +154,7 @@ let parse_dont_validate_pattern = {
   route = "parse_dont_validate";
   short = p [txt "«Parse, don’t validate» is a simple mnemonic for \
                   type-driven design."];
-  long = Web.pure @@ div [p [(txt "TODO")]]
+  long = None;
 }
 
 let trees_that_grow_pattern = {
@@ -162,7 +162,7 @@ let trees_that_grow_pattern = {
   route = "trees_that_grow";
   short = p [txt "«Trees that grow» is a method to make models built \
                   with algebraic data types more extensible."];
-  long = Web.pure @@ div [p [(txt "TODO")]]
+  long = None;
 }
 
 let data_types_a_la_carte_pattern = {
@@ -171,7 +171,7 @@ let data_types_a_la_carte_pattern = {
   short = p [txt "«Data types à la carte» is a technique to deal with \
                   the dreaded Expression Problem in functional \
                   languages."];
-  long = Web.pure @@ div [p [(txt "TODO")]]
+  long = None;
 }
 
 let smart_constructor_pattern = {
@@ -181,14 +181,14 @@ let smart_constructor_pattern = {
                   ordinary constructor, but it performs some useful \
                   computations such as preprocessing, normalization, \
                   parsing, or validation."];
-  long = Web.pure @@ div [p [(txt "TODO")]]
+  long = None;
 }
 
 let correctness_by_construction_pattern = {
   title = "Correctness by Construction";
   route = "correctness_by_construction";
   short = p [txt "TODO"];
-  long = Web.pure @@ div [p [(txt "TODO")]]
+  long = None;
 }
 
 let patterns = [

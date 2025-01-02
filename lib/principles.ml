@@ -12,7 +12,7 @@ let immutability_principle = {
   route = "immutability";
   short = "Stop thinking in terms of state and resource management and \
            start thinking in terms of your domain.";
-  long = Some (txt "Ja moin");
+  long = None;
 }
 
 let purity_principle = {
