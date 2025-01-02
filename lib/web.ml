@@ -253,76 +253,27 @@ let run_fun : 'a web -> (url -> 'a or_resource) =
 
 (* ----- *)
 
-
-type 'a defaultMap = {
-  map : 'a M.t;
-  dflt : 'a;
-}
-
-let default_map_const v = {
-  map = M.empty;
-  dflt = v;
-}
-
-let default_map_map f dmap = {
-  map = M.map f dmap.map;
-  dflt = f dmap.dflt;
-}
-
-let default_map_map_2 f m1 m2 = {
-  map =
-    M.merge
-      (fun _k v1 v2 ->
-         match (v1, v2) with
-         | None, None -> None
-         | Some s1, None -> Some (f s1 m2.dflt)
-         | None, Some s2 -> Some (f m1.dflt s2) 
-         | Some s1, Some s2 -> Some (f s1 s2))
-      m1.map
-      m2.map;
-  dflt = f m1.dflt m2.dflt;
-}
-
-let prepend_segment seg m = {
-  map =
-    M.fold
-      (fun k v acc ->
-         M.add
-           (seg ^ "/" ^ k)
-           v
-           acc)
-      m.map
-      (M.singleton seg m.dflt);
-  dflt = Fail;
-}
-
-let rec run_dmap' : type a . a lowered -> (ref -> url) -> a or_resource defaultMap =
+let rec run_dmap' : type a . a lowered -> (ref -> url) -> a or_resource Dmap.t =
   fun l url_of_ref ->
   match l with
-  | LNot_found -> { map = M.empty; dflt = Fail; }
-  | LConst x -> default_map_const (Value x)
-  | LMap (f, l') -> default_map_map
+  | LNot_found -> Dmap.pure Fail
+  | LConst x -> Dmap.pure (Value x)
+  | LMap (f, l') -> Dmap.map
                       (or_resource_map f)
                       (run_dmap' l' url_of_ref)
-  | LMap2 (f, l1, l2) -> default_map_map_2
+  | LMap2 (f, l1, l2) -> Dmap.map2
                            (or_resource_map_2 f)
                            (run_dmap' l1 url_of_ref)
                            (run_dmap' l2 url_of_ref)
   | LRefer (_, l') -> run_dmap' l' url_of_ref
-  | LResource s -> default_map_const (Resource s)
-  | LSeg (seg, l') -> prepend_segment seg (run_dmap' l' url_of_ref)
+  | LResource s -> Dmap.pure (Resource s)
+  | LSeg (seg, l') -> Dmap.shift ("/" ^ seg) Fail (run_dmap' l' url_of_ref)
   | LOr (l1, l2) ->
       let dm1 = run_dmap' l1 url_of_ref in
       let dm2 = run_dmap' l2 url_of_ref in
-      {
-        map = M.union
-                (fun _k v1 _v2 -> Some v1)
-                dm1.map
-                dm2.map;
-        dflt = dm2.dflt;
-      }
+      Dmap.union (fun v1 _v2 -> Some v1) dm1 dm2
 
-let run_dmap : 'a web -> 'a or_resource defaultMap =
+let run_dmap : 'a web -> 'a or_resource Dmap.t =
   fun w ->
   (handle_refs
      (* for calls from resolve: return some dummy urls *)
@@ -331,19 +282,20 @@ let run_dmap : 'a web -> 'a or_resource defaultMap =
         let url_of_ref = resolve w in
         handle_refs url_of_ref (fun _ -> run_dmap' (lower w) url_of_ref)))
 
-let map_of_dmap : string or_resource defaultMap -> string M.t =
+let map_of_dmap : string or_resource Dmap.t -> string M.t =
   fun dm ->
-  M.fold
+  Dmap.fold
     (fun k v acc ->
        match v with
        | Fail -> acc
        | Resource s -> M.add k s acc
        | Value s -> M.add (k ^ "/index.html") s acc)
-    dm.map
-    (match dm.dflt with
-     | Fail -> M.empty
-     | Value s -> (M.singleton "./index.html" s)
-     | Resource s -> (M.singleton "undefined.undefined" s))
+    dm
+    (fun dflt ->
+       (match dflt with
+        | Fail -> M.empty
+        | Value s -> (M.singleton "./index.html" s)
+        | Resource s -> (M.singleton "undefined.undefined" s)))
 
 let rec create_dir dir =
   print_endline @@ "create_dir: " ^ dir;
@@ -368,83 +320,3 @@ let render_map dir string_map =
 
 let render ?(directory = ".") w =
   render_map directory (map_of_dmap (run_dmap w))
-
-(* Examples *)
-
-(* module H = Tyxml.Html *)
-
-(* let div x y = Lift2 ((^), x, y) *)
-
-(* let img_text filename content = *)
-(*   with_ref *)
-(*     (fun r -> *)
-(*        case *)
-(*          [(filename, refer r (Resource content))] *)
-(*          (Const ("<img src=" ^ (deref r) ^ " />"))) *)
-
-(* let ex0 = *)
-(*   mapn *)
-(*     (String.concat "...") *)
-(*     [(Const "undich frank, mein fote ist: "); *)
-(*      (img_text "frank.jpg" "BINARY")] *)
-
-(* let ex1 = *)
-(*   case_else_fail *)
-(*     [("juergen", Const "Ja moin ich bin juerg"); *)
-(*      ("frank", ex0)] *)
-
-(* let ex2 = div ex1 ex1 *)
-
-(* let ex3 = *)
-(*   case_else_fail *)
-(*     [("employees", ex1); *)
-(*      ("about", Const "A very nice website")] *)
-
-(* let ex5 = *)
-(*   with_ref *)
-(*     (fun r -> *)
-(*        case_else_fail *)
-(*          [("employees", Refer (r, ex3)); *)
-(*           ("about", *)
-(*            div *)
-(*              (Const "hier geht zu employes: ") *)
-(*              (Const (deref r)))]) *)
-
-(* let ex6 : [`Div] H.elt web = *)
-(*   mapn *)
-(*     (Tyxml.Html.div ~a:[H.a_style "background: red"]) *)
-(*     [(Const (H.p [H.txt "sup"])); *)
-(*      (Const (H.p [H.txt "dawg"]))] *)
-
-(* let read_file file = *)
-(*   In_channel.with_open_bin file In_channel.input_all *)
-
-
-(* let js = *)
-(*   let& hljs_ref = (read_file "./js/highlight.min.js") in *)
-(*   let@ java_ref = ("java.js", (read_file "./js/languages/java.js")) in *)
-(*   (pure *)
-(*      (H.script ~a:[H.a_script_type `Module] *)
-(*         (H.txt *)
-(*            (Printf.sprintf *)
-(*               "import hljs from '%s' *)
-(*                          import java from '%s' *)
-(*                          hljs.registerLanguage('java', java); *)
-(*                          hljs.highlightAll();" *)
-(*               (deref hljs_ref) *)
-(*               (deref java_ref))))) *)
-
-(* let ex7 = *)
-(*   map2 *)
-(*     (fun x js -> *)
-(*        H.html *)
-(*          (H.head *)
-(*             (H.title (H.txt "Hi")) *)
-(*             [js]) *)
-(*          (H.body [x])) *)
-(*     ex6 *)
-(*     js *)
-
-(* let pr_html x = Format.asprintf "%a" (Tyxml.Html.pp ~indent:false ()) x *)
-
-(* let ex8 = map pr_html ex7 *)
