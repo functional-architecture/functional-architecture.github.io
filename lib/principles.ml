@@ -193,17 +193,3 @@ let make_illegal_states_unrepresentable_principle
            software.";
   long = Published (misu to_static_types to_parse_dont_validate to_smart_constructor);
 }
-
-let principles to_static_types to_parse_dont_validate to_smart_constructor = [
-  immutability_principle;
-  purity_principle;
-  everything_as_a_value_principle;
-  composition_principle;
-  algebra_principle;
-  abstraction_principle;
-  architecture_as_code_principle;
-  decoupled_by_default_principle;
-  late_decision_making_principle;
-  modularization_principle;
-  make_illegal_states_unrepresentable_principle to_static_types to_parse_dont_validate to_smart_constructor;
-]
