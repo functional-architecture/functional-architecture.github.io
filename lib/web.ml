@@ -253,27 +253,35 @@ let run_fun : 'a web -> (url -> 'a or_resource) =
 
 (* ----- *)
 
-let rec run_dmap' : type a . a lowered -> (ref -> url) -> a or_resource Dmap.t =
+module SDmap = Dmap.Make(String)
+
+let rec run_dmap' : type a . a lowered -> (ref -> url) -> a or_resource SDmap.t =
   fun l url_of_ref ->
   match l with
-  | LNot_found -> Dmap.pure Fail
-  | LConst x -> Dmap.pure (Value x)
-  | LMap (f, l') -> Dmap.map
+  | LNot_found -> SDmap.pure Fail
+  | LConst x -> SDmap.pure (Value x)
+  | LMap (f, l') -> SDmap.map
                       (or_resource_map f)
                       (run_dmap' l' url_of_ref)
-  | LMap2 (f, l1, l2) -> Dmap.map2
+  | LMap2 (f, l1, l2) -> SDmap.map2
                            (or_resource_map_2 f)
                            (run_dmap' l1 url_of_ref)
                            (run_dmap' l2 url_of_ref)
   | LRefer (_, l') -> run_dmap' l' url_of_ref
-  | LResource s -> Dmap.pure (Resource s)
-  | LSeg (seg, l') -> Dmap.shift ("/" ^ seg) Fail (run_dmap' l' url_of_ref)
+  | LResource s -> SDmap.pure (Resource s)
+  | LSeg (seg, l') ->
+    SDmap.shift
+      (fun sego -> match sego with
+         | None -> seg
+         | Some s -> seg ^ s)
+      Fail
+      (run_dmap' l' url_of_ref)
   | LOr (l1, l2) ->
       let dm1 = run_dmap' l1 url_of_ref in
       let dm2 = run_dmap' l2 url_of_ref in
-      Dmap.union (fun v1 _v2 -> Some v1) dm1 dm2
+      SDmap.union (fun v1 _v2 -> Some v1) dm1 dm2
 
-let run_dmap : 'a web -> 'a or_resource Dmap.t =
+let run_dmap : 'a web -> 'a or_resource SDmap.t =
   fun w ->
   (handle_refs
      (* for calls from resolve: return some dummy urls *)
@@ -282,9 +290,9 @@ let run_dmap : 'a web -> 'a or_resource Dmap.t =
         let url_of_ref = resolve w in
         handle_refs url_of_ref (fun _ -> run_dmap' (lower w) url_of_ref)))
 
-let map_of_dmap : string or_resource Dmap.t -> string M.t =
+let map_of_dmap : string or_resource SDmap.t -> string M.t =
   fun dm ->
-  Dmap.fold
+  SDmap.fold
     (fun k v acc ->
        match v with
        | Fail -> acc
