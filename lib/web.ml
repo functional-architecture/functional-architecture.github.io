@@ -273,7 +273,7 @@ let rec run_dmap' : type a . a lowered -> (ref -> url) -> a or_resource SDmap.t 
     SDmap.shift
       (fun sego -> match sego with
          | None -> seg
-         | Some s -> seg ^ s)
+         | Some s -> seg ^ "/" ^ s)
       Fail
       (run_dmap' l' url_of_ref)
   | LOr (l1, l2) ->
