@@ -363,7 +363,7 @@ let main_body principles patterns = (body [
               vspace;
               p [
                 i [txt "Functional Software Architecture"];
-                txt "refers to methods of construction and structure \
+                txt " refers to methods of construction and structure \
                      of large and long-lived software projects that \
                      are implemented in functional languages and \
                      released to real users, typically in industry."
