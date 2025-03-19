@@ -363,7 +363,7 @@ let main_body principles patterns = (body [
               vspace;
               p [
                 i [txt "Functional Software Architecture"];
-                txt "refers to methods of construction and structure \
+                txt " refers to methods of construction and structure \
                      of large and long-lived software projects that \
                      are implemented in functional languages and \
                      released to real users, typically in industry."
@@ -389,69 +389,43 @@ let funarch_2025_cfp = (Funarch.Markdown.from_markdown_file "./events/funarch-20
 let funarch_2024 = (Funarch.Markdown.from_markdown_file "./events/funarch-2024/index.md")
 let funarch_2023 = (Funarch.Markdown.from_markdown_file "./events/funarch-2023/index.md")
 
+let funarch_template title main =
+  pure
+    (body
+       [hdr ~show_title:true `Events;
+        (centered_with_footer
+           ~max_width: "50em"
+           (div
+              [(h1 [txt title]);
+               div ~a:[a_role ["doc-subtitle"]] [txt "Functional Software Architecture Workshop co-located with ICFP 2025"];
+               vspace;
+               main]))])
+
 let events =
   let$ ref_2025 = 1 in
   let$ ref_2024 = 2 in
   let$ ref_2023 = 3 in
   (case
      [("funarch-2023",
-       refer
-         ref_2023
-         (pure
-            (body
-             [hdr ~show_title:true `Events;
-              (centered_with_footer
-                 ~max_width: "50em"
-                 (div
-                    [(h1 [txt "FUNARCH 2023"]);
-                     div ~a:[a_role ["doc-subtitle"]] [txt "Functional Software Architecture Workshop co-located with ICFP 2023"];
-                     vspace;
-                     funarch_2023
-                    ]))])));
+       refer ref_2023 (funarch_template "FUNARCH 2023" funarch_2023));
+
       ("funarch-2024",
-       refer ref_2024
-         (pure
-            (body
-             [hdr ~show_title:true `Events;
-              (centered_with_footer
-                 ~max_width: "50em"
-                 (div
-                    [(h1 [txt "FUNARCH 2024"]);
-                     div ~a:[a_role ["doc-subtitle"]] [txt "Functional Software Architecture Workshop co-located with ICFP 2024"];
-                     vspace;
-                     funarch_2024
-                    ]))])));
+       refer ref_2024 (funarch_template "FUNARCH 2024" funarch_2024));
+
       ("funarch-2025",
        refer ref_2025
-         (let^ cfp_ref = "cfp", pure (body [funarch_2025_cfp]) in
-          (pure
-             (body
-                [hdr ~show_title:true `Events;
-                 (centered_with_footer
-                    ~max_width: "50em"
-                    (div
-                       [(h1 [txt "FUNARCH 2025"]);
-                        div ~a:[a_role ["doc-subtitle"]] [txt "Functional Software Architecture Workshop co-located with ICFP 2025"];
-                        vspace;
-                        (funarch_2025 cfp_ref)
-     ]))]))))]
+         (let^ cfp_ref = "cfp", funarch_template "FUNARCH 2025 - Call for Papers" funarch_2025_cfp in
+          funarch_template "FUNARCH 2025" (funarch_2025 cfp_ref)))]
+
      (* default / *)
-     (pure
-        (body
-         [hdr ~show_title:true `Events;
-          (centered_with_footer
-             ~max_width: "50em"
-             (div
-                [(h1 [txt "Events"]);
-                 div ~a:[a_role ["doc-subtitle"]]
-                   [a ~a:[a_href ".."] [txt "Functional Software Architecture"]];
-                 vspace;
-                 a ~a:[a_href (deref ref_2023)] [txt "FUNARCH 2023"];
-                 br ();
-                 a ~a:[a_href (deref ref_2024)] [txt "FUNARCH 2024"];
-                 br ();
-                 a ~a:[a_href (deref ref_2025)] [txt "FUNARCH 2025"];
-                ]))])))
+     (funarch_template
+        "Events"
+        (div
+           [a ~a:[a_href (deref ref_2023)] [txt "FUNARCH 2023"];
+            br ();
+            a ~a:[a_href (deref ref_2024)] [txt "FUNARCH 2024"];
+            br ();
+            a ~a:[a_href (deref ref_2025)] [txt "FUNARCH 2025"];])))
 
 let publications_page =
   pure

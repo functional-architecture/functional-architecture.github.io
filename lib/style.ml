@@ -108,4 +108,14 @@ h3 {
     font-size: 24px;
     line-height: 32px;
 }
+
+pre {
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+img {
+    max-width: 100%;
+}
 |}
