@@ -97,12 +97,13 @@ are encouraged.
 
 If you are unsure whether your contribution is suitable, or if
 you need any kind of help with your submission, please email
-the program chairs at <funarch2025@easychair.org>.
+the program chairs ([Jeff](mailto:jmy6342@gmail.com) or
+[Christine](christine.rizkallah@unimelb.edu.au).
 
 ## Submission
 
-Papers must be submitted by 16th June 2025 using the [EasyChair
-submission page](https://easychair.org/my/conference?conf=funarch2024).
+Papers must be submitted by 16th June 2025 using the [HotCRP
+submission page](https://funarch25.hotcrp.com/).
 
 Formatting: submissions intended for publication must be
 in PDF format and follow the ACM SIGPLAN style guidelines,
