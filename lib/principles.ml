@@ -185,7 +185,7 @@ let make_illegal_states_unrepresentable_principle
     to_static_types
     to_parse_dont_validate
     to_smart_constructor = {
-  title = "Make Illegal States Unrepresentable";
+  title = "Make Illegal States Unrepre\u{00AD}sentable";
   route = "make_illegal_states_unrepresentable";
   short = "«Make illegal states unrepresentable» is a \
            functional design technique that leverages product \
