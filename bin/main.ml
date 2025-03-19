@@ -445,7 +445,7 @@ let events =
                  br ();
                  a ~a:[a_href (deref ref_2024)] [txt "FUNARCH 2024"];
                  br ();
-                 a ~a:[a_href (deref ref_2024)] [txt "FUNARCH 2025"];
+                 a ~a:[a_href (deref ref_2025)] [txt "FUNARCH 2025"];
                 ]))])))
 
 let publications_page =
