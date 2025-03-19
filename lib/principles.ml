@@ -142,7 +142,7 @@ let decoupled_by_default_principle = {
   title = "Decoupled by Default";
   route = "dbd";
   short = "Make the communication channels between building blocks as \
-           wide as neccessary and as narrow as possible. Build tools \
+           wide as necessary and as narrow as possible. Build tools \
            with affordances toward low coupling and high cohesion.";
   long = Draft (Markdown.from_markdown_file "./principles/decoupled_by_default.md");
 }

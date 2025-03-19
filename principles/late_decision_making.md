@@ -34,7 +34,7 @@ deal with uncertainty regarding these questions:
 2. Does `E` support agreggate queries?
 3. Does the amount of data allow us to simply call `getAll` on `E` and
    transfer the entire response to the client `C`, such that `C` could
-   implement the neccessary filtering by category and aggregation etc?
+   implement the necessary filtering by category and aggregation etc?
 3. Is it ok to `getAll` from `E` and then implement some filtering and
    aggregation logic in `S` in order to lighten the load on `C`?
 4. Can we leverage the rumored push/streaming interface of `E`?
@@ -106,7 +106,7 @@ really what our software-to-be is concerned with is not incidents per
 se but rather information about incidents. Imagine a fire breaks out
 at the plant, so there's definitely a state of alarm, but everybody is
 busy handling the fire so nobody reports an incident. Our software
-doesn't know of any incident but that doesn't neccessarily mean that
+doesn't know of any incident but that doesn't necessarily mean that
 there are no incidents. Similarly, after an alarm state was resolved,
 somebody has to mark the incident in our system-to-be as resolved as
 well. If they forget to mark the incident as resolved, our system will
