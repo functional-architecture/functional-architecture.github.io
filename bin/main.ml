@@ -421,11 +421,7 @@ let events =
      (funarch_template
         "Events"
         (div
-           [(h1 [txt "Events"]);
-            div ~a:[a_role ["doc-subtitle"]]
-              [a ~a:[a_href ".."] [txt "Functional Software Architecture"]];
-            vspace;
-            a ~a:[a_href (deref ref_2023)] [txt "FUNARCH 2023"];
+           [a ~a:[a_href (deref ref_2023)] [txt "FUNARCH 2023"];
             br ();
             a ~a:[a_href (deref ref_2024)] [txt "FUNARCH 2024"];
             br ();
