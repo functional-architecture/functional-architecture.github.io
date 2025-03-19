@@ -114,4 +114,8 @@ pre {
     white-space: pre-wrap;
     word-break: break-all;
 }
+
+img {
+    max-width: 100%;
+}
 |}
