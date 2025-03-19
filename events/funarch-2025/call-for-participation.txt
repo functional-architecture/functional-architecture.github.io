@@ -1,0 +1,75 @@
+Subject: Call for Participation, Functional Software Architecture (Oct. 17th, Singapore)
+
+======================================================================
+
+	    *** FUNARCH 2025 -- CALL FOR PARTICIPATION ***
+
+		  The Third ACM SIGPLAN Workshop on
+	 Functional Software Architecture - FP in the Large
+
+	       17th October 2025, Singapore
+		      Co-located with ICFP 2025
+
+     https://www.functional-architecture.org/events/funarch-2025/
+
+======================================================================
+
+BACKGROUND:
+
+The ACM SIGPLAN Workshop on Functional Software Architecture - FP
+in the Large aims to disseminate and enable the use of functional
+programming in the large and long-lived software projects.
+
+We specifically want:
+
+- To assemble a community interested in software architecture
+  techniques and technologies specific to functional programming;
+
+- To identify, categorize, and document topics relevant to
+  the field of functional software architecture;
+
+- To connect the functional programming community to the software
+  architecture community to cross-pollinate between the two.
+
+We'd love for you to be part of this effort.  Whatever your
+background, you're welcome at FUNARCH - to listen to talks, report
+on your experience, and interact with others that share our goals.
+
+See you at FUNARCH!
+
+REGISTRATION:
+
+You can register for the workshop via the registration page for
+the ICFP conference, but there's no need to also register for
+the conference.
+
+KEYNOTE:
+
+TBD
+
+ACCEPTED SUBMISSIONS:
+
+TBD
+
+PROGRAM CHAIRS:
+
+Jeffrey Young (Active Group, Germany)
+Christina Rizkallah (University of Edinburgh, UK)
+
+PROGRAM COMMITTEE:
+
+Isabella Stilkerich (Schaeffler Technologies)
+Ryan Scott (Galois)
+Facundo Dominguez (Tweag)
+J. Garrett Morris (University of Iowa)
+Nada Amin (Harvard University)
+Tom Ellis (Groq)
+KC Sivaramakrishnan (IIT Madras and Tarides)
+Hidehiko Masuhara (Institute of Science Tokyo)
+
+WORKSHOP VENUE:
+
+The workshop will be co-located with the ICFP 2025 conference at
+the Marina Bay Sands Convention Centre, Singapore.
+
+======================================================================
