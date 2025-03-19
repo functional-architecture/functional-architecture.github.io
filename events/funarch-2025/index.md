@@ -28,6 +28,10 @@ News is available on [Mastodon](https://discuss.systems/@funarch),
 [Bluesky](https://bsky.app/profile/funarch.bsky.social), and
 [Twitter](https://twitter.com/ACMFUNARCH).
 
+## Call for Participation
+
+The [CFP is open.]({{call_for_participation}})
+
 ## Proceedings
 
 ... TBD, will be linked to after the conference.
