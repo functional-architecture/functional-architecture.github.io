@@ -389,6 +389,18 @@ let funarch_2025_cfp = (Funarch.Markdown.from_markdown_file "./events/funarch-20
 let funarch_2024 = (Funarch.Markdown.from_markdown_file "./events/funarch-2024/index.md")
 let funarch_2023 = (Funarch.Markdown.from_markdown_file "./events/funarch-2023/index.md")
 
+let funarch_template title main =
+  pure
+    (body
+       [hdr ~show_title:true `Events;
+        (centered_with_footer
+           ~max_width: "50em"
+           (div
+              [(h1 [txt title]);
+               div ~a:[a_role ["doc-subtitle"]] [txt "Functional Software Architecture Workshop co-located with ICFP 2025"];
+               vspace;
+               main]))])
+
 let events =
   let$ ref_2025 = 1 in
   let$ ref_2024 = 2 in
@@ -408,6 +420,7 @@ let events =
                      vspace;
                      funarch_2023
                     ]))])));
+
       ("funarch-2024",
        refer ref_2024
          (pure
@@ -421,20 +434,12 @@ let events =
                      vspace;
                      funarch_2024
                     ]))])));
+
       ("funarch-2025",
        refer ref_2025
-         (let^ cfp_ref = "cfp", pure (body [funarch_2025_cfp]) in
-          (pure
-             (body
-                [hdr ~show_title:true `Events;
-                 (centered_with_footer
-                    ~max_width: "50em"
-                    (div
-                       [(h1 [txt "FUNARCH 2025"]);
-                        div ~a:[a_role ["doc-subtitle"]] [txt "Functional Software Architecture Workshop co-located with ICFP 2025"];
-                        vspace;
-                        (funarch_2025 cfp_ref)
-     ]))]))))]
+         (let^ cfp_ref = "cfp", funarch_template "FUNARCH 2025 - Call for Papers" funarch_2025_cfp in
+          funarch_template "FUNARCH 2025" (funarch_2025 cfp_ref)))]
+
      (* default / *)
      (pure
         (body
