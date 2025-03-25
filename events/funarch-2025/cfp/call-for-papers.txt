@@ -3,7 +3,7 @@
 
 	       *** FUNARCH 2025 -- CALL FOR PAPERS ***
 
-		    Second ACM SIGPLAN Workshop on
+		    Third ACM SIGPLAN Workshop on
 	  Functional Software Architecture - FP in the Large
 
 		    17th October 2025, Singapore
