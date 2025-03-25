@@ -1,25 +1,24 @@
-Subject: Deadline extension: ACM Workshop on Functional Software Architecture [NOW JUNE 12]
 
 ======================================================================
 
-	       *** FUNARCH 2024 -- CALL FOR PAPERS ***
+	       *** FUNARCH 2025 -- CALL FOR PAPERS ***
 
 		    Second ACM SIGPLAN Workshop on
 	  Functional Software Architecture - FP in the Large
 
-		    6th September 2024, Milan, Italy
-		      Co-located with ICFP 2024
+		    17th October 2025, Singapore
+		      Co-located with ICFP 2025
 
-       https://functional-architecture.org/events/funarch-2024/
+       https://functional-architecture.org/events/funarch-2025/
 
 ======================================================================
 
 TIMELINE:
 
-Paper submission    12th June 2024  (EXTENDED FROM JUNE 3rd)
-Author notification 30th June 2024 
-Camera ready copy   18th July 2024 
-Workshop            6th Sept 2024  
+Paper submission    16th June 2025
+Author notification 21st July 2025
+Camera ready copy   25th August 2025
+Workshop            17th October 2025
 
 BACKGROUND:
 
@@ -73,7 +72,7 @@ The workshop seeks submissions in a range of categories:
   Fabulous, submit an architectural pearl!
 
 - You have something that doesn't fit the above categories, but
-  that still relates to functional software architecture, such 
+  that still relates to functional software architecture, such
   as something that can be written up, or that could be part of
   the workshop format like a panel debate or a fishbowl.
 
@@ -90,22 +89,20 @@ is that they make a contribution from which others can benefit.
 It is not enough simply to describe a large software system, or
 to present ideas that are specific to a particular system.
 
-Open category submissions that are not intended for publication 
-are not required to follow the formatting guidelines, and can 
+Open category submissions that are not intended for publication
+are not required to follow the formatting guidelines, and can
 submit in PDF, word or plain text format as preferred.  Not knowing
 what kinds of submissions we will receive, we cannot be specific as to
 how they will be evaluated.  However, submissions that seem likely to
 stimulate discussion around practices in functional architecture
 are encouraged.
 
-If you are unsure whether your contribution is suitable, or if
-you need any kind of help with your submission, please email
-the program chairs at <funarch2024@easychair.org>.
+If you are unsure whether your contribution is suitable, or if you need any kind
+of help with your submission, please email the program chairs
+(Jeff (jmy6342@gmail.com) and Christine (christine.rizkallah@unimelb.edu.au)).
 
-Papers must be submitted by 3rd June 2024 using the EasyChair
-submission page:
-
-https://easychair.org/my/conference?conf=funarch2024
+Papers must be submitted by 16th June 2025 using the hotcrp submission
+page (https://funarch25.hotcrp.com/).
 
 Formatting: submissions intended for publication must be
 in PDF format and follow the ACM SIGPLAN style guidelines,
@@ -123,10 +120,10 @@ Length: submissions must adhere to the limits specified below.
 However, there is no requirement or expectation that all pages
 are used, and authors are encouraged to strive for brevity.
 
-Research papers	       5 to 12+ pages 
-Architectural pearls   5 to 12 pages 
-Experience reports     3 to 6 pages 
-Open category	       1 to 6 pages 
+Research papers	       5 to 12+ pages
+Architectural pearls   5 to 12 pages
+Experience reports     3 to 6 pages
+Open category	       1 to 6 pages
 
 Publication: The proceedings of FUNARCH 2024 will be published in the ACM Digital
 Library, and authors of accepted papers are required to agree to one
@@ -142,27 +139,21 @@ related to published work.
 
 PROGRAM CHAIRS:
 
-Mike Sperber (Active Group, Germany)
-Perdita Stevens (University of Edinburgh, UK)
+Jeffrey Young (Unaffiliated)
+Cristine Rizkallah (University of Melbourne)
 
 PROGRAM COMMITTEE:
 
-Annette Bieniusa (University of Kaiserslautern)
-Jeffrey Young (IOG)
-Will Crichton (Brown University)
-Isabella Stilkerich (Schaeffler Technologies AG)
-Kiko Fernandez-Reyes (Ericsson)
+Isabella Stilkerich (Schaeffler Technologies)
 Ryan Scott (Galois)
-Satnam Singh (Groq)
-Facundo Dominguez (Tweag)
-Ilya Sergey (University of Singapore)
-Martin Elsman (University of Copenhagen)
-Benjamin Pierce (University of Pennsylvania)
-Matthew Flatt (University of Utah)
-Nada Amin (Harvard University)
-Richard Eisenberg (Jane Street)
+Facundo	Dominguez (Tweag)
+J. Garrett Morris (University of Iowa)
+Nada	Amin (Harvard University)
+Tom	Ellis (Groq)
+KC Sivaramakrishnan (IIT Madras and Tarides)
+Hidehiko Masuhara (Institute of Science Tokyo)
 
 WORKSHOP VENUE:
 
-The workshop will be co-located with the ICFP 2024 conference at
-the Fiera Milano Congressi, Milan, Italy.
+Room to be determined. The workshop will be co-located with the ICFP 2025
+conference at the Marina Bay Sands Convention Centre, Singapore.
