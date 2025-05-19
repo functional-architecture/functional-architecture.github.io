@@ -2,6 +2,20 @@
 
 Run `nix run` to build and generate static files. Output is in directory `out`.
 
+For proper development, we suggest using a development nix shell (flake), then running
+
+```
+dune build --watch
+```
+
+You can serve the output with a simple webserver, for example with python:
+
+```
+cd out
+nix shell nixpkgs#python3
+python3 -m http.server
+```
+
 ** What is a value?
 
 "Something intrinsically valuable." Values are ends
