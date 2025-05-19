@@ -118,4 +118,14 @@ pre {
 img {
     max-width: 100%;
 }
+
+table {
+   border-collapse: collapse;
+   border: 1px solid gray;
+}
+
+td {
+   border: 1px solid gray;
+   padding: 1ex 1em;
+}
 |}

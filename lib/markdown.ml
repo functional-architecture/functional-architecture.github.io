@@ -3,6 +3,8 @@ open Tyxml.Html
 let convert_quotes s =
   Str.global_replace (Str.regexp "\"\\([^\"]*\\)\"") "“\\1”" s
 
+(* TODO: This is a mess because I don't understand variant types *)
+
 let rec html_from_markdown_inline (md : Omd.attributes Omd.inline)
   : Html_types.phrasing_without_interactive elt =
   match md with
@@ -27,6 +29,19 @@ and html_from_markdown_inline_with_a (md : Omd.attributes Omd.inline) =
   | Hard_break _attr -> br ()
   | Soft_break _attr -> txt " "
   | Link (_attr, link) -> Tyxml.Html.a ~a:[a_href link.destination] [(html_from_markdown_inline link.label)]
+  | Image (_attr, link) -> img ~src:link.destination ~alt:"TODO" ()
+  | Html (_attr, _raw) -> txt "TODO"
+
+and html_from_markdown_inline_cell (md : Omd.attributes Omd.inline) : [> `Br | `Code | `Em | `Img | `PCDATA | `Span | `Strong ] elt =
+  match md with
+  | Link (_attr, _link) -> assert false
+  | Concat (_attr, children) -> span (List.map html_from_markdown_inline_with_a children)
+  | Text (_attr, s) -> txt (convert_quotes s)
+  | Emph (_attr, child) -> em [(html_from_markdown_inline_with_a child)]
+  | Strong (_attr, child) -> strong [(html_from_markdown_inline_with_a child)]
+  | Code (_attr, str) -> code [(txt str)]
+  | Hard_break _attr -> br ()
+  | Soft_break _attr -> txt " "
   | Image (_attr, link) -> img ~src:link.destination ~alt:"TODO" ()
   | Html (_attr, _raw) -> txt "TODO"
 
@@ -66,7 +81,14 @@ let rec html_from_markdown_block (md : Omd.attributes Omd.block)
   | Code_block (_attr, label, content) -> pre ~a:[a_style "white-space: pre-wrap"] [code ~a:[a_class ["language-" ^ label]] [txt content]]
   | Html_block (_attr, raw) -> Unsafe.data raw
   | Definition_list (_attr, _definitions) -> txt "TODO"
-  | Table (_attr, _header, _body) -> txt "TODO" (* table [] *)
+  | Table (_attr, _header, body) -> table (List.map
+                                             (fun row ->
+                                               (tr
+                                                  (List.map
+                                                     (fun cell -> (td [(html_from_markdown_inline_cell cell)]))
+                                                  row)))
+                                             body)
+
 
 let html_from_markdown (mds : Omd.doc) =
   div (List.map html_from_markdown_block mds)
