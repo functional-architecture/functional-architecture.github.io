@@ -81,7 +81,9 @@ let rec html_from_markdown_block (md : Omd.attributes Omd.block)
   | Code_block (_attr, label, content) -> pre ~a:[a_style "white-space: pre-wrap"] [code ~a:[a_class ["language-" ^ label]] [txt content]]
   | Html_block (_attr, raw) -> Unsafe.data raw
   | Definition_list (_attr, _definitions) -> txt "TODO"
-  | Table (_attr, _header, body) -> table (List.map
+  | Table (_attr, header, body) -> table
+                                     ~thead:(thead [tr (List.map (fun (content, _) -> th [html_from_markdown_inline_cell content]) header)])
+                                     (List.map
                                              (fun row ->
                                                (tr
                                                   (List.map

@@ -14,6 +14,8 @@ Co-located with [ICFP 2025](https://icfp25.sigplan.org)
 
 ## Timeline
 
+|                         |                   |
+|-------------------------|-------------------|
 | **Paper submission**    | 16th June 2025    |
 | **Author notification** | 21st July 2025    |
 | **Camera ready copy**   | 25th August 2025  |
@@ -119,10 +121,12 @@ Length: submissions must adhere to the limits specified below.
 However, there is no requirement or expectation that all pages
 are used, and authors are encouraged to strive for brevity.
 
-| **Research papers**	   | &nbsp;&nbsp; | 5 to 12+ pages |
-| **Architectural pearls** | | 5 to 12 pages |
-| **Experience reports**   | | 3 to 6 pages |
-| **Open category**	   | | 1 to 6 pages |
+| Type                     | Length         |
+|--------------------------|----------------|
+| **Research papers**      | 5 to 12+ pages |
+| **Architectural pearls** | 5 to 12 pages  |
+| **Experience reports**   | 3 to 6 pages   |
+| **Open category**        | 1 to 6 pages   |
 
 Publication: The proceedings of FUNARCH 2025 will be published in the ACM Digital
 Library, and authors of accepted papers are required to agree to one
