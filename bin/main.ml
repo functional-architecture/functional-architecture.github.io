@@ -164,8 +164,12 @@ let ftr ?(max_width="120em") () =
               a ~a:[a_href "mailto:info@active-group.de"] [txt "info@active-group.de"]
             ];
             div [
-              txt "Discuss: ";
+              txt "Mastodon: ";
               a ~a:[a_href "https://discuss.systems/@activegroupgmbh"] [txt "@activegroupgmbh@discuss.systems"]
+            ];
+            div [
+              txt "Bluesky: ";
+              a ~a:[a_href "https://bsky.app/profile/activegroupgmbh.bsky.social"] [txt "@activegroupgmbh.bsky.social"]
             ];
             div [
               txt "X: ";
