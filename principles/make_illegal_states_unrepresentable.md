@@ -129,7 +129,7 @@ flat record as in the OCaml code above:
    ])
 ```
 
-This, again, allows for nonsensical values to be representable:
+This, again, allows for nonsensical values to be represented:
 
 ```Clojure
 (def illegal-1
