@@ -164,8 +164,12 @@ let ftr ?(max_width="120em") () =
               a ~a:[a_href "mailto:info@active-group.de"] [txt "info@active-group.de"]
             ];
             div [
-              txt "Discuss: ";
+              txt "Mastodon: ";
               a ~a:[a_href "https://discuss.systems/@activegroupgmbh"] [txt "@activegroupgmbh@discuss.systems"]
+            ];
+            div [
+              txt "Bluesky: ";
+              a ~a:[a_href "https://bsky.app/profile/activegroupgmbh.bsky.social"] [txt "@activegroupgmbh.bsky.social"]
             ];
             div [
               txt "X: ";
@@ -433,12 +437,7 @@ let publications_page =
        [hdr ~show_title:true `Publications;
         (centered_with_footer
            ~max_width: "50em"
-           (div
-              [(h1 [txt "Publications"]);
-               div ~a:[a_role ["doc-subtitle"]] [txt "Functional Software Architecture"];
-               vspace;
-               txt "TODO";
-              ]))])
+           (Funarch.Markdown.from_markdown_file "./publications/index.md"))])
 
 let web_of_principle pr =
   pr.Funarch.Principles.route, (pure (page_of_principle pr))
