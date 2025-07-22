@@ -17,7 +17,7 @@ Related patterns: [Static types]({{link_static_types}}), [Parse, don’t validat
 ## Techniques
 
 "Make illegal states unrepresentable" was first introduced by Ron
-Minsky in the context of Ocaml, a statically typed language with
+Minsky in the context of OCaml, a statically typed language with
 explicit support for algebraic data types. The original example
 illustrates the mantra by turning a flat product type with many
 nullable fields into a sum-of-products. The mantra itself is not
@@ -113,7 +113,7 @@ of turning a flat product into a sum-of-products can be used in
 dynamically typed languages as well. We use Clojure (+
 [active-clojure](https://github.com/active-group/active-clojure)
 records) to illustrate this point. The flawed representation uses a
-flat record as in the Ocaml code above:
+flat record as in the OCaml code above:
 
 ```clojure
 (define-record-type ConnectionInfo
@@ -153,7 +153,7 @@ This, again, allows for nonsensical values to be representable:
    ))
 ```
 
-A better representation looks quite similar to the improved Ocaml code above:
+A better representation looks quite similar to the improved OCaml code above:
 
 ```clojure
 (define-record-type Connecting
@@ -212,7 +212,7 @@ Since Clojure doesn't do proper static type checking, the smart
 constructor `make-connection-info` above can only check its parameters
 at runtime via `assert`. Still, this latter representation is
 preferable to the previous one for the same reasons as in the original
-Ocaml example.
+OCaml example.
 
 
 
