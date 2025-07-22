@@ -29,7 +29,7 @@ to implement the mantra.
 Minsky's original example starts off with the following OCaml code,
 which illustrates some subtle data modelling issues.
 
-```ocaml
+```OCaml
 type connection_state =
 | Connecting
 | Connected
@@ -50,7 +50,7 @@ With this representation some illegal states can be represented. For
 example, we can come up with a `Connecting` state that has a
 `when_disconnected` value.
 
-```ocaml
+```OCaml
 let illegal_1 = {
   state = Connecting;
   when_disconnected = Some some_time;
@@ -61,7 +61,7 @@ let illegal_1 = {
 Or we can come up with a `Connected` state that has a `last_ping_time`
 but no `last_ping_id`.
 
-```ocaml
+```OCaml
 let illegal_2 = {
   state = Connected;
   last_ping_time = Some some_time;
@@ -80,7 +80,7 @@ common source of bugs.
 
 An improved model that inherently expresses relevant invariants looks like this:
 
-```ocaml
+```OCaml
 type connecting = { when_initiated: Time.t; }
 type connected = { last_ping : (Time.t * int) option;
           session_id: string; }
@@ -115,7 +115,7 @@ dynamically typed languages as well. We use Clojure (+
 records) to illustrate this point. The flawed representation uses a
 flat record as in the OCaml code above:
 
-```clojure
+```Clojure
 (define-record-type ConnectionInfo
   make-connection-info
   connection-info?
@@ -131,7 +131,7 @@ flat record as in the OCaml code above:
 
 This, again, allows for nonsensical values to be representable:
 
-```clojure
+```Clojure
 (def illegal-1
   (make-connection-info
    ;; connection-state
@@ -155,7 +155,7 @@ This, again, allows for nonsensical values to be representable:
 
 A better representation looks quite similar to the improved OCaml code above:
 
-```clojure
+```Clojure
 (define-record-type Connecting
   ^:private mk-connecting
   connecting?
@@ -224,7 +224,7 @@ maps or pure functions.  As an example imagine we want to model the
 concept of a time series.  We start with a Scala
 representation of time series as a list of time-double-tuples:
 
-```scala
+```Scala
 object TimeSeriesService {
   type TimeSeries = List[(Time, Double)]
 }
@@ -232,7 +232,7 @@ object TimeSeriesService {
 
 This allows for illegal and nonsensical values to be represented:
 
-```scala
+```Scala
 // Let t1, t2, t3 be timestamps with t1 < t2 < t3
 val ts1 = List((t2, 6.5), (t1, 5.0), (t3, 7.3))
 val ts2 = List((t1, 6.5), (t1, 6.5))
@@ -244,7 +244,7 @@ common case either. A user of the `TimeSeriesService` now has to think
 hard about what each these cases denote. A more straightforward model
 is to represent time series as associative maps from time to double:
 
-```scala
+```Scala
 object TimeSeriesService {
   type TimeSeries = Map[Time, Double]
 }
@@ -254,7 +254,7 @@ Now contradictory or redundant values are inexpressible. An even
 better model is time series as functions from time to optional
 double:
 
-```scala
+```Scala
 sealed trait TS extends Function1[Time, Option[Double]]
 
 object TimeSeriesService {
@@ -266,7 +266,7 @@ This way, time series can be represented by lists, maps, proper
 functions, static values, etc, as long as we can make these types
 behave like a function:
 
-```scala
+```Scala
 class TSList(list: List[(Time, Option[Double])])
     extends TS {
 
@@ -304,7 +304,7 @@ frees the designer's mind from having to deal with arbitrary technical
 intracacies of the model. Take the model of time series as functions
 of time described above.
 
-```scala
+```Scala
 sealed trait TS extends Function1[Time, Option[Double]]
 ```
 
@@ -316,7 +316,7 @@ wrong_ with functions.
 The flawed representation of time series as a list of tuples allows
 for many illegal values to be represented:
 
-```scala
+```Scala
 object TimeSeriesServiceLegacy {
   def getTimeSeriesData(from: Time, to: Time): List[(Time, Double)] = ???
 }
@@ -348,7 +348,7 @@ freed from having to deal with these minutiae. In Domain-Driven-Design
 literature such a parse step is often referred to as an
 Anti-Corruption Layer.
 
-```scala
+```Scala
 object TimeSeriesServiceAntiCorruption {
   private def parseList(lst: List[(Time, Double)], acc: Map[Time, Double]): Map[Time, Double] =
     lst match {
