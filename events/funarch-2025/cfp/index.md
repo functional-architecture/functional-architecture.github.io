@@ -1,11 +1,12 @@
 ---
 layout: page
 title: FUNARCH 2025 - Call for Papers
-subtitle: The Second ACM SIGPLAN Workshop on Functional Software Architecture - FP in the Large
 img: assets/img/funarch-logo.jpg
 importance: 1
 category: work
 ---
+
+## The Second ACM SIGPLAN Workshop on Functional Software Architecture - FP in the Large
 
 [FUNARCH 2025](https://functional-architecture.org/events/funarch-2025/),
 17th October 2025, Singapore.

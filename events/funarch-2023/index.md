@@ -1,9 +1,10 @@
 ---
 layout: page
 title: FUNARCH 2023
-description: The First ACM SIGPLAN Workshop on Functional Software Architecture - FP in the Large
 img: assets/img/funarch-logo.jpg
 ---
+
+## The First ACM SIGPLAN Workshop on Functional Software Architecture - FP in the Large
 
 "Functional Software Architecture" refers to methods of construction
 and structure of large and long-lived software projects that are
@@ -21,7 +22,7 @@ The goals for the workshop are:
 - To connect the functional programming community to the software
   architecture community to cross-pollinate between the two.
     
-FUNARCH 2023 was be co-colocated with [ICFP 2023](https://icfp23.sigplan.org/)
+FUNARCH 2023 was co-colocated with [ICFP 2023](https://icfp23.sigplan.org/)
 in Seattle on 8th September 2023.
 
 News is available on [Mastodon](https://discuss.systems/@funarch) and

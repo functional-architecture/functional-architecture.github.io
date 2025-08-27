@@ -401,7 +401,7 @@ let funarch_template title main =
            ~max_width: "50em"
            (div
               [(h1 [txt title]);
-               div ~a:[a_role ["doc-subtitle"]] [txt "Functional Software Architecture Workshop co-located with ICFP 2025"];
+               div ~a:[a_role ["doc-subtitle"]] [txt "Functional Software Architecture Workshop co-located with ICFP"];
                vspace;
                main]))])
 

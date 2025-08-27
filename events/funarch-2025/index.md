@@ -1,9 +1,10 @@
 ---
 layout: page
 title: FUNARCH 2025
-description: The Third ACM SIGPLAN Workshop on Functional Software Architecture - FP in the Large
 img: assets/img/funarch-logo.jpg
 ---
+
+## The Third ACM SIGPLAN Workshop on Functional Software Architecture - FP in the Large
 
 "Functional Software Architecture" refers to methods of construction
 and structure of large and long-lived software projects that are
