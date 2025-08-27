@@ -2,7 +2,8 @@
 
 Run `nix run` to build and generate static files. Output is in directory `out`.
 
-For proper development, we suggest using a development nix shell (flake), then running
+For proper development, we suggest using a development nix shell
+(flake) via `nix develop`, then running
 
 ```
 dune exec --watch funarch
