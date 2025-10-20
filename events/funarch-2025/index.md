@@ -39,7 +39,8 @@ The [CFL is open.](https://conf.researchr.org/home/icfp-splash-2025/funarch-2025
 
 ## Proceedings
 
-... TBD, will be linked to after the conference.
+... are available from the [ACM Digital Library](https://dl.acm.org/doi/proceedings/10.1145/3759163).
+
 
 ## Code of Conduct
 
@@ -107,6 +108,9 @@ and delivery of the training has evolved over the past four years.
 
 <!-- TODO: -->
 <!-- <iframe width="560" height="315" src="https://www.youtube.com/embed/uZGckHd8yW4?si=ar-1gFzUzwrW9kB4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> -->
+
+<!-- TODO: Lightning Talks -->
+
 
 ## Program Chairs
 - Jeffrey Young (Epic Games)
