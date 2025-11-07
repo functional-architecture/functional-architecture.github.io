@@ -26,3 +26,7 @@ libraries and algorithms for the well-known mathematical objects can shoulder
 the implementation.
 
 Algebraic modelling leads to perfect abstractions on top of sound mathematics.
+
+Sandy Maguire's Book [Algebra-Driven
+Design](https://leanpub.com/algebra-driven-design/) is the best source on the
+matter.
