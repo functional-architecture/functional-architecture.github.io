@@ -123,7 +123,16 @@ let composable_guis_pattern = {
 let property_based_testing_pattern = {
   title = "Property-based testing";
   route = "property_based_testing";
-  short = p [txt "TODO"];
+  short = p [txt "Property-based testing is a powerful validation technique \
+                  (PBT) where you define general rules or invariants that your \
+                  code should satisfy for any valid input, instead of providing \ 
+                  specific input-output examples. A PBT framework then atomatically \
+                  generates a wide range of diverse and edge-case inputs to check if \
+                  those properties hold true, dramatically increasing test coverage. \
+                  In functional software architecture, PBT is especially valuable \
+                  because it aligns perfectly with testing pure functions, allowing \
+                  for rigorous verification that functions consistently adhere to \ 
+                  their expected behavior regardless of the input data."];
   long = Todo;
 }
 
