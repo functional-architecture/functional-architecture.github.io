@@ -67,7 +67,18 @@ let static_types_pattern = {
 let event_sourcing_pattern = {
   title = "Event Sourcing";
   route = "event_sourcing";
-  short = p [txt "TODO"];
+  short = p [txt "Event Sourcing (ES) is an architectural pattern where the \
+                  application's state is not stored directly, but is \
+                  determined by an immutable, ordered sequence of domain \
+                  events saved in an append-only event store. This sequence, \
+                  or event log, becomes the single source of truth and allows \
+                  for state reconstruction to any point in the past, enabling \
+                  powerful auditability and temporal queries. Event Sourcing \
+                  is often a great fit for functional architecture as events are \
+                  immutable facts and application state is derived by applying \
+                  a pure function (a reducer or projector) that folds these \
+                  events over a starting state, ensuring a deterministic and \
+                  traceable business logic."];
   long = Todo;
 }
 
