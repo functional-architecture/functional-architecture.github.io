@@ -117,7 +117,7 @@ let algebra_principle = {
            algebraic patterns that stood the test of time, by using properties \
            like Associativity and Distributivity that form structures such as \
            Monoids, Functors, and Monads.";
-  long = Draft (Markdown.from_markdown_file "./principles/algebraic_modelling.md");
+  long = Published (Markdown.from_markdown_file "./principles/algebraic_modelling.md");
 }
 
 let abstraction_principle = {
