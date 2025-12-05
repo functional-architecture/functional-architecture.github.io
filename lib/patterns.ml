@@ -36,7 +36,7 @@ let functional_core_imperative_shell_pattern = {
 let zipper_pattern = {
   title = "Zipper";
   route = "zipper";
-  short = p [txt "TODO"];
+  short = p [txt "Zippers are efficient functional implementations of a"; i [txt "data structure"]; txt "(such as a List or Tree) plus a"; i [txt "lens"]; txt "into that data strucuture."];
   long = Todo;
 }
 
