@@ -39,7 +39,7 @@ The [CFL is open.](https://conf.researchr.org/home/icfp-splash-2025/funarch-2025
 
 ## Proceedings
 
-... are available from the [ACM Digital Library](https://dl.acm.org/doi/proceedings/10.1145/3759163).
+Are available from the [ACM Digital Library](https://dl.acm.org/doi/proceedings/10.1145/3759163).
 
 
 ## Code of Conduct
@@ -50,8 +50,7 @@ This years videos will be available as a YouTube playlist; just like [last year'
 
 ## Accepted Papers and Talks
 
-<!-- ## [A Layered Certifying Compiler Architecture](todo) -->
-## A Layered Certifying Compiler Architecture
+## [A Layered Certifying Compiler Architecture](https://dl.acm.org/doi/10.1145/3759163.3760427)
 #### Jacco Krijnen, Wouter Swierstra, Gabriele Keller (Utrecht University)
 #### Manuel Chakravarty (Tweag & IOG), Joris Dral (Well-Typed),
 
@@ -72,11 +71,9 @@ languages in the compiler and proof assistant has a clear benefit: it becomes
 straightforward to integrate the certifier as an additional check in the
 compiler itself, leveraging the the Rocq proof assistant’s program extraction.
 
-<!-- TODO: -->
-<!-- <iframe width="560" height="315" src="https://www.youtube.com/embed/1NgrEH0RUAw?si=5JcKyyoiuskQiANM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> -->
+<iframe width="560" height="315" src="https://www.youtube.com/embed/FB0CS0X1QRc?si=1ADvA6Mlb92AjNZm" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-<!-- ## [Evolution of Functional UI Paradigms](todo) -->
-## Evolution of Functional UI Paradigms
+## [Evolution of Functional UI Paradigms](https://dl.acm.org/doi/10.1145/3759163.3760429)
 #### Michael Sperber, Markus Schlegel (Active Group GmbH)
 
 Functional paradigms for user-interface (UI) programming have undergone
@@ -91,11 +88,9 @@ evolution of functional UI toolkits along with the architectural implications of
 their designs (including two of our own), summarizes the current state of the
 art and discusses remaining issues.
 
-<!-- TODO: -->
-<!-- <iframe width="560" height="315" src="https://www.youtube.com/embed/NFQBTJ0ASyE?si=TtatCVTgI_I3oDaM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> -->
+<iframe width="560" height="315" src="https://www.youtube.com/embed/_HDkqG28yzw?si=qqaCLRlBsNCqZRzk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-<!-- ## [Six Years of FUNAR: Functional Training for Software Architects](todo) -->
-## Six Years of FUNAR: Functional Training for Software Architects
+## [Six Years of FUNAR: Functional Training for Software Architects](https://dl.acm.org/doi/10.1145/3759163.3760428)
 #### Michael Sperber
 ##### (Experience Report)
 
@@ -106,11 +101,33 @@ based on this curriculum, mostly to audiences with little or no exposure to
 functional programming. This paper reports on our experience, and how content
 and delivery of the training has evolved over the past four years.
 
-<!-- TODO: -->
-<!-- <iframe width="560" height="315" src="https://www.youtube.com/embed/uZGckHd8yW4?si=ar-1gFzUzwrW9kB4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> -->
+<iframe width="560" height="315" src="https://www.youtube.com/embed/EKqM-EjrRkg?si=PyHVUZRRrbceUc8n" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-<!-- TODO: Lightning Talks -->
+## Lightning Talks
 
+## Bluefin in Industry
+#### Tom Ellis
+##### (Experience Report)
+This short talk will recount our experience using the Bluefin effect system for
+Haskell, to replace transformers and MTL-style in the design of assembly tooling
+for Groq’s LPU chip.
+
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/0ABhsBpcxvY?si=HSZAYfvq6YvD0rAx" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+## What Could Functional Architecture Mean
+#### Jeffrey Young
+Software Architecture itself is nebulously defined. So then what are we to make
+of Functional Architecture? In this short talk I’ll wildy speculate about
+possible definitions.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/x8jLOtZoOOU?si=74EMYnUB1seGhv_l" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+## The Future of FUNARCH
+#### Jeffrey Young
+This talk is the yearly recap and retrospective of the FUNARCH workshop.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/mBTUuHY4ylI?si=pjUeKffIt1-oCLI8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## Program Chairs
 - Jeffrey Young (Epic Games)
