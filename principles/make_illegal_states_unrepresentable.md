@@ -1,13 +1,16 @@
-"Make illegal states unrepresentable" is a mantra commonly used in
-functional modeling. The mantra was coined by Yaron Minsky in a [2010
-guest lecture at
+In functional software architecture, a data model expresses a
+programmer's intent. Intent is adequately captured if the data model
+allows for all values to be represented that do make sense and none of
+the values to be represented that do not make sense. "Make illegal
+states unrepresentable" is a mantra that targets the latter. The
+mantra was coined by Yaron Minsky in a [2010 guest lecture at
 Harvard.](https://blog.janestreet.com/effective-ml-revisited/) The
-idea is to model data representations in such a way that nonsensical
-("illegal") values ("states") are inexpressible
-("unrepresentable"). By adhering to "Make illegal states
-unrepresentable" the resulting models are often simpler, expressing
-the desired intent more directly. This leads to systems that are more
-robust (often correct by construction) and more loosely coupled.
+idea is to model data in such a way that nonsensical ("illegal")
+values ("states") are inexpressible ("unrepresentable"). By adhering
+to "Make illegal states unrepresentable" the resulting models are
+often simpler, expressing the desired intent more directly. This leads
+to systems that are more robust (often correct by construction) and
+more loosely coupled.
 
 Objectives: [Simplicity](/#values), [Maintainability](/#values), [Correctness](/#values)
 
