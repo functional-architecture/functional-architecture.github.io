@@ -8,3 +8,4 @@ img: assets/img/funarch-logo.jpg
 - [FUNARCH 2023](funarch-2023/)
 - [FUNARCH 2024](funarch-2024/)
 - [FUNARCH 2025](funarch-2025/)
+- [FUNARCH 2026](funarch-2026/)

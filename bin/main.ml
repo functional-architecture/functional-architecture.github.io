@@ -385,6 +385,7 @@ let main_body principles patterns = (body [
       ]
     )])
 
+let funarch_2026 = (Funarch.Markdown.from_markdown_file "./events/funarch-2026/index.md")
 let funarch_2025 cfp_ref = (Funarch.Markdown.function_of_parameterized_markdown
                               "./events/funarch-2025/index.md"
                               ["{{call_for_participation}}"]
@@ -406,9 +407,10 @@ let funarch_template title main =
                main]))])
 
 let events =
-  let$ ref_2025 = 1 in
+  let$ ref_2026 = 4 in
+  let$ ref_2025 = 3 in
   let$ ref_2024 = 2 in
-  let$ ref_2023 = 3 in
+  let$ ref_2023 = 1 in
   (case
      [("funarch-2023",
        refer ref_2023 (funarch_template "FUNARCH 2023" funarch_2023));
@@ -419,7 +421,10 @@ let events =
       ("funarch-2025",
        refer ref_2025
          (let^ cfp_ref = "cfp", funarch_template "FUNARCH 2025 - Call for Papers" funarch_2025_cfp in
-          funarch_template "FUNARCH 2025" (funarch_2025 cfp_ref)))]
+               funarch_template "FUNARCH 2025" (funarch_2025 cfp_ref)));
+
+      ("funarch-2026",
+       refer ref_2026 (funarch_template "FUNARCH 2026" funarch_2026))]
 
      (* default / *)
      (funarch_template
@@ -429,7 +434,9 @@ let events =
             br ();
             a ~a:[a_href (deref ref_2024)] [txt "FUNARCH 2024"];
             br ();
-            a ~a:[a_href (deref ref_2025)] [txt "FUNARCH 2025"];])))
+            a ~a:[a_href (deref ref_2025)] [txt "FUNARCH 2025"];
+            br ();
+            a ~a:[a_href (deref ref_2026)] [txt "FUNARCH 2026"];])))
 
 let publications_page =
   pure
