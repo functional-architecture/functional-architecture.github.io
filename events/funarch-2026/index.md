@@ -40,7 +40,7 @@ The [CFL is open.](https://icfp26.sigplan.org/home/funarch-2026#Call-for-Lightni
 ## Proceedings
 
 TBD
-<!-- Are available from the [ACM Digital Library](https://dl.acm.org/doi/proceedings/10.1145/3759163). -->
+Are available from the [ACM Digital Library](https://dl.acm.org/doi/proceedings/10.1145/3830438).
 
 
 ## Code of Conduct
@@ -52,8 +52,7 @@ This years videos will be available as a YouTube playlist; just like [last year'
 ## Accepted Papers and Talks
 
 
-## Functional Mechanical Sympathy
-<!-- TODO: add proceedings link (https://dl.acm.org/doi/10.1145/3759163.3760427) -->
+## [Functional Mechanical Sympathy](https://dl.acm.org/doi/10.1145/3830438.3839102)
 #### Richard Feldman (Zed Industries Inc.)
 
 For the first time in decades, the two fastest-growing mainstream programming
@@ -86,11 +85,10 @@ This talk will dive into the intersection of functional programming and
 mechanical sympathy: how we can achieve faster-performing functional programs by
 architecting with the machine in mind.
 
-<!-- TODO: video <iframe width="560" height="315" src="https://www.youtube.com/embed/FB0CS0X1QRc?si=1ADvA6Mlb92AjNZm" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> -->
+<iframe width="560" height="315" src="https://www.youtube.com/embed/jSHmDnUZCm8?si=vqUX_-SF3DmcGVs0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 
-## From Lambda to Ledger: An Architectural Comparison of Plinth and Plutarch
-<!-- TODO: (https://dl.acm.org/doi/10.1145/3759163.3760427) -->
+## [From Lambda to Ledger: An Architectural Comparison of Plinth and Plutarch](https://dl.acm.org/doi/10.1145/3830438.3830956)
 #### Seungheon Oh, Ziyang Liu (IOG), Philip Wadler (IOG; University of Edinburgh)
 
 Plinth and Plutarch are two languages for writing smart contracts on the Cardano
@@ -110,10 +108,10 @@ affect source code, generated target code, and compiler error messages. Our
 comparison offers broader insights for language design, both within and beyond
 the blockchain domain.
 
-<!-- TODO: video <iframe width="560" height="315" src="https://www.youtube.com/embed/FB0CS0X1QRc?si=1ADvA6Mlb92AjNZm" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> -->
+<iframe width="560" height="315" src="https://www.youtube.com/embed/yNUe4Gqpbhs?si=7QnsDhn6NSnbOsXH" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-## Evolution of Functional UI Paradigms
-<!-- TODO: (https://dl.acm.org/doi/10.1145/3759163.3760429) -->
+
+## [Local-First Distributed Configuration (Experience Report)](https://dl.acm.org/doi/10.1145/3830438.3830957)
 #### Michael Sperber (Active Group GmbH)
 ##### (Experience Report)
 
@@ -128,10 +126,10 @@ after the original rollout such as undoing configuration changes, and database
 thinning. We also reflect on design and implementation mistakes we made during
 its 10-year development.
 
-<!-- TODO: <iframe width="560" height="315" src="https://www.youtube.com/embed/_HDkqG28yzw?si=qqaCLRlBsNCqZRzk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> -->
+<iframe width="560" height="315" src="https://www.youtube.com/embed/a8AinsQZJ9I?si=o8VtTzT9zkhSJ5GS" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-## Functional State Machines in Rust: Typestate and Newtype Patterns (Experience Report)
-<!-- TODO: (https://dl.acm.org/doi/10.1145/3759163.3760428) -->
+
+## [Functional State Machines in Rust: Typestate and Newtype Patterns (Experience Report)](https://dl.acm.org/doi/10.1145/3830438.3830958)
 #### Leon Heuer (NORDAKADEMIE gAG Hochschule der Wirtschaft), Falk Woldmann Lu (Otto GmbH & Co. KGaA), Jan Haase (NORDAKADEMIE gAG Hochschule der Wirtschaft)
 ##### (Experience Report)
 
@@ -145,35 +143,21 @@ benefits most from the pattern. (2) Newtype combined with the “Parse, don’t
 validate” principle improves code quality at a low cost and prevents invalid
 states at runtime.
 
-<!-- TODO: <iframe width="560" height="315" src="https://www.youtube.com/embed/EKqM-EjrRkg?si=PyHVUZRRrbceUc8n" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> -->
+<iframe width="560" height="315" src="https://www.youtube.com/embed/TFIHcp6tJOI?si=VEsgAn5O0qIgUsH0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## Lightning Talks
 
-TBD
+## What Could Functional Architecture Mean
+#### Jeffrey Young
+A continuation of my talk from [last year](https://youtu.be/x8jLOtZoOOU?si=JYqvnbnJGEk9CMGo). In this lightning talk I'll further speculate about how to make sense of Functional Architecture.
 
-<!-- ## Bluefin in Industry -->
-<!-- #### Tom Ellis -->
-<!-- ##### (Experience Report) -->
-<!-- This short talk will recount our experience using the Bluefin effect system for -->
-<!-- Haskell, to replace transformers and MTL-style in the design of assembly tooling -->
-<!-- for Groq’s LPU chip. -->
+<iframe width="560" height="315" src="https://www.youtube.com/embed/q_wc3wQN1D8?si=Qv0-krJnk0bI6Qe4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
+## The Future of FUNARCH
+#### Jeffrey Young
+This talk is the yearly recap and retrospective of the FUNARCH workshop.
 
-<!-- <iframe width="560" height="315" src="https://www.youtube.com/embed/0ABhsBpcxvY?si=HSZAYfvq6YvD0rAx" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> -->
-
-<!-- ## What Could Functional Architecture Mean -->
-<!-- #### Jeffrey Young -->
-<!-- Software Architecture itself is nebulously defined. So then what are we to make -->
-<!-- of Functional Architecture? In this short talk I’ll wildy speculate about -->
-<!-- possible definitions. -->
-
-<!-- <iframe width="560" height="315" src="https://www.youtube.com/embed/x8jLOtZoOOU?si=74EMYnUB1seGhv_l" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> -->
-
-<!-- ## The Future of FUNARCH -->
-<!-- #### Jeffrey Young -->
-<!-- This talk is the yearly recap and retrospective of the FUNARCH workshop. -->
-
-<!-- <iframe width="560" height="315" src="https://www.youtube.com/embed/mBTUuHY4ylI?si=pjUeKffIt1-oCLI8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> -->
+Unfortunately, this talk was not recorded.
 
 ## Program Chairs
 - [Jeffrey Young](https://pure-systems.org) (Canonical)
